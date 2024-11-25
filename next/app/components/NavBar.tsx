@@ -6,9 +6,9 @@ import { BellIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
 const initialNavigation = [
-  { name: 'Login', href: '/login', current: true },
-  { name: 'Projects', href: '/projects', current: false },
-  { name: 'Calendar', href: '/calendar', current: false },
+  { name: 'ホーム', href: '/Home', current: true },
+  { name: 'ログイン', href: '/Login', current: false },
+  { name: '新規登録', href: '/sinUp', current: false },
 ];
 
 function classNames(...classes: any[]) {
@@ -27,7 +27,7 @@ function NavBar() {
   };
 
   return (
-    <Disclosure as="nav" className="bg-green-800">
+    <Disclosure as="nav" className="bg-green-500 fixed top-0 left-0 w-full z-50 ">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-center sm:justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -58,7 +58,7 @@ function NavBar() {
                     onClick={() => handleMenuClick(item.href)}
                     aria-current={item.current ? 'page' : undefined}
                     className={classNames(
-                      item.current ? 'bg-green-950 text-white' : 'text-gray-300 hover:bg-green-950 hover:text-white',
+                      item.current ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-green-600 hover:text-white',
                       'rounded-md px-3 py-2 text-sm font-medium',
                     )}
                   >
