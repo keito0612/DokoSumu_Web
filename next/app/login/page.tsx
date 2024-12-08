@@ -16,7 +16,6 @@ interface Inputs {
 };
 
 function Login() {
-  const componentName = "Home";
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);

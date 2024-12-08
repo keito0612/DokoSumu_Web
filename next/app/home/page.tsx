@@ -1,9 +1,14 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import dynamic from 'next/dynamic'
 import NavBar from '../components/NavBar';
 import NavigationBottomBar from '../components/NavigationBottomBar';
 import SheetModal from '../components/SheetModal';
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import StarsRating from '../components/StarsRating';
+import { ChartData } from '@/types';
+import CityList from '../components/CityList';
 
 interface PrefectureBlockProps {
   region: string;
@@ -16,7 +21,7 @@ const PrefectureBlock: React.FC<PrefectureBlockProps> = ({ region, prefectures, 
     <div className="border-2 border-white p-4 m-4 bg-green-500 rounded-lg">
       <h2 className="text-white text-xl   text-center   font-bold mb-4">{region}</h2>
       <div className={`flex flex-wrap gap-4  justify-center sm:justify-start  ${prefectures.length === 1 ? 'justify-center' : ''}`}>
-        {prefectures.map((prefecture, index) => (
+        {prefectures.map((prefecture) => (
           <button
             key={prefecture.id}
             onClick={() => handleButtonClick(prefecture)}
@@ -30,12 +35,60 @@ const PrefectureBlock: React.FC<PrefectureBlockProps> = ({ region, prefectures, 
   );
 };
 
+
+
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPrefecture, setSelectedPrefecture] = useState("");
   const router = useRouter();
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+
+  const addQueryParameter = (prefectureId: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('prefecture', prefectureId);
+    router.push(url.toString());
+  };
+  const Chart = dynamic(() => import('../components/Chart'), { ssr: false })
+  const mocChartData: ChartData[] = [
+    {
+      name: "治安",
+      score: 5,
+      fullMark: 5
+    },
+    {
+      name: "制度",
+      score: 2,
+      fullMark: 5
+    },
+    {
+      name: "住みやすさ",
+      score: 5,
+      fullMark: 5
+    },
+    {
+      name: "人",
+      score: 5,
+      fullMark: 5
+    },
+    {
+      name: "子育て",
+      score: 5,
+      fullMark: 5
+    }
+
+  ]
+  const deleteQueryParameter = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('prefecture');
+    router.push(url.toString());
+  };
+
+  const closeModal = () => {
+    deleteQueryParameter();
+    setIsModalOpen(false)
+  };
+
+
+
   const regions: { name: string; prefectures: { id: number; name: string }[] }[] = [
     { name: "北海道地方", prefectures: [{ id: 1, name: "北海道" }] },
     {
@@ -116,6 +169,7 @@ function Home() {
 
   const handleButtonClick = (prefecture: { id: number; name: string }) => {
     setIsModalOpen(true);
+    addQueryParameter(prefecture.id.toString());
     setSelectedPrefecture(prefecture.name);
     console.log(`Button clicked with id: ${prefecture.id}`);
   };
@@ -123,19 +177,30 @@ function Home() {
   return (
     <div className={`Home h-screen ${isModalOpen ? "overflow-hidden" : "overflow-visible"}`}>
       <SheetModal title={selectedPrefecture} isOpen={isModalOpen} onClose={closeModal}>
-        <h2 className="text-lg font-bold">Hello from the Right Sheet Modal!</h2>
-        <p className="text-gray-600">
-          This modal is now mobile-sized and positioned to the right of the screen.
-        </p>
-        <p className="text-gray-600 mt-2">
-          Add as much content as you want here. It will scroll if the content exceeds the height of the screen.
-        </p>
+        <Image
+          src="/images/noImage.png"
+          alt="画像がありません"
+          width={650}
+          height={400}
+        />
+        <div className="flex justify-start flex-col">
+          <p className="text-gray-600 text-2xl pb-3 font-bold ">
+            {selectedPrefecture}
+          </p>
+          <StarsRating rating={5.0} />
+          <hr className='mt-4'></hr>
+        </div>
+        <div className="flex justify-center flex-col">
+          <Chart widht={380} height={380} cx={190} cy={190} outerRadius={120} data={mocChartData} />
+          <hr className='mb-4'></hr>
+          <h2 className="text-black text-xl   text-center   font-bold mb-4">市リスト</h2>
+          <CityList citys={[]} handleButtonClick={function (city: { id: number; name: string; }): void {
+            throw new Error('Function not implemented.');
+          }} />
+        </div>
       </SheetModal>
       <NavBar />
       <div className="py-14 p-6 mb-9 h-full ">
-        {/* <h1 className="py-5 text-3xl font-bold text-center mb-8">
-                    都道府県と市リスト
-                </h1> */}
         {regions.map((region, index) => (
           <PrefectureBlock
             key={index}
