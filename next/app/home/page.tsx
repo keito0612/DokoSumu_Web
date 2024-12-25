@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic'
 import NavBar from '../components/NavBar';
 import NavigationBottomBar from '../components/NavigationBottomBar';
@@ -39,14 +39,23 @@ const PrefectureBlock: React.FC<PrefectureBlockProps> = ({ region, prefectures, 
 
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPrefecture, setSelectedPrefecture] = useState("");
+  const [selectedName, setSelectedName] = useState("");
   const router = useRouter();
+  const cityId = new URLSearchParams().get("cityId");
 
-  const addQueryParameter = (prefectureId: string) => {
+
+  const addQueryPrefectureIdParameter = (prefectureId: string) => {
     const url = new URL(window.location.href);
     url.searchParams.set('prefecture', prefectureId);
     router.push(url.toString());
   };
+
+  const addQueryCityIdParameter = (cityId: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('cityId', cityId);
+    router.push(url.toString());
+  }
+
   const Chart = dynamic(() => import('../components/Chart'), { ssr: false })
   const mocChartData: ChartData[] = [
     {
@@ -167,16 +176,26 @@ function Home() {
     }
   ];
 
-  const handleButtonClick = (prefecture: { id: number; name: string }) => {
+  const handlePrefectureButtonClick = (prefecture: { id: number; name: string }) => {
     setIsModalOpen(true);
-    addQueryParameter(prefecture.id.toString());
-    setSelectedPrefecture(prefecture.name);
-    console.log(`Button clicked with id: ${prefecture.id}`);
+    addQueryPrefectureIdParameter(prefecture.id.toString());
+    setSelectedName(prefecture.name);
   };
+
+  const hendleCityButtonClick = (city: { id: number; name: string }) => {
+    setIsModalOpen(true);
+    addQueryCityIdParameter(city.id.toString());
+    setSelectedName(city.name);
+  }
+
+  useEffect(() => {
+
+  }, []);
 
   return (
     <div className={`Home h-screen ${isModalOpen ? "overflow-hidden" : "overflow-visible"}`}>
-      <SheetModal title={selectedPrefecture} isOpen={isModalOpen} onClose={closeModal}>
+      {/*市の評価*/}
+      <SheetModal title={selectedName} isOpen={isModalOpen} onClose={closeModal}>
         <Image
           src="/images/noImage.png"
           alt="画像がありません"
@@ -185,7 +204,7 @@ function Home() {
         />
         <div className="flex justify-start flex-col">
           <p className="text-gray-600 text-2xl pb-3 font-bold ">
-            {selectedPrefecture}
+            {selectedName}
           </p>
           <StarsRating rating={5.0} />
           <hr className='mt-4'></hr>
@@ -193,12 +212,16 @@ function Home() {
         <div className="flex justify-center flex-col">
           <Chart widht={380} height={380} cx={190} cy={190} outerRadius={120} data={mocChartData} />
           <hr className='mb-4'></hr>
-          <h2 className="text-black text-xl   text-center   font-bold mb-4">市リスト</h2>
-          <CityList citys={[]} handleButtonClick={function (city: { id: number; name: string; }): void {
-            throw new Error('Function not implemented.');
-          }} />
+          {cityId !== null ?
+            <div>
+              <h2 className="text-black text-xl   text-center   font-bold mb-4">市リスト</h2>
+              <CityList citys={[]} handleButtonClick={hendleCityButtonClick} />
+            </div>
+            : <div></div>
+          }
         </div>
       </SheetModal>
+
       <NavBar />
       <div className="py-14 p-6 mb-9 h-full ">
         {regions.map((region, index) => (
@@ -206,7 +229,7 @@ function Home() {
             key={index}
             region={region.name}
             prefectures={region.prefectures}
-            handleButtonClick={handleButtonClick}
+            handleButtonClick={handlePrefectureButtonClick}
           />
         ))}
       </div>

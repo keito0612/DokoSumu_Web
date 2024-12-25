@@ -26,8 +26,7 @@ function Login() {
     await AuthService.login({
       url: "http://localhost/api/login",
       param: dataSet,
-      success(result) {
-        const token = result.token;
+      success(token) {
         AuthService.setSesstion(token);
         setIsLoading(false);
         router.back();

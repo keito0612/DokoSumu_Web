@@ -53,10 +53,10 @@ function SignUp() {
     >
       <div className="SignUp">
         <div className="flex flex-col items-center justify-center h-screen">
-          <form className="w-96 p-8 bg-white rounded-lg shadow-md" onSubmit={handleSubmit(onSubmit)}>
-            <h1 className="mb-4 text-2xl font-medium text-grey-700">新規登録</h1>
+          <form className="w-96 p-8 bg-green-500 rounded-lg shadow-md" onSubmit={handleSubmit(onSubmit)}>
+            <h1 className="mb-4 text-2xl font-bold text-white">新規登録</h1>
             <div className='mb-4'>
-              <label className="justify-start flex text-sm font-medium text-grey-600">名前</label>
+              <label className="justify-start flex text-sm font-bold text-white">名前</label>
               <input
                 {...register("name", {
                   required: "名前は必須です",
@@ -74,7 +74,7 @@ function SignUp() {
               )}
             </div>
             <div className="mb-4">
-              <label className="justify-start flex text-sm font-medium text-grey-600">メールアドレス</label>
+              <label className="justify-start flex text-sm font-bold text-white">メールアドレス</label>
               <input
                 {...register("email", {
                   required: "メールアドレスは必須です",
@@ -92,7 +92,7 @@ function SignUp() {
               )}
             </div>
             <div className="mb-4">
-              <label className="justify-start flex text-sm font-medium text-grey-600">パスワード</label>
+              <label className="justify-start flex text-sm font-bold text-white">パスワード</label>
               <input
                 {...register("password", {
                   required: "パスワードは必須です",
