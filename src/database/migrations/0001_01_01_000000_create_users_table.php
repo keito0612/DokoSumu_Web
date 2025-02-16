@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('image_path')->comment('ユーザー用の写真');
+            $table->string('image_path')->nullable()->comment('ユーザー用の写真');
+            $table->string('comment')->nullable()->comment('ユーザーのコメント');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

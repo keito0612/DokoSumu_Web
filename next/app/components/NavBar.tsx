@@ -11,7 +11,7 @@ const initialNavigation = [
   { name: '新規登録', href: '/sinUp', current: false },
 ];
 
-function classNames(...classes: any[]) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 

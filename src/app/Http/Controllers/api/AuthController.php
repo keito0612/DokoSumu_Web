@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\api;
+
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Servises\EmailServise;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -11,36 +13,46 @@ use \Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use function Psy\debug;
+
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        // バリデーション
-        $validator = Validator::make($request->all(), [
-            'name' => ['required'],
-            'email' => ['required', 'email'],
-            'password' => ['required']
-        ]);
+        try {
+            Log::debug('Request Data:', $request->all());
+            // バリデーション
+            $validator = Validator::make($request->all(), [
+                'name' => ['required', 'max:255'],
+                'email' => ['required', 'email', 'unique:users'],
+                'password' => ['required', 'min:8', 'max:12']
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), Response::HTTP_UNPROCESSABLE_ENTITY);
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->messages()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            // メールアドレスがすでに登録されているかチェック
+            if ($this->checkEmail($request->email)) {
+                return response()->json(['message' => 'すでにアカウントが存在しています。'], Response::HTTP_CONFLICT);
+            }
+
+            // ユーザーを作成
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+
+            return response()->json(['message' => 'ユーザー登録が完了しました。'], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['message' => '内部サーバーエラー'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        if($this->checkEmail($request->email)){
-            return response()->json(['message' => 'すでにアカウントが存在しています。'], Response::HTTP_UNAUTHORIZED);
-        }
-
-        // ユーザーを作成
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return response()->json('User registration completed', Response::HTTP_OK);
     }
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         // バリデーション
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'email'],
@@ -48,11 +60,12 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->messages(), Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['errors' => $validator->messages()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        if(!$this->checkEmail($request->email)){
-            return response()->json(['message' => 'アカウントが存在していません。'], Response::HTTP_UNAUTHORIZED);
+        // メールアドレスが存在しない場合
+        if (!$this->checkEmail($request->email)) {
+            return response()->json(['message' => 'アカウントが存在していません。'], Response::HTTP_NOT_FOUND);
         }
 
         // ユーザー認証
@@ -61,34 +74,20 @@ class AuthController extends Controller
             $user->tokens()->delete();
             $token = $user->createToken("login:user{$user->id}")->plainTextToken;
 
-            return response()->json(['token' => $token ], Response::HTTP_OK);
+            return response()->json(['token' => $token], Response::HTTP_OK);
         }
 
-        return response()->json('User unauthorized', Response::HTTP_UNAUTHORIZED);
+        return response()->json(['message' => '無効なメールアドレスまたはパスワードです。'], Response::HTTP_UNAUTHORIZED);
     }
-
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'ログアウトしました。'], 200);
+        return response()->json(['message' => 'ログアウトしました。'], Response::HTTP_OK);
     }
-
 
     private function checkEmail($email)
     {
-        if (DB::table('users')->where('email', $email)->exists()){
-            return true;
-        }else{
-            return false;
-        }
-    }
-     private function checkPassword($password)
-    {
-        if(DB::table('users')->where('password', $password)->exists()){
-            return true;
-        }else{
-            return false;
-        }
+        return DB::table('users')->where('email', $email)->exists();
     }
 }

@@ -44,17 +44,11 @@ function Home() {
   const cityId = new URLSearchParams().get("cityId");
 
 
-  const addQueryPrefectureIdParameter = (prefectureId: string) => {
+  const addQueryParameter = (paramName: string, paramValue: string) => {
     const url = new URL(window.location.href);
-    url.searchParams.set('prefecture', prefectureId);
+    url.searchParams.set(paramName, paramValue);
     router.push(url.toString());
   };
-
-  const addQueryCityIdParameter = (cityId: string) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set('cityId', cityId);
-    router.push(url.toString());
-  }
 
   const Chart = dynamic(() => import('../components/Chart'), { ssr: false })
   const mocChartData: ChartData[] = [
@@ -85,14 +79,14 @@ function Home() {
     }
 
   ]
-  const deleteQueryParameter = () => {
+  const deleteQueryParameter = (paramName: string) => {
     const url = new URL(window.location.href);
-    url.searchParams.delete('prefecture');
+    url.searchParams.delete(paramName);
     router.push(url.toString());
   };
 
   const closeModal = () => {
-    deleteQueryParameter();
+    deleteQueryParameter("prefecture");
     setIsModalOpen(false)
   };
 
@@ -178,18 +172,17 @@ function Home() {
 
   const handlePrefectureButtonClick = (prefecture: { id: number; name: string }) => {
     setIsModalOpen(true);
-    addQueryPrefectureIdParameter(prefecture.id.toString());
+    addQueryParameter("prefecture", prefecture.id.toString());
     setSelectedName(prefecture.name);
   };
 
   const hendleCityButtonClick = (city: { id: number; name: string }) => {
     setIsModalOpen(true);
-    addQueryCityIdParameter(city.id.toString());
+    addQueryParameter("city_id", city.id.toString());
     setSelectedName(city.name);
   }
 
   useEffect(() => {
-
   }, []);
 
   return (
