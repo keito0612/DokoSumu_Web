@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CityRequest;
 use App\Models\Prefectures;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -20,6 +21,4 @@ class CityController extends Controller
             'citys' => $prefecture->citys
         ], 200);
     }
-
-    function postCityReview(Request $request) {}
 }

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('photos', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('review_id')->comment("レビューID")->constrained()->onDelete('cascade');
             $table->string('photo_url');
             $table->timestamps();
         });

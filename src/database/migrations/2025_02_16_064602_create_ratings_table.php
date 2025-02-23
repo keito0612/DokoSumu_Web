@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('rent_affordability')->comment('家賃の安さ');
             $table->integer('safety')->comment('治安');
             $table->integer('public_transportation')->comment('交通機関');
+            $table->foreignId('review_id')->comment("レビューのID")->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

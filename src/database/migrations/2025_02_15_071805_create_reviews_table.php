@@ -16,8 +16,6 @@ return new class extends Migration
             $table->foreignId('user_id')->comment("ユーザーID")->constrained()->onDelete('cascade');
             $table->foreignId('prefecture_id')->comment("県のID")->constrained()->onDelete('cascade');
             $table->foreignId('citie_id')->comment("市のID")->constrained()->onDelete('cascade');
-            $table->foreignId('photo_id')->comment("写真のID")->constrained()->onDelete('cascade');
-            $table->foreignId('rating_id')->comment("評価のID")->constrained()->onDelete('cascade');
             $table->text('good_comment')->comment('良いところ');
             $table->text('bad_comment')->comment('悪いところ');
             $table->timestamps();

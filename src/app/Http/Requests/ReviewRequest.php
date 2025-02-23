@@ -6,14 +6,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ProfileRequest extends FormRequest
+class ReviewRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -24,7 +24,6 @@ class ProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:100',
             'image_path' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ];
     }
@@ -32,15 +31,12 @@ class ProfileRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => '名前は必須です。',
-            'name.string' => '名前は文字列で入力してください。',
-            'name.max' => '名前は100文字以内で入力してください。',
             'image_path.image' => '画像ファイルを選択してください。',
             'image_path.mimes' => '画像の形式はjpeg、png、jpg、gifのいずれかにしてください。',
             'image_path.max' => '画像のサイズは2MB以内にしてください。',
+
         ];
     }
-
 
     protected function failedValidation(Validator $validator)
     {
