@@ -34,17 +34,28 @@ export class AuthService {
       });
 
       const data = await res.json();
-
       if (res.ok) {
         success("新規登録が完了しました。");
       } else {
-        failure(data.validation_errors || 'エラーが発生しました。');
+        console.log(data);
+        failure(this.selectedErrorMessage(data["errors"]));
       }
     } catch (error) {
       failure('An unexpected error occurred.');
       console.error('エラー発生', error);
     }
   }
+
+  static selectedErrorMessage(errors: { [key: string]: string[] }): string {
+    if (errors["email"]?.length) {
+        return errors["email"][0];
+    } else if (errors["password"]?.length) {
+        return errors["password"][0];
+    } else if (errors["name"]?.length) {
+        return errors["name"][0];
+    }
+    return "";
+}
 
   static setSesstion(token: string) {
     localStorage.setItem('token', JSON.stringify(token));

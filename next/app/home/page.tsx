@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import dynamic from 'next/dynamic'
 import NavBar from '../components/NavBar';
 import NavigationBottomBar from '../components/NavigationBottomBar';
@@ -7,9 +7,10 @@ import SheetModal from '../components/SheetModal';
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import StarsRating from '../components/StarsRating';
-import { ChartData } from '@/types';
+import { ChartData, City } from '@/types';
 import CityList from '../components/CityList';
-
+import { UtilApi } from '@/Util/Util_api';
+import Tabs, { Tab } from '../components/Tabs';
 interface PrefectureBlockProps {
   region: string;
   prefectures: { id: number; name: string }[];
@@ -40,8 +41,23 @@ const PrefectureBlock: React.FC<PrefectureBlockProps> = ({ region, prefectures, 
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedName, setSelectedName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [citys, setCitys] = useState<City[]>([]);
   const router = useRouter();
-  const cityId = new URLSearchParams().get("cityId");
+  const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
+  const [selectedTab, setSelectedTab] = useState<string>('0');
+  const tabs: Tab[] = [
+    {
+      id: '0', label: '評価', content: 'Content for Tab 1', onTap: (tabId: string) => {
+        setSelectedTab(tabId);
+      }
+    },
+    {
+      id: '1', label: 'レビュー', content: 'Content for Tab 2', onTap: (tabId: string) => {
+        setSelectedTab(tabId);
+      }
+    },
+  ];
 
 
   const addQueryParameter = (paramName: string, paramValue: string) => {
@@ -77,17 +93,16 @@ function Home() {
       score: 5,
       fullMark: 5
     }
-
-  ]
-  const deleteQueryParameter = (paramName: string) => {
+  ];
+  const deleteQueryParameters = (paramNames: string[]) => {
     const url = new URL(window.location.href);
-    url.searchParams.delete(paramName);
+    paramNames.forEach((param) => url.searchParams.delete(param));
     router.push(url.toString());
   };
-
   const closeModal = () => {
-    deleteQueryParameter("prefecture");
-    setIsModalOpen(false)
+    deleteQueryParameters(["prefecture", "city_id"]);
+    setSelectedCityId(null);
+    setIsModalOpen(false);
   };
 
 
@@ -170,25 +185,53 @@ function Home() {
     }
   ];
 
-  const handlePrefectureButtonClick = (prefecture: { id: number; name: string }) => {
+  const handlePrefectureButtonClick = async (prefecture: { id: number; name: string }) => {
+    setIsLoading(true);
     setIsModalOpen(true);
     addQueryParameter("prefecture", prefecture.id.toString());
+    await getCitys(prefecture.id);
     setSelectedName(prefecture.name);
+    setIsLoading(false);
   };
 
   const hendleCityButtonClick = (city: { id: number; name: string }) => {
     setIsModalOpen(true);
+    setSelectedCityId(city.id);
     addQueryParameter("city_id", city.id.toString());
     setSelectedName(city.name);
   }
 
-  useEffect(() => {
-  }, []);
+  const postButtonClick = (prefectureId: number, cityId: string) => {
+
+  }
+
+  const getCitys = async (prefectureId: number) => {
+    const url = `${UtilApi.local}api/${prefectureId}/citys`;
+    try {
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      const citys: City[] = data['citys'];
+      setCitys(citys);
+    } catch (error) {
+      console.error('エラー発生', error);
+    }
+  }
 
   return (
     <div className={`Home h-screen ${isModalOpen ? "overflow-hidden" : "overflow-visible"}`}>
       {/*市の評価*/}
       <SheetModal title={selectedName} isOpen={isModalOpen} onClose={closeModal}>
+        <Tabs tabs={tabs} />
         <Image
           src="/images/noImage.png"
           alt="画像がありません"
@@ -203,14 +246,13 @@ function Home() {
           <hr className='mt-4'></hr>
         </div>
         <div className="flex justify-center flex-col">
-          <Chart widht={380} height={380} cx={190} cy={190} outerRadius={120} data={mocChartData} />
+          <Chart data={mocChartData} />
           <hr className='mb-4'></hr>
-          {cityId !== null ?
+          {selectedCityId === null ?
             <div>
               <h2 className="text-black text-xl   text-center   font-bold mb-4">市リスト</h2>
-              <CityList citys={[]} handleButtonClick={hendleCityButtonClick} />
-            </div>
-            : <div></div>
+              <CityList citys={citys} handleButtonClick={hendleCityButtonClick} />
+            </div> : <div></div>
           }
         </div>
       </SheetModal>

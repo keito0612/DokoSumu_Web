@@ -1,7 +1,8 @@
+import { City } from "@/types";
 import { FC } from "react";
 
 interface CityListProps {
-  citys: { id: number; name: string }[];
+  citys: City[];
   handleButtonClick: (city: { id: number; name: string }) => void;
 }
 

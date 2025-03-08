@@ -10,8 +10,12 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/citys/{prefectures_id}', [CityController::class, 'getCitys']);
-Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/{prefectures_id}/citys/', [CityController::class, 'getCitys']);
+Route::group(['middleware' => ['api']], function () {
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+});
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::prefix('profile')->group(function () {

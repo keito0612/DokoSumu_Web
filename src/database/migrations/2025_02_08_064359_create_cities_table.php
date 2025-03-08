@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name')->comment('市の名前');
             $table->unsignedBigInteger('prefectures_id')->comment('県の外部キー');
-            $table->timestamps();
             $table->foreign('prefectures_id')->references('id')->on('prefectures');
         });
     }

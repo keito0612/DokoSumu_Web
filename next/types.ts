@@ -4,5 +4,8 @@ export interface ChartData {
   fullMark: number;
 }
 
-
-export City
+export interface City{
+  id:number;
+  name:string;
+  prefectures_id:number;
+}
