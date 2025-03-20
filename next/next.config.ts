@@ -10,9 +10,24 @@ const nextConfig: NextConfig = {
         return modularizeImports;
       }),
     );
-    if (modularizeImports?.["@headlessui/react"])
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: [
+        {
+          loader: "@svgr/webpack",
+          options: {
+            svgo: false, // 圧縮無効
+          },
+        },
+      ],
+    });
+    if (modularizeImports?.["@headlessui/react"]) {
       delete modularizeImports["@headlessui/react"];
+    }
     return config;
+  },
+  images: {
+    disableStaticImages: true, // importした画像の型定義設定を無効にする
   },
 };
 

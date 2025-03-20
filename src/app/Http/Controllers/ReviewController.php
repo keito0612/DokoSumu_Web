@@ -68,18 +68,24 @@ class ReviewController extends Controller
             Rating::create([
                 "livability" => $request->livability,
                 "city_policies" => $request->city_policies,
-                "rent_affordability" => $request->rent_affordability,
+                "child_rearing" => $request->child_rearing,
                 "safety" => $request->safety,
                 "public_transportation" => $request->public_transportation,
-                "review_id" => $request->review_id
+                "review_id" => $newReview->id
             ]);
             if ($request->hasFile('photos')) {
                 $this->storePhotos($request->file('photos'), $newReview->id);
+            }else{
+                Photo::create([
+                    "review_id" => $newReview->id,
+                ]);
             }
+            DB::commit();
             return response()->json([
                 "message" => "created successfully"
             ], 200);
         } catch (Exception $e) {
+            DB::rollback();
             return response()->json(["error" => $e->getMessage()], 500);
         }
     }
@@ -103,7 +109,7 @@ class ReviewController extends Controller
             Rating::where("id", $id)->update([
                 "livability" => $request->livability,
                 "city_policies" => $request->city_policies,
-                "rent_affordability" => $request->rent_affordability,
+                "child_rearing" => $request->child_rearing,
                 "safety" => $request->safety,
                 "public_transportation" => $request->public_transportation,
                 "review_id" => $updateReview->id
