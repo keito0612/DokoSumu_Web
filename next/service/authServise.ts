@@ -15,7 +15,7 @@ export class AuthService {
       if (res.ok) {
         success(token);
       } else {
-        failure(data.validation_errors || 'エラーが発生しました。');
+        failure(this.selectedErrorMessage(data["errors"]));
       }
     } catch (error) {
       failure('An unexpected error occurred.');
@@ -23,7 +23,7 @@ export class AuthService {
     }
   }
 
-  static async register<T>({ url, param, success, failure }: { url: string, param: T, success: (message: string) => void, failure: (error: string) => void }) {
+  static async register<T>({ url, param, success, failure }: { url: string, param: T, success: (message: string, token: string) => void, failure: (error: string) => void }) {
     try {
       const res = await fetch(url, {
         method: 'POST',
@@ -34,8 +34,9 @@ export class AuthService {
       });
 
       const data = await res.json();
+      const token = data.token as string;
       if (res.ok) {
-        success("新規登録が完了しました。");
+        success("新規登録が完了しました。", token);
       } else {
         console.log(data);
         failure(this.selectedErrorMessage(data["errors"]));
@@ -48,14 +49,14 @@ export class AuthService {
 
   static selectedErrorMessage(errors: { [key: string]: string[] }): string {
     if (errors["email"]?.length) {
-        return errors["email"][0];
+      return errors["email"][0];
     } else if (errors["password"]?.length) {
-        return errors["password"][0];
+      return errors["password"][0];
     } else if (errors["name"]?.length) {
-        return errors["name"][0];
+      return errors["name"][0];
     }
     return "";
-}
+  }
 
   static setSesstion(token: string) {
     localStorage.setItem('token', JSON.stringify(token));

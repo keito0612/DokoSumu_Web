@@ -13,10 +13,10 @@ Route::get('/user', function (Request $request) {
 
 
 Route::get('/{prefectures_id}/citys/', [CityController::class, 'getCitys']);
-Route::group(['middleware' => ['api']], function () {
-    Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/post/city_review/${prefecture_id}/${city_id}',[ReviewController::class,'postCityReview']);
-    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
 Route::post('/register', [AuthController::class, 'register']);
 

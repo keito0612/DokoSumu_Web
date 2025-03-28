@@ -9,6 +9,7 @@ import { useState } from "react";
 import { MaterialSymbolsLightAdd2 } from "@/app/components/icons/MaterialSymbolsLightAdd2";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { UtilApi } from "@/Util/Util_api";
+import { AuthService } from "@/service/authServise";
 
 
 interface RatingPostForm {
@@ -63,13 +64,14 @@ export default function RatingPost() {
     const prefectureId = params.prefectureId;
     const cityId = params.cityId;
     console.log(dataSet);
-    const url: string = `${UtilApi.local}/post/city_review/${prefectureId}/${cityId}`;
+    const url: string = `${UtilApi.local}post/city_review/${prefectureId}/${cityId}`;
     dataSet.files = files;
     try {
       const res = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${AuthService.getSesstion()}`,
         },
         body: JSON.stringify(dataSet),
       });
