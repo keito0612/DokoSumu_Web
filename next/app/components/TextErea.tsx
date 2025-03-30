@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useState } from "react";
-import { FieldValues, UseFormRegisterReturn, UseFormStateReturn } from "react-hook-form";
+import { UseFormRegisterReturn } from "react-hook-form";
 
 interface TextEreaProps {
   title?: string;

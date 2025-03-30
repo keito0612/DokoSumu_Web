@@ -6,5 +6,11 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    function getUser() {}
+    function getUser() {
+
+    }
+
+    function editUser(){
+
+    }
 }

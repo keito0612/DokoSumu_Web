@@ -20,6 +20,7 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
+        DB::beginTransaction();
         try {
             // ユーザーを作成
             $user = User::create([
@@ -28,8 +29,10 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]);
             $token = $user->createToken("login:user{$user->id}")->plainTextToken;
+            DB::commit();
             return response()->json(['message' => 'ユーザー登録が完了しました。', 'token' => $token], Response::HTTP_CREATED);
         } catch (\Exception $e) {
+            DB::rollback();
             Log::error($e->getMessage());
             return response()->json(['message' => '内部サーバーエラー'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }

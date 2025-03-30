@@ -6,8 +6,8 @@ import { BellIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
 const initialNavigation = [
-  { name: 'ホーム', href: '/Home', current: true },
-  { name: 'ログイン', href: '/Login', current: false },
+  { name: 'ホーム', href: '/home', current: true },
+  { name: 'ログイン', href: '/login', current: false },
   { name: '新規登録', href: '/sinUp', current: false },
 ];
 
@@ -94,14 +94,9 @@ function NavBar() {
                 className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none"
               >
                 <MenuItem>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  <Link className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100' href={"/profile"}>
                     プロフィール
-                  </a>
-                </MenuItem>
-                <MenuItem>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    設定
-                  </a>
+                  </Link>
                 </MenuItem>
                 <MenuItem>
                   <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">

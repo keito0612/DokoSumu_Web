@@ -54,7 +54,7 @@ function SignUp() {
     // >
     <div className="SignUp">
       <div className="flex flex-col items-center justify-center h-screen">
-        <form className="w-96 p-8 bg-green-500 rounded-lg shadow-md" onSubmit={handleSubmit(onSubmit)}>
+        <form className="w-96 p-8 bg-green-500 rounded-lg shadow-md" onSubmit={handleSubmit(onSubmit)} method='POST'>
           <h1 className="mb-4 text-2xl font-bold text-center text-white">新規登録</h1>
           <div className='mb-4'>
             <label className="justify-start flex text-sm font-bold text-white">名前</label>

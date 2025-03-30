@@ -34,6 +34,7 @@ export class AuthService {
       });
 
       const data = await res.json();
+
       const token = data.token as string;
       if (res.ok) {
         success("新規登録が完了しました。", token);
@@ -42,7 +43,7 @@ export class AuthService {
         failure(this.selectedErrorMessage(data["errors"]));
       }
     } catch (error) {
-      failure('An unexpected error occurred.');
+      failure('想定外のエラーが発生しました。');
       console.error('エラー発生', error);
     }
   }

@@ -13,10 +13,10 @@ use function PHPUnit\Framework\isEmpty;
 
 class ProfileController extends Controller
 {
-    function index()
+    function getProfile()
     {
-        $id = Auth::id();
-        $profile = User::where('id', $id)->get();
+        $user = Auth::user();
+        $profile = User::where('id', $user->id)->get();
         if ($profile->isEmpty()) {
             return response()->json(['error' => 'user not found'], 404);
         }
@@ -27,8 +27,8 @@ class ProfileController extends Controller
 
     function update(ProfileRequest $request)
     {
-        $id = Auth::id();
-        $profile = User::where('id', $id)->get();
+        $user = Auth::user();
+        $profile = User::where('id', $user->id)->get();
         if ($profile->isEmpty()) {
             return response()->json(['error' => 'user not found'], 404);
         }

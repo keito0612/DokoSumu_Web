@@ -7,7 +7,7 @@ import { ChartData } from "@/types";
 import { useForm } from 'react-hook-form'
 import { useState } from "react";
 import { MaterialSymbolsLightAdd2 } from "@/app/components/icons/MaterialSymbolsLightAdd2";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { UtilApi } from "@/Util/Util_api";
 import { AuthService } from "@/service/authServise";
 
