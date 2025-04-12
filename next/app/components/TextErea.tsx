@@ -39,7 +39,7 @@ const TextErea: FC<TextEreaProps> = ({
           handleTextChange
         }
       />
-      <div className="ml-4 flex justify-between items-start">
+      <div className="pt-2 ml-4 flex justify-between items-start">
         {errorMessage ? (
           <span className="text-sm text-red-600">※{errorMessage}</span>
         ) : (

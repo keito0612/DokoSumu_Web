@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\City;
+use App\Models\Rating;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -18,7 +19,10 @@ class DatabaseSeeder extends Seeder
         Schema::disableForeignKeyConstraints();
         $this->call([
             PrefecturesSeeder::class,
-            CitySeeder::class
+            CitySeeder::class,
+            UserSeeder::class,
+            ReviewSeeder::class,
+            RatingSeeder::class
         ]);
         Schema::enableForeignKeyConstraints();
     }

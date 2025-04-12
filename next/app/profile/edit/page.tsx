@@ -5,14 +5,11 @@ import { ChangeEvent, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { UtilApi } from "@/Util/Util_api";
 import { AuthService } from "@/service/authServise";
-import { SystemUiconsUserMale } from "@/app/components/icons/SystemUiconsUserMale";
 import TextField from "@/app/components/TextField";
 import { useEffect } from "react";
 import NavBar from "@/app/components/NavBar";
 import NavigationBottomBar from "@/app/components/NavigationBottomBar";
-import Image from "next/image";
 import ProfileImageUploader from "@/app/components/ProfileImage";
-import { Dataset } from "@mui/icons-material";
 import SnackbarComponent from "@/app/components/SnackBar";
 
 
@@ -61,7 +58,6 @@ export default function ProfileEdit() {
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
       const data = await res.json();
-
     } catch (error) {
       console.error('エラー発生', error);
     }
@@ -83,7 +79,6 @@ export default function ProfileEdit() {
       if (res.ok) {
 
       } else {
-        console.log(data);
         setErrorMessage(UtilApi.selectedErrorMessage(["profileImage", "name", "selfIntroduction"], data));
       }
     } catch (error) {
@@ -93,24 +88,27 @@ export default function ProfileEdit() {
 
   return (
     <div className="">
-      <NavBar />
+      <NavBar title="プロフィール編集" />
       <div className="flex flex-col items-center p-4 mx-auto w-full max-w-4xl">
         <h2 className="text-black text-2xl md:text-3xl font-bold text-center mb-6">プロフィール編集</h2>
         <form className="w-full" onSubmit={handleSubmit(onSubmit)} method="POST">
           <ProfileImageUploader file={file} imageUrl={imageUrl} register={register("profileImage", {
             validate: (file) => {
-              // ファイルサイズチェック (例: 2MB以下)
-              const maxSize = 2 * 1024 * 1024;
-              if (file!.size > maxSize) {
-                return "ファイルサイズは2MB以下にしてください";
-              }
+              if (file?.name !== undefined) {
+                // ファイルサイズチェック (例: 2MB以下)
+                const maxSize = 2 * 1024 * 1024;
+                if (file!.size > maxSize) {
+                  return "ファイルサイズは2MB以下にしてください";
+                }
 
-              // 拡張子チェック
-              const validExtensions = ["image/jpeg", "image/png", "image/gif"];
-              if (!validExtensions.includes(file!.type)) {
-                return "JPEG, PNG, GIF の画像を選択してください";
-              }
+                // 拡張子チェック
+                const validExtensions = ["image/jpeg", "image/png", "image/gif"];
+                if (!validExtensions.includes(file!.type)) {
+                  return "JPEG, PNG, GIF の画像を選択してください";
+                }
 
+                return true;
+              }
               return true;
             },
           })} errorMessage={errors.profileImage?.message} handleImage={handleImage} />

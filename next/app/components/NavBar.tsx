@@ -5,6 +5,11 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import { BellIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
+
+interface NavBarProps {
+  title: string;
+};
+
 const initialNavigation = [
   { name: 'ホーム', href: '/home', current: true },
   { name: 'ログイン', href: '/login', current: false },
@@ -15,7 +20,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-function NavBar() {
+function NavBar({ title }: NavBarProps) {
   const [navigation, setNavigation] = useState(initialNavigation);
 
   const handleMenuClick = (href: string) => {
@@ -47,7 +52,7 @@ function NavBar() {
                 className="w-0 sm:h-8 sm:w-auto invisible sm:visible"
               />
               {/* モバイル用のアイテム */}
-              <span className="text-white  visible sm:hidden text-center text-lg font-bold">タイトル</span>
+              <span className="text-white  visible sm:hidden text-center text-lg font-bold">{title}</span>
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">

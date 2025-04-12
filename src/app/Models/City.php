@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class City extends Model
 {
     use HasFactory;
+    protected $hidden = ['prefectures'];
 
     function prefectures()
     {

@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { useRouter } from 'next/navigation'
 import Link from "next/link";
 import { AuthService } from '@/service/authServise';
-import Loading from '../components/Loading';
 import SnackbarComponent from '../components/SnackBar';
 
 

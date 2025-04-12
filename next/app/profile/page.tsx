@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 // ProfileAvatar Component
 const ProfileAvatar = () => (
   <div
-    className="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-32 h-32 sm:w-32 sm:h-32"
+    className="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-24 h-24 sm:w-32 sm:h-32"
     style={{
       backgroundImage:
         'url("https://cdn.usegalileo.ai/sdxl10/b1ba1f1b-c868-4445-9ede-e71b03a48fbf.png")',
@@ -20,8 +20,8 @@ interface ProfileNameProps {
   name: string;
 }
 const ProfileName: React.FC<ProfileNameProps> = ({ name }) => (
-  <div className="flex  justify-center items-center text-center ">
-    <p className="text-[#141414] text-[22px] font-bold leading-tight pt-11 tracking-[-0.015em]">
+  <div className="text-left ">
+    <p className="text-[#141414] text-[22px] font-bold leading-tight pb-3 tracking-[-0.015em]">
       {name}
     </p>
   </div>
@@ -41,8 +41,8 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ detail }) => (
 
 // ProfileActions Component
 const ProfileEditButton = ({ onClick }: { onClick?: () => void }) => (
-  <button onClick={onClick} className="w-full cursor-pointer  justify-center  items-center overflow-hidden rounded-xl  h-10 px-4 py-2 bg-lime-500 text-white text-sm font-bold leading-normal tracking-[0.015em] flex-1 ">
-    <span className="truncate font-bold">プロフィールを編集</span>
+  <button onClick={onClick} className="w-40 border border-green-500 bg-transparent text-green-500 px-4 py-2 rounded-full hover:bg-green-500 hover:text-white transition">
+    <span className="text-sm font-semibold">プロフィールを編集</span>
   </button>
 );
 
@@ -52,7 +52,7 @@ interface ProfileStatsProps {
   likeCount: number;
 }
 const ProfileStats: React.FC<ProfileStatsProps> = ({ postCount, likeCount }) => (
-  <div className="flex flex-row gap-4 p-4 justify-start">
+  <div className="flex flex-row gap-4 py-4 justify-start">
     <div className="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-4 border border-[#E0E0E0]">
 
       <p className="text-[#141414] tracking-light text-2xl font-bold leading-tight">{postCount}</p>
@@ -108,21 +108,27 @@ const ProfilePage = () => {
         className="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden"
         style={{ fontFamily: '"Be Vietnam Pro", "Noto Sans", sans-serif' }}
       >
-        <NavBar />
+        <NavBar title='プロフィール' />
         <div className="px-4 sm:px-40 flex flex-1 justify-center py-5 pt-16 pb-24">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div className="flex p-4 flex-col  gap-4">
-              <div className="flex gap-4  flex-row items-start">
-                <ProfileAvatar />
-                <ProfileName name='テストアカウント' />
+            <div className="flex py-4 flex-col  gap-4">
+              <div className="flex items-start justify-between w-full">
+                <div className="flex gap-4 flex-row items-start">
+                  <ProfileAvatar />
+                </div>
+
+                <div className="flex flex-col justify-end h-full">
+                  <ProfileEditButton
+                    onClick={() => router.push("/profile/edit")}
+                  />
+                </div>
               </div>
-              <ProfileDetail detail='テストテストテスyとテストテストテストテストテストテストテストテストテストテストテストテスト' />
-              <ProfileEditButton onClick={() =>
-                router.push("/profile/edit")
-              } />
             </div>
+            <ProfileName name="テストアカウント" />
+            <ProfileDetail detail='テストテストテスyとテストテストテストテストテストテストテストテストテストテストテストテスト' />
+
             <ProfileStats postCount={8} likeCount={1} />
-            <div className="mt-6 pl-4 pr-4">
+            <div className="mt-6">
               <div className="flex gap-4 justify-center sm:justify-start">
                 <TabButton isActive={activeTab === 'posts'} onClick={() => setActiveTab('posts')}>
                   投稿リスト

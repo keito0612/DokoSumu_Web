@@ -75,10 +75,6 @@ class ReviewController extends Controller
             ]);
             if ($request->hasFile('photos')) {
                 $this->storePhotos($request->file('photos'), $newReview->id);
-            }else{
-                Photo::create([
-                    "review_id" => $newReview->id,
-                ]);
             }
             DB::commit();
             return response()->json([
@@ -93,6 +89,7 @@ class ReviewController extends Controller
     function updateReview($id, $prefecture_id, $city_Id, ReviewRequest $request)
     {
         $user_id = Auth::id();
+        DB::beginTransaction();
         try {
             $updateReview = tap(Review::where("id", $id)->first())->update(
                 [
@@ -117,10 +114,12 @@ class ReviewController extends Controller
             if ($request->hasFile('photos')) {
                 $this->storePhotos($request->file('photos'), $updateReview->id);
             }
+            DB::commit();
             return response()->json([
                 "message" => "updated successfully"
             ], 200);
         } catch (Exception $e) {
+            DB::rollback();
             return response()->json(["error" => $e->getMessage()], 500);
         }
     }

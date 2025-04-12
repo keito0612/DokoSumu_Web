@@ -7,10 +7,11 @@ import SheetModal from '../components/SheetModal';
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import StarsRating from '../components/StarsRating';
-import { ChartData, City } from '@/types';
+import { ChartData, City, User } from '@/types';
 import CityList from '../components/CityList';
 import { UtilApi } from '@/Util/Util_api';
 import Tabs, { Tab } from '../components/Tabs';
+import ImageViewer from '../components/ImageViewer';
 interface PrefectureBlockProps {
   region: string;
   prefectures: { id: number; name: string }[];
@@ -46,6 +47,8 @@ function Home() {
   const router = useRouter();
   const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
   const [selectedTab, setSelectedTab] = useState<string>('0');
+  const [imageViewerOpen, setImageViewerOpen] = useState(false);
+  const [imageSrc, setImageSrc] = useState("");
   const tabs: Tab[] = [
     {
       id: '0', label: '評価', content: 'Content for Tab 1', onTap: (tabId: string) => {
@@ -64,6 +67,17 @@ function Home() {
     const url = new URL(window.location.href);
     url.searchParams.set(paramName, paramValue);
     router.push(url.toString());
+  };
+
+  const mocImages: string[] = ['https://picsum.photos/200/300', 'https://picsum.photos/200/300', 'https://picsum.photos/200/300'];
+
+  const openImageViewer = (src: string) => {
+    setImageSrc(src);
+    setImageViewerOpen(true);
+  };
+
+  const closeImageViewer = () => {
+    setImageViewerOpen(false);
   };
 
   const Chart = dynamic(() => import('../components/Chart'), { ssr: false })
@@ -94,6 +108,33 @@ function Home() {
       fullMark: 5
     }
   ];
+
+  const mocUsers: User[] = [
+    {
+      id: 0,
+      name: "名無し",
+      imagePath: 'https://picsum.photos/200/300',
+      commment: "こんにちは、"
+    },
+    {
+      id: 1,
+      name: "名無し",
+      imagePath: null,
+      commment: "こんにちは、"
+    },
+    {
+      id: 2,
+      name: "名無し",
+      imagePath: null,
+      commment: "こんにちは、"
+    },
+    {
+      id: 3,
+      name: "名無し",
+      imagePath: 'https://picsum.photos/200/300',
+      commment: "こんにちは、"
+    },
+  ]
   const deleteQueryParameters = (paramNames: string[]) => {
     const url = new URL(window.location.href);
     paramNames.forEach((param) => url.searchParams.delete(param));
@@ -216,7 +257,7 @@ function Home() {
       });
 
       if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`);
+        throw new Error(`HTTP error! Status: ${res.status} `);
       }
 
       const data = await res.json();
@@ -229,6 +270,7 @@ function Home() {
 
   return (
     <div className={`Home h-screen ${isModalOpen ? "overflow-hidden" : "overflow-visible"}`}>
+      {/* {imageViewerOpen && <ImageViewer imageSrc={imageSrc} onClose={closeImageViewer} user={ } />} */}
       {/*市の評価*/}
       <SheetModal title={selectedName} isOpen={isModalOpen} onClose={closeModal}>
         <Tabs tabs={tabs} />
@@ -236,6 +278,7 @@ function Home() {
           src="/images/noImage.png"
           alt="画像がありません"
           width={650}
+          onClick={() => openImageViewer("/images/noImage.png")}
           height={400}
         />
         <div className="flex justify-start flex-col">
@@ -257,16 +300,18 @@ function Home() {
         </div>
       </SheetModal>
 
-      <NavBar />
-      <div className="py-14 p-6 mb-9 h-full ">
-        {regions.map((region, index) => (
-          <PrefectureBlock
-            key={index}
-            region={region.name}
-            prefectures={region.prefectures}
-            handleButtonClick={handlePrefectureButtonClick}
-          />
-        ))}
+      <NavBar title='ホーム' />
+      <div className="py-14 p-6 h-full ">
+        <div className='pb-14'>
+          {regions.map((region, index) => (
+            <PrefectureBlock
+              key={index}
+              region={region.name}
+              prefectures={region.prefectures}
+              handleButtonClick={handlePrefectureButtonClick}
+            />
+          ))}
+        </div>
       </div>
       <NavigationBottomBar />
     </div>
