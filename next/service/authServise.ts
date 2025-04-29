@@ -1,3 +1,5 @@
+import { UtilApi } from "@/Util/Util_api";
+
 export class AuthService {
 
   static async login<T>({ url, param, success, failure }: { url: string, param: T, success: (token: string) => void, failure: (error: string) => void }) {
@@ -6,6 +8,7 @@ export class AuthService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify(param),
       });
@@ -15,7 +18,7 @@ export class AuthService {
       if (res.ok) {
         success(token);
       } else {
-        failure(this.selectedErrorMessage(data["errors"]));
+        failure(UtilApi.selectedErrorMessage(["name", "email", "password"], data["errors"]));
       }
     } catch (error) {
       failure('An unexpected error occurred.');
@@ -29,6 +32,7 @@ export class AuthService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify(param),
       });
@@ -39,8 +43,7 @@ export class AuthService {
       if (res.ok) {
         success("新規登録が完了しました。", token);
       } else {
-        console.log(data);
-        failure(this.selectedErrorMessage(data["errors"]));
+        failure(UtilApi.selectedErrorMessage(["name", "email", "password"], data["errors"]));
       }
     } catch (error) {
       failure('想定外のエラーが発生しました。');
@@ -48,16 +51,6 @@ export class AuthService {
     }
   }
 
-  static selectedErrorMessage(errors: { [key: string]: string[] }): string {
-    if (errors["email"]?.length) {
-      return errors["email"][0];
-    } else if (errors["password"]?.length) {
-      return errors["password"][0];
-    } else if (errors["name"]?.length) {
-      return errors["name"][0];
-    }
-    return "";
-  }
 
   static setSesstion(token: string) {
     localStorage.setItem('token', JSON.stringify(token));

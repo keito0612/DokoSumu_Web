@@ -13,11 +13,11 @@ class RatingSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('reviews')->insert([
+        DB::table('ratings')->insert([
             "review_id" => 1,
             "livability" => 2,
             "city_policies" => 3,
-            "rent_affordability" => 3,
+            "child_rearing" => 3,
             "safety" => 3,
             "public_transportation" => 3
         ]);

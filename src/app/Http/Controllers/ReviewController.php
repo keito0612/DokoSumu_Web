@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ReviewController extends Controller
 {
@@ -48,7 +49,7 @@ class ReviewController extends Controller
         ], 200);
     }
 
-    function postCityReview($prefecture_id, $city_Id, ReviewRequest $request)
+    function postCityReview($prefecture_id, $city_id, ReviewRequest $request)
     {
         DB::beginTransaction();
         $user_id = Auth::id();
@@ -57,20 +58,21 @@ class ReviewController extends Controller
                 [
                     "user_id" => $user_id,
                     "prefecture_id" => $prefecture_id,
-                    "city_id" => $city_Id,
-                    "good_comment" => $request->good_comment,
-                    "bad_comment" => $request->bad_comment
+                    "city_id" => $city_id,
+                    "good_comment" => $request->goodComment,
+                    "bad_comment" => $request->badComment
                 ]
             );
             if ($newReview->isEmpty) {
+                DB::rollback();
                 return response()->json(["message" => "Review not found"], 404);
             }
             Rating::create([
                 "livability" => $request->livability,
-                "city_policies" => $request->city_policies,
-                "child_rearing" => $request->child_rearing,
+                "city_policies" => $request->cityPolicies,
+                "child_rearing" => $request->childRearing,
                 "safety" => $request->safety,
-                "public_transportation" => $request->public_transportation,
+                "public_transportation" => $request->publicTransportation,
                 "review_id" => $newReview->id
             ]);
             if ($request->hasFile('photos')) {
@@ -101,6 +103,7 @@ class ReviewController extends Controller
                 ]
             );
             if ($updateReview->isEmpty) {
+                DB::rollback();
                 return response()->json(["message" => "Review not found"], 404);
             }
             Rating::where("id", $id)->update([
@@ -126,15 +129,16 @@ class ReviewController extends Controller
 
     private function storePhotos($photos, $review_id)
     {
+        $photoData = [];
         foreach ($photos as $photo) {
             $fileName = time() . '_' . $photo->getClientOriginalName();
             $path = $photo->storeAs('public/photos', $fileName);
-
-            Photo::create([
+            $photoData[] = [
                 "review_id" => $review_id,
                 "image_path" => $path
-            ]);
+            ];
         }
+        Photo::insert($photoData);
     }
 
     function like($reviewId)

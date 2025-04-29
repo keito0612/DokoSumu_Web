@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use App\Servises\EmailServise;
+use Illuminate\Container\Attributes\Log as AttributesLog;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,20 +22,34 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         DB::beginTransaction();
+
         try {
-            // ユーザーを作成
+        // デバッグ用ログ（必要であれば有効化）
+            Log::debug('Registering user with email: ' . $request->email);
+
+        // ユーザー作成
             $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
             ]);
+
+            // トークン発行
             $token = $user->createToken("login:user{$user->id}")->plainTextToken;
+
             DB::commit();
-            return response()->json(['message' => 'ユーザー登録が完了しました。', 'token' => $token], Response::HTTP_CREATED);
-        } catch (\Exception $e) {
-            DB::rollback();
-            Log::error($e->getMessage());
-            return response()->json(['message' => '内部サーバーエラー'], Response::HTTP_INTERNAL_SERVER_ERROR);
+
+            return response()->json([
+                'message' => 'ユーザー登録が完了しました。',
+                'token' => $token,
+            ], Response::HTTP_CREATED);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('ユーザー登録エラー: ' . $e->getMessage());
+            return response()->json([
+                'message' => '内部サーバーエラー'
+            ]    , Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

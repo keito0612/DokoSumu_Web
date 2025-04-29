@@ -63,8 +63,7 @@ export default function RatingPost() {
   async function onSubmit(dataSet: RatingPostForm) {
     const prefectureId = params.prefectureId;
     const cityId = params.cityId;
-    console.log(dataSet);
-    const url: string = `${UtilApi.local}post/city_review/${prefectureId}/${cityId}`;
+    const url: string = `${UtilApi.local}api/post/city_review/${prefectureId}/${cityId}`;
     dataSet.files = files;
     try {
       const res = await fetch(url, {
@@ -72,6 +71,7 @@ export default function RatingPost() {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${AuthService.getSesstion()}`,
+          'Accept': 'application/json',
         },
         body: JSON.stringify(dataSet),
       });

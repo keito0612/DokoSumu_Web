@@ -35,6 +35,7 @@ function SignUp() {
         console.log(message);
         setIsLoading(false);
         AuthService.setSesstion(token);
+        setSnackbarOpen(true);
         router.push('/home');
       }, failure(error) {
         setErrorMessage(error);

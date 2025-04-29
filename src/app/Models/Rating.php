@@ -11,7 +11,7 @@ class Rating extends Model
         'review_id',
         'livability',
         'city_policies',
-        'rent_affordability',
+        'child_rearing',
         'safety',
         'public_transportation',
     ];

@@ -11,7 +11,7 @@ class Review extends Model
     protected $fillable = [
         'user_id',
         'prefecture_id',
-        'citie_id',
+        'city_id',
         'good_comment',
         'bad_comment'
     ];

@@ -11,7 +11,8 @@ import { ChartData, City, User } from '@/types';
 import CityList from '../components/CityList';
 import { UtilApi } from '@/Util/Util_api';
 import Tabs, { Tab } from '../components/Tabs';
-import ImageViewer from '../components/ImageViewer';
+import Loading from '../components/Loading';
+import PostButton from '../components/PostButton';
 interface PrefectureBlockProps {
   region: string;
   prefectures: { id: number; name: string }[];
@@ -45,6 +46,7 @@ function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [citys, setCitys] = useState<City[]>([]);
   const router = useRouter();
+  const [selectedPrefectureId, setSelectedPrefectureId] = useState<number | null>(null);
   const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
   const [selectedTab, setSelectedTab] = useState<string>('0');
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
@@ -143,6 +145,7 @@ function Home() {
   const closeModal = () => {
     deleteQueryParameters(["prefecture", "city_id"]);
     setSelectedCityId(null);
+    setSelectedPrefectureId(null);
     setIsModalOpen(false);
   };
 
@@ -232,6 +235,7 @@ function Home() {
     addQueryParameter("prefecture", prefecture.id.toString());
     await getCitys(prefecture.id);
     setSelectedName(prefecture.name);
+    setSelectedPrefectureId(prefecture.id);
     setIsLoading(false);
   };
 
@@ -242,8 +246,8 @@ function Home() {
     setSelectedName(city.name);
   }
 
-  const postButtonClick = (prefectureId: number, cityId: string) => {
-
+  const postButtonClick = (prefectureId: number, cityId: number) => {
+    router.push(`/post/create/${prefectureId}/${cityId}`);
   }
 
   const getCitys = async (prefectureId: number) => {
@@ -273,33 +277,45 @@ function Home() {
       {/* {imageViewerOpen && <ImageViewer imageSrc={imageSrc} onClose={closeImageViewer} user={ } />} */}
       {/*市の評価*/}
       <SheetModal title={selectedName} isOpen={isModalOpen} onClose={closeModal}>
-        <Tabs tabs={tabs} />
-        <Image
-          src="/images/noImage.png"
-          alt="画像がありません"
-          width={650}
-          onClick={() => openImageViewer("/images/noImage.png")}
-          height={400}
-        />
-        <div className="flex justify-start flex-col">
-          <p className="text-gray-600 text-2xl pb-3 font-bold ">
-            {selectedName}
-          </p>
-          <StarsRating rating={5.0} />
-          <hr className='mt-4'></hr>
-        </div>
-        <div className="flex justify-center flex-col">
-          <Chart data={mocChartData} />
-          <hr className='mb-4'></hr>
-          {selectedCityId === null ?
-            <div>
-              <h2 className="text-black text-xl   text-center   font-bold mb-4">市リスト</h2>
-              <CityList citys={citys} handleButtonClick={hendleCityButtonClick} />
-            </div> : <div></div>
-          }
-        </div>
+        {isLoading === false ? (
+          <>
+            <Tabs tabs={tabs} />
+            <Image
+              src="/images/noImage.png"
+              alt="画像がありません"
+              width={650}
+              height={400}
+              onClick={() => openImageViewer("/images/noImage.png")}
+            />
+            <div className="flex justify-start flex-col">
+              <p className="text-gray-600 text-2xl pb-3 font-bold">
+                {selectedName}
+              </p>
+              <StarsRating rating={5.0} />
+              {selectedPrefectureId !== null && selectedCityId !== null ? (
+                <PostButton className={'bottom-4 right-4 pt-3'} onClick={function (): void {
+                  postButtonClick(selectedPrefectureId!, selectedCityId!);
+                }} />
+              ) : null}
+              <hr className="mt-4" />
+            </div>
+            <div className="flex justify-center flex-col">
+              <Chart data={mocChartData} />
+              <hr className="mb-4" />
+              {selectedCityId === null ? (
+                <div>
+                  <h2 className="text-black text-xl text-center font-bold mb-4">
+                    市リスト
+                  </h2>
+                  <CityList citys={citys} handleButtonClick={hendleCityButtonClick} />
+                </div>
+              ) : null}
+            </div>
+          </>
+        ) : (
+          <Loading loadingtext={'読み込み中です。'} />
+        )}
       </SheetModal>
-
       <NavBar title='ホーム' />
       <div className="py-14 p-6 h-full ">
         <div className='pb-14'>

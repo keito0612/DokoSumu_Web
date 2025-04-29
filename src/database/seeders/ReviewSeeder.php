@@ -16,7 +16,7 @@ class ReviewSeeder extends Seeder
     {
         DB::table('reviews')->insert(
             [
-                "prefectures_id" => 1,
+                "prefecture_id" => 1,
                 "city_id" => 1,
                 "user_id" => 1,
                 "good_comment" => "とても良かった。",
