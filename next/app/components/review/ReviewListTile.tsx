@@ -11,7 +11,7 @@ interface ReviewListTileProps {
 
 export default function ReviewListTile({ review }: ReviewListTileProps) {
   return (
-    <div className="max-w-2xl mx-auto border rounded-xl shadow p-4 bg-white space-y-4">
+    <div className="max-w-2xl mx-auto border-t border-b p-4 bg-white space-y-4">
       <ReviewHeader user={review.user} />
       <ReviewMeta />
       <ReviewBody review={review} />

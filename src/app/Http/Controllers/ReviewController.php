@@ -140,7 +140,9 @@ class ReviewController extends Controller
     {
         $photoData = [];
         foreach ($photos as $photo) {
-            $fileName = time() . '_' . $photo->getClientOriginalName();
+            $extension = $photo->getClientOriginalExtension();
+            // 英数字＋タイムスタンプのファイル名生成
+            $fileName = time() . '_' . bin2hex(random_bytes(8)) . '.' . $extension;
             $directory = 'reviewImage';
             $path = $this->fileService->upload($photo, $directory,$fileName);
             $url  = $this->fileService->getUrl($path);

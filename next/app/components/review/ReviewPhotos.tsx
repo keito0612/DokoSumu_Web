@@ -8,15 +8,13 @@ interface ReviewPhotos {
 export default function ReviewPhotos({ photos }: ReviewPhotos) {
   return (
 
-    <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-2 gap-2">
       {photos.map((photo, i) => (
         <div key={i} className="relative">
           {(photo.photo_url &&
-            < Image src={photo.photo_url} alt="yakisoba" width={200} height={150} onError={(e) => console.log(e)} className="rounded object-cover w-full h-full brightness-75" />
+            // < Image src={photo.photo_url} alt="投稿をした写真" width={200} height={150} className="rounded object-cover w-full h-full brightness-75" />
+            <img src={photo.photo_url} />
           )}
-          <div className="absolute inset-0 flex items-center justify-center text-white text-xl font-bold">
-            +2
-          </div>
         </div>
       ))}
     </div>

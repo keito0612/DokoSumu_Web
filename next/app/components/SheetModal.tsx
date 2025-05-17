@@ -59,7 +59,7 @@ const SheetModal: React.FC<SheetModalProps> = ({ title, isOpen, onClose, childre
         md:h-[90%] top-20 md:bottom-auto md:right-4 sm:bottom-0`}
         onMouseDown={handleMouseDownWrapper}
       >
-        <div className="p-4 border-b flex justify-center items-center">
+        <div className=" z-30 bg-white sticky top-0 p-4 border-b flex justify-center items-center">
           <h2 className="text-lg pl-7 m-auto text-black font-bold">{title}</h2>
           <button
             className="text-gray-500 hover:text-black  "
@@ -69,7 +69,7 @@ const SheetModal: React.FC<SheetModalProps> = ({ title, isOpen, onClose, childre
             < Close style={{ fontSize: 30, color: 'black' }} className="hidden h-6 w-6  group-data-[open]:block" />
           </button>
         </div>
-        <div className="p-4">{children}</div>
+        <div className="">{children}</div>
       </div>
     </>
   );

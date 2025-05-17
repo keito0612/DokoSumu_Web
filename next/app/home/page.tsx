@@ -309,7 +309,7 @@ function Home() {
           <>
             <Tabs tabs={tabs} />
             {selectedTab === "0" ? (
-              <>
+              <div className='p-4'>
                 <Image
                   src="/images/noImage.png"
                   alt="画像がありません"
@@ -341,12 +341,10 @@ function Home() {
                     </div>
                   ) : null}
                 </div>
-              </>
+              </div>
             ) :
               (
-                <div className='mt-1'>
-                  <ReviewList reviewList={reviewList} />
-                </div>
+                <ReviewList reviewList={reviewList} />
               )}
           </>
         ) : (

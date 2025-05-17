@@ -1,3 +1,6 @@
+export type ResultType = "Success" | "Error";
+
+
 export interface ChartData {
   name: string;
   score: number;

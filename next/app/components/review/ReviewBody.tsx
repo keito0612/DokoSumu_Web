@@ -8,7 +8,7 @@ export default function ReviewBody({ review }: ReviewBodyProps) {
   return (
     <div className="text-sm text-gray-700 space-y-1">
       <ReviewRating rating={review.rating} />
-      <div className="flex flex-row justify-start" >
+      <div className="flex flex-row justify-start pb-3" >
         <span>良いところ：</span>
         <p>{review.good_comment}</p>
       </div>

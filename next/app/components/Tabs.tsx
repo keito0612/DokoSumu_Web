@@ -4,7 +4,7 @@ export type Tab = {
   id: string;
   label: string;
   content: string;
-  onTap:(tabId:string) => void;
+  onTap: (tabId: string) => void;
 };
 
 interface TabsProps {
@@ -13,7 +13,7 @@ interface TabsProps {
 
 const Tabs: React.FC<TabsProps> = ({ tabs }) => {
   const [activeTab, setActiveTab] = useState<string>(tabs[0].id);
-  const ButtonOnClick = (tabId:string, tab:Tab) => {
+  const ButtonOnClick = (tabId: string, tab: Tab) => {
     setActiveTab(tabId);
     tab.onTap(tabId);
   }
@@ -25,13 +25,12 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
           <button
             key={tab.id}
             onClick={() => ButtonOnClick(tab.id, tab)}
-            className={`py-2 w-1/2 -mb-px mr-1 cursor-pointer  ${
-              activeTab === tab.id
-                ? 'border-b-2 border-green-500 text-green-500'
-                : 'text-gray-500 hover:text-green-500'
-            }`}
+            className={`py-2 w-1/2 -mb-px mr-1 cursor-pointer  ${activeTab === tab.id
+              ? 'border-b-2 border-green-500 text-green-500'
+              : 'text-gray-500 hover:text-green-500'
+              }`}
           >
-           <p>{tab.label}</p> 
+            <p>{tab.label}</p>
           </button>
         ))}
       </div>

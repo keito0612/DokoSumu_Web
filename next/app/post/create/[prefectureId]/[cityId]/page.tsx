@@ -3,7 +3,7 @@
 import Chart from "@/app/components/Chart";
 import StarsRating from "@/app/components/StarsRating";
 import TextErea from "@/app/components/TextErea";
-import { ChartData } from "@/types";
+import { ChartData, ResultType } from "@/types";
 import { useForm } from 'react-hook-form'
 import { useState } from "react";
 import { MaterialSymbolsLightAdd2 } from "@/app/components/icons/MaterialSymbolsLightAdd2";
@@ -41,7 +41,8 @@ export default function RatingPost() {
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<'success' | 'error'>('success');
+  const [modalType, setModalType] = useState<ResultType>('Success');
+  const [modalTitle, setModalTitle] = useState('');
   const [modalMessage, setModalMessage] = useState('');
   const handleRatingChange = (category: string, value: number) => {
     setRatings((prev) => {
@@ -65,6 +66,13 @@ export default function RatingPost() {
   const handleRemoveImage = (index: number) => {
     setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
   };
+
+  const onClone = () => {
+    setIsModalOpen(false);
+    if (modalType === 'Success') {
+      router.back();
+    }
+  }
 
   async function onSubmit(dataSet: RatingPostForm) {
     const prefectureId = params.prefectureId;
@@ -97,12 +105,22 @@ export default function RatingPost() {
       setLoading(false);
       if (res.ok) {
         setIsModalOpen(true);
-        setModalType('success');
-        setModalMessage('レビューが投稿されました。');
+        setModalType('Success');
+        setModalTitle('レビューが投稿されました。');
+        setModalMessage('');
       } else {
+        const message = UtilApi.selectedErrorMessage(["name", "email", "password"], data["errors"])
+        setIsModalOpen(true);
+        setModalType('Error');
+        setModalTitle('エラーが発生しました。');
+        setModalMessage(message);
         console.log(data["errors"]);
       }
     } catch (error) {
+      setIsModalOpen(true);
+      setModalType('Error');
+      setModalTitle('エラーが発生しました。');
+      setModalMessage('原因不明のエラーが発生した事により、投稿できませんでした。');
       setLoading(false);
       console.error('エラー発生', error);
     }
@@ -218,10 +236,10 @@ export default function RatingPost() {
       </div >
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={onClone}
         type={modalType}
         message={modalMessage}
-      />
+        title={modalTitle} />
     </div>
   );
 }
