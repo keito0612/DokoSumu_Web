@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
   },
   images: {
     disableStaticImages: true, // importした画像の型定義設定を無効にする
+    remotePatterns: [{
+      hostname: 'localhost',
+      protocol: 'http',
+      port: '',
+    },]
   },
 };
 

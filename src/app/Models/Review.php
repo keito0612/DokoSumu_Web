@@ -25,11 +25,15 @@ class Review extends Model
     }
     public function rating()
     {
-        return $this->belongsTo(Rating::class);
+        return $this->hasOne(Rating::class,'review_id');
+    }
+    public function prefecture()
+    {
+        return $this->belongsTo(Prefectures::class, 'prefecture_id');
     }
     public function city()
     {
-        return $this->hasOne(City::class);
+        return $this->belongsTo(City::class);
     }
 
     public function photos()

@@ -50,7 +50,7 @@ const SheetModal: React.FC<SheetModalProps> = ({ title, isOpen, onClose, childre
       {/* Modal */}
       <div
         className={`fixed bg-white rounded-t-2xl shadow-lg transform transition-transform duration-300
-        w-full md:w-[400px]  max-h-screen overflow-y-auto
+        w-full md:w-[500px]  max-h-screen overflow-y-auto
         ${isOpen ? "translate-y-0 md:translate-x-0" : "translate-y-full md:translate-x-full"}
         ${isExpanded
             ? "h-[90%] sm:h-[90%]"

@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import NavigationBottomBar from '../components/NavigationBottomBar';
 import NavBar from '../components/NavBar';
 import ProfileSkeleton from '../components/ProfileSkeleton';

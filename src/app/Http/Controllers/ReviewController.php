@@ -13,9 +13,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Services\FileService;
 
 class ReviewController extends Controller
 {
+
+
+    private FileService $fileService;
+
+    public function __construct(FileService $fileService)
+    {
+        $this->fileService = $fileService;
+    }
 
     function getPrefectureReviews($prefectureId)
     {
@@ -28,14 +37,14 @@ class ReviewController extends Controller
             'likes'
         ])->get();
         return response()->json([
-            "prefecture_reviews" => $reviews
+            "reviews" => $reviews
         ], 200);
     }
     function getCityReviews($prefectureId, $cityId)
     {
         $reviews = Review::where([
             'prefecture_id' => $prefectureId,
-            'citie_id' => $cityId
+            'city_id' => $cityId
         ])->with([
             'user',
             'city',
@@ -45,7 +54,7 @@ class ReviewController extends Controller
             'likes'
         ])->get();
         return response()->json([
-            "city_reviews" => $reviews
+            "reviews" => $reviews
         ], 200);
     }
 
@@ -132,10 +141,12 @@ class ReviewController extends Controller
         $photoData = [];
         foreach ($photos as $photo) {
             $fileName = time() . '_' . $photo->getClientOriginalName();
-            $path = $photo->storeAs('public/photos', $fileName);
+            $directory = 'reviewImage';
+            $path = $this->fileService->upload($photo, $directory,$fileName);
+            $url  = $this->fileService->getUrl($path);
             $photoData[] = [
                 "review_id" => $review_id,
-                "image_path" => $path
+                "photo_url" => $url
             ];
         }
         Photo::insert($photoData);

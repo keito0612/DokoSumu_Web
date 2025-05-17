@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],  // 任意のメソッドを許可
 
-    'allowed_origins' => ['*'],  // 任意のオリジンを許可（開発中のみ推奨）
+    'allowed_origins' => ['http://localhost'],  // 任意のオリジンを許可（開発中のみ推奨）
 
     'allowed_origins_patterns' => [],
 

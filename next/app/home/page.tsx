@@ -7,12 +7,15 @@ import SheetModal from '../components/SheetModal';
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import StarsRating from '../components/StarsRating';
-import { ChartData, City, User } from '@/types';
+import { ChartData, City, Review, User } from '@/types';
 import CityList from '../components/CityList';
 import { UtilApi } from '@/Util/Util_api';
 import Tabs, { Tab } from '../components/Tabs';
 import Loading from '../components/Loading';
 import PostButton from '../components/PostButton';
+import ReviewBody from '../components/review/ReviewBody';
+import ReviewListTile from '../components/review/ReviewListTile';
+import ReviewList from '../components/review/ReviewList';
 interface PrefectureBlockProps {
   region: string;
   prefectures: { id: number; name: string }[];
@@ -51,6 +54,7 @@ function Home() {
   const [selectedTab, setSelectedTab] = useState<string>('0');
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
+  const [reviewList, setReviewList] = useState<Review[]>([]);
   const tabs: Tab[] = [
     {
       id: '0', label: '評価', content: 'Content for Tab 1', onTap: (tabId: string) => {
@@ -70,8 +74,6 @@ function Home() {
     url.searchParams.set(paramName, paramValue);
     router.push(url.toString());
   };
-
-  const mocImages: string[] = ['https://picsum.photos/200/300', 'https://picsum.photos/200/300', 'https://picsum.photos/200/300'];
 
   const openImageViewer = (src: string) => {
     setImageSrc(src);
@@ -111,32 +113,6 @@ function Home() {
     }
   ];
 
-  const mocUsers: User[] = [
-    {
-      id: 0,
-      name: "名無し",
-      imagePath: 'https://picsum.photos/200/300',
-      commment: "こんにちは、"
-    },
-    {
-      id: 1,
-      name: "名無し",
-      imagePath: null,
-      commment: "こんにちは、"
-    },
-    {
-      id: 2,
-      name: "名無し",
-      imagePath: null,
-      commment: "こんにちは、"
-    },
-    {
-      id: 3,
-      name: "名無し",
-      imagePath: 'https://picsum.photos/200/300',
-      commment: "こんにちは、"
-    },
-  ]
   const deleteQueryParameters = (paramNames: string[]) => {
     const url = new URL(window.location.href);
     paramNames.forEach((param) => url.searchParams.delete(param));
@@ -146,6 +122,7 @@ function Home() {
     deleteQueryParameters(["prefecture", "city_id"]);
     setSelectedCityId(null);
     setSelectedPrefectureId(null);
+    setSelectedTab("0");
     setIsModalOpen(false);
   };
 
@@ -220,8 +197,8 @@ function Home() {
         { id: 40, name: "福岡県" },
         { id: 41, name: "佐賀県" },
         { id: 42, name: "長崎県" },
-        { id: 43, name: "大分県" },
-        { id: 44, name: "熊本県" },
+        { id: 43, name: "熊本県" },
+        { id: 44, name: "大分県" },
         { id: 45, name: "宮崎県" },
         { id: 46, name: "鹿児島県" },
         { id: 47, name: "沖縄県" }
@@ -234,16 +211,20 @@ function Home() {
     setIsModalOpen(true);
     addQueryParameter("prefecture", prefecture.id.toString());
     await getCitys(prefecture.id);
+    await getPrefectureReviews(prefecture.id);
     setSelectedName(prefecture.name);
     setSelectedPrefectureId(prefecture.id);
     setIsLoading(false);
   };
 
-  const hendleCityButtonClick = (city: { id: number; name: string }) => {
+  const hendleCityButtonClick = async (city: { id: number; name: string }) => {
+    setIsLoading(true);
     setIsModalOpen(true);
     setSelectedCityId(city.id);
     addQueryParameter("city_id", city.id.toString());
     setSelectedName(city.name);
+    await getCityReviews(selectedPrefectureId!, city.id);
+    setIsLoading(false);
   }
 
   const postButtonClick = (prefectureId: number, cityId: number) => {
@@ -272,6 +253,53 @@ function Home() {
     }
   }
 
+  const getPrefectureReviews = async (prefecturesId: number) => {
+    const url = `${UtilApi.local}api/prefecture_reviews/${prefecturesId}`;
+
+    try {
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status} `);
+      }
+
+      const data = await res.json();
+      const reviewList: Review[] = data['reviews'];
+      setReviewList(reviewList);
+      console.log(reviewList);
+    } catch (error) {
+      console.error('エラー発生', error);
+    }
+  }
+
+  const getCityReviews = async (prefecturesId: number, cityId: number) => {
+    const url = `${UtilApi.local}api/city_reviews/${prefecturesId}/${cityId}`;
+    try {
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status} `);
+      }
+
+      const data = await res.json();
+      const reviewList: Review[] = data['reviews'];
+      setReviewList(reviewList);
+      console.log(reviewList);
+    } catch (error) {
+      console.error('エラー発生', error);
+    }
+  }
+
   return (
     <div className={`Home h-screen ${isModalOpen ? "overflow-hidden" : "overflow-visible"}`}>
       {/* {imageViewerOpen && <ImageViewer imageSrc={imageSrc} onClose={closeImageViewer} user={ } />} */}
@@ -280,37 +308,46 @@ function Home() {
         {isLoading === false ? (
           <>
             <Tabs tabs={tabs} />
-            <Image
-              src="/images/noImage.png"
-              alt="画像がありません"
-              width={650}
-              height={400}
-              onClick={() => openImageViewer("/images/noImage.png")}
-            />
-            <div className="flex justify-start flex-col">
-              <p className="text-gray-600 text-2xl pb-3 font-bold">
-                {selectedName}
-              </p>
-              <StarsRating rating={5.0} />
-              {selectedPrefectureId !== null && selectedCityId !== null ? (
-                <PostButton className={'bottom-4 right-4 pt-3'} onClick={function (): void {
-                  postButtonClick(selectedPrefectureId!, selectedCityId!);
-                }} />
-              ) : null}
-              <hr className="mt-4" />
-            </div>
-            <div className="flex justify-center flex-col">
-              <Chart data={mocChartData} />
-              <hr className="mb-4" />
-              {selectedCityId === null ? (
-                <div>
-                  <h2 className="text-black text-xl text-center font-bold mb-4">
-                    市リスト
-                  </h2>
-                  <CityList citys={citys} handleButtonClick={hendleCityButtonClick} />
+            {selectedTab === "0" ? (
+              <>
+                <Image
+                  src="/images/noImage.png"
+                  alt="画像がありません"
+                  width={650}
+                  height={400}
+                  onClick={() => openImageViewer("/images/noImage.png")}
+                />
+                <div className="flex justify-start flex-col">
+                  <p className="text-gray-600 text-2xl pb-3 font-bold">
+                    {selectedName}
+                  </p>
+                  <StarsRating rating={5.0} />
+                  {selectedPrefectureId !== null && selectedCityId !== null ? (
+                    <PostButton className={'bottom-4 right-4 pt-3'} onClick={function (): void {
+                      postButtonClick(selectedPrefectureId!, selectedCityId!);
+                    }} />
+                  ) : null}
+                  <hr className="mt-4" />
                 </div>
-              ) : null}
-            </div>
+                <div className="flex justify-center flex-col">
+                  <Chart data={mocChartData} />
+                  <hr className="mb-4" />
+                  {selectedCityId === null ? (
+                    <div>
+                      <h2 className="text-black text-xl text-center font-bold mb-4">
+                        市リスト
+                      </h2>
+                      <CityList citys={citys} handleButtonClick={hendleCityButtonClick} />
+                    </div>
+                  ) : null}
+                </div>
+              </>
+            ) :
+              (
+                <div className='mt-1'>
+                  <ReviewList reviewList={reviewList} />
+                </div>
+              )}
           </>
         ) : (
           <Loading loadingtext={'読み込み中です。'} />
