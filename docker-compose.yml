@@ -30,9 +30,9 @@ services:
             - api
         ports:
             - "3000:3000"
-        # 最初だけ（後で削除）
-        # tty: true
-        # stdin_open: true
+    # 最初だけ（後で削除）
+    # tty: true
+    # stdin_open: true
 
     web:
         container_name: dokoSumu-web

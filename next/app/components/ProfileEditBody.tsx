@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import { AuthService } from '@/service/authServise';
 import { UtilApi } from '@/Util/Util_api';
+import { User } from '@/types';
+import ProfileStats from './profile/ProfileStats';
+import ProfileList from './profile/ProfileList';
 
 
 
@@ -48,25 +51,6 @@ const ProfileEditButton = ({ onClick }: { onClick?: () => void }) => (
   </button>
 );
 
-// ProfileStats Component
-interface ProfileStatsProps {
-  postCount: number;
-  likeCount: number;
-}
-const ProfileStats: React.FC<ProfileStatsProps> = ({ postCount, likeCount }) => (
-  <div className="flex flex-row gap-4 py-4 justify-start">
-    <div className="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-4 border border-[#E0E0E0]">
-
-      <p className="text-[#141414] tracking-light text-2xl font-bold leading-tight">{postCount}</p>
-      <p className="text-neutral-500 text-base font-medium leading-normal">投稿した数</p>
-    </div>
-    <div className="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-4 border border-[#E0E0E0]">
-      <p className="text-[#141414] tracking-light text-2xl font-bold leading-tight">{likeCount}</p>
-      <p className="text-neutral-500 text-base font-medium leading-normal">いいね数</p>
-    </div>
-  </div>
-);
-
 // TabButton Component
 const TabButton = ({ isActive, onClick, children }) => (
   <button
@@ -90,7 +74,7 @@ const PostList = ({ posts }) => (
   </div>
 );
 
-const ProfileEditBody = () => {
+const ProfileEditBody = async () => {
   const [activeTab, setActiveTab] = useState('posts'); // 'posts' or 'likes'
   const posts = [
     { title: 'My First Post', content: 'This is the content of my first post.' },
@@ -102,32 +86,8 @@ const ProfileEditBody = () => {
     { title: 'Liked Post 2', content: 'This is another post with lots of likes!' },
   ];
   const router = useRouter();
-  async function getUser() {
-    const url = `${UtilApi.local}api/profile`;
-    try {
-      const res = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${AuthService.getSesstion()}`,
-        }
-      });
-      if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`);
-      }
-      const data = await res.json();
-      if (res.status === 401) {
-        router.back();
-      }
-    } catch (error) {
-      console.error('エラー発生', error);
-    }
-  }
-  useEffect(() => {
-    (async () => {
-      await getUser();
-    })()
-  }, []);
+  const userId = params.userId;
+  const user: User = await getUser(userId);
 
   return (
     <div className="px-4 sm:px-20 flex flex-1 justify-center py-5 pt-16  pb-24  sm:pb-0 md:pb-0 lg:pb-0 2xl:pb-0 xl:pb-0 ">
@@ -149,23 +109,18 @@ const ProfileEditBody = () => {
         <ProfileDetail detail='テストテストテスyとテストテストテストテストテストテストテストテストテストテストテストテスト' />
 
         <ProfileStats postCount={8} likeCount={1} />
-        <div className="mt-6">
-          <div className="flex gap-4 justify-start">
-            <TabButton isActive={activeTab === 'posts'} onClick={() => setActiveTab('posts')}>
-              投稿リスト
-            </TabButton>
-            <TabButton isActive={activeTab === 'likes'} onClick={() => setActiveTab('likes')}>
-              いいねリスト
-            </TabButton>
-          </div>
-          <div className="mt-4">
-            {activeTab === 'posts' ? <PostList posts={posts} /> : <PostList posts={likedPosts} />}
-          </div>
-        </div>
+        <ProfileList></ProfileList>
       </div>
     </div>
   )
 }
+
+async function getUser(userId: number) {
+  const url: string = `${UtilApi.local}api/profile/${userId}`;
+  const res = await fetch(url);
+  return res.json();
+}
+
 
 
 export default ProfileEditBody;

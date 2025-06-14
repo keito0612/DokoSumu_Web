@@ -30,8 +30,8 @@ class ReviewRequest extends FormRequest
             'publicTransportation' => 'required|integer|in:0,1,2,3,4,5',
             'livability' =>'required|integer|in:0,1,2,3,4,5',
             'photos.*' => 'file|mimes:jpeg,png,jpg,gif|max:2048',
-            'goodComment' => 'max:300',
-            'badComment' => 'max:300',
+            'goodComment' => 'nullable|max:300',
+            'badComment' => 'nullable|max:300',
         ];
     }
 

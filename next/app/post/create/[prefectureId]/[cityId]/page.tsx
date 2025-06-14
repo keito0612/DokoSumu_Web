@@ -79,7 +79,7 @@ export default function RatingPost() {
     const cityId = params.cityId;
     const url: string = `${UtilApi.local}api/post/city_review/${prefectureId}/${cityId}`;
     dataSet.photos = files;
-    const formData = new FormData()
+    const formData = new FormData();
 
     formData.append('safety', dataSet.safety.toString());
     formData.append('childRearing', dataSet.childRearing.toString());
@@ -101,7 +101,6 @@ export default function RatingPost() {
         body: formData,
       });
       const data = await res.json();
-      console.log(data["error"]);
       setLoading(false);
       if (res.ok) {
         setIsModalOpen(true);
@@ -109,12 +108,11 @@ export default function RatingPost() {
         setModalTitle('レビューが投稿されました。');
         setModalMessage('');
       } else {
-        const message = UtilApi.selectedErrorMessage(["name", "email", "password"], data["errors"])
+        const message = UtilApi.selectedErrorMessage(["safety", "childRearing", "cityPolicies", "publicTransportation", "livability", "goodComment", "badComment"], data["errors"])
         setIsModalOpen(true);
         setModalType('Error');
         setModalTitle('エラーが発生しました。');
         setModalMessage(message);
-        console.log(data["errors"]);
       }
     } catch (error) {
       setIsModalOpen(true);
@@ -122,7 +120,7 @@ export default function RatingPost() {
       setModalTitle('エラーが発生しました。');
       setModalMessage('原因不明のエラーが発生した事により、投稿できませんでした。');
       setLoading(false);
-      console.error('エラー発生', error);
+      console.log(error);
     }
   }
 

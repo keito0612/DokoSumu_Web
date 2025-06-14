@@ -1,4 +1,5 @@
-// components/NavigationBottomBar.jsx
+"use client";
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { HomeIcon, UserIcon } from '@heroicons/react/24/outline';

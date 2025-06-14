@@ -13,7 +13,7 @@ export default function ReviewHeader({ user }: ReviewHeaderProps) {
         <Image src={user.imagePath} alt="プロフィール写真" width={40} height={40} className="rounded-full" />
       )}
       <div>
-        <div className="font-semibold text-black" >{user.name}</div>
+        <div className="font-semibold text-black" >{user?.name}</div>
       </div>
     </div>
   );

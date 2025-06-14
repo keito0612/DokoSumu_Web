@@ -1,6 +1,19 @@
 export type ResultType = "Success" | "Error";
 
 
+export interface Profile {
+  id: number;
+  name: string;
+  email: string;
+  image_path: string | null;
+  comment: string;
+  liked_reviews_count: number;
+  reviews_count: number;
+  reviews: Review[];
+  likedReviews: Review[];
+  likes: unknown[];
+}
+
 export interface ChartData {
   name: string;
   score: number;
@@ -59,6 +72,6 @@ export interface Review {
   prefecture: Prefecture;
   rating: Rating;
   photos: Photo[];
-  likes: unknown[]; // 型が不明なため。必要に応じて定義してください
+  likes: unknown[];
   user: User;
 };

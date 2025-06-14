@@ -26,7 +26,7 @@ class ProfileRequest extends FormRequest
         return [
             'name' => 'required|string|max:100',
             'comment' => 'string|max:300|',
-            'image_path' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'profileImage' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ];
     }
 
@@ -37,9 +37,9 @@ class ProfileRequest extends FormRequest
             'name.string' => '名前は文字列で入力してください。',
             'name.max' => '名前は100文字以内で入力してください。',
             'comment.max' =>'自己紹介は300文字以内で入力して下さい。',
-            'image_path.image' => '画像ファイルを選択してください。',
-            'image_path.mimes' => '画像の形式はjpeg、png、jpg、gifのいずれかにしてください。',
-            'image_path.max' => '画像のサイズは2MB以内にしてください。',
+            'profileImage.image' => '画像ファイルを選択してください。',
+            'profileImage.mimes' => '画像の形式はjpeg、png、jpg、gifのいずれかにしてください。',
+            'profileImage.max' => '画像のサイズは2MB以内にしてください。',
         ];
     }
 

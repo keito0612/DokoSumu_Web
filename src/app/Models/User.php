@@ -20,7 +20,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'image_path'
+        'image_path',
+        'comment'
     ];
 
     /**
@@ -53,5 +54,21 @@ class User extends Authenticatable
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+
+    public function likedReviews()
+    {
+        return $this->belongsToMany(Review::class, 'likes', 'user_id', 'review_id')->withTimestamps();
+    }
+
+    public function getReviewsCountAttribute(): int
+    {
+        return $this->reviews()->count();
+    }
+
+    public function getLikedReviewsCountAttribute(): int
+    {
+        return $this->likedReviews()->count();
     }
 }

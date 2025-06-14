@@ -7,6 +7,9 @@ import { AuthService } from '@/service/authServise';
 import Loading from '../components/Loading';
 import SnackbarComponent from '../components/SnackBar';
 import { UtilApi } from '@/Util/Util_api';
+import Modal from '../components/Modal';
+import { ResultType } from '@/types';
+import Loading2 from '../components/Loading2';
 
 interface Form {
   name: string;
@@ -16,44 +19,52 @@ interface Form {
 
 function SignUp() {
   const { register, handleSubmit, formState: { errors } } = useForm<Form>();
-  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
-
+  const [modalType, setModalType] = useState<ResultType>('Success');
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
-  useEffect(() => {
-
-  }, []);
 
   async function onSubmit(dataSet: Form) {
-    setIsLoading(true);
+    setLoading(true);
     await AuthService.register({
       url: `${UtilApi.local}api/register`,
       param: dataSet,
       success(message, token) {
         console.log(message);
-        setIsLoading(false);
+        setLoading(false);
         AuthService.setSesstion(token);
-        setSnackbarOpen(true);
-        router.push('/home');
+        setIsModalOpen(true);
+        setModalType('Success');
+        setModalTitle('新規登録が完了しました。');
+        setModalMessage('');
       }, failure(error) {
         setErrorMessage(error);
         setSnackbarOpen(true);
         console.log(error);
-        setIsLoading(false);
+        setLoading(false);
       },
     });
   }
   const handleCloseSnackbar = (): void => {
     setSnackbarOpen(false);
   };
+
+  const onClone = () => {
+    setIsModalOpen(false);
+    if (modalType === 'Success') {
+      router.push('/home');
+    }
+  }
   return (
-    // <Loading
-    //   isLoading={isLoading}
-    //   loadingtext='新規作成中'
-    // >
     <div className="SignUp">
+      {loading === true && (
+        <Loading2 loadingtext={"アカウントを作成中"} />
+      )}
       <div className="flex flex-col items-center justify-center h-screen">
         <form className="w-96 p-8 bg-green-500 rounded-lg shadow-md" onSubmit={handleSubmit(onSubmit)} method='POST'>
           <h1 className="mb-4 text-2xl font-bold text-center text-white">新規登録</h1>
@@ -125,6 +136,12 @@ function SignUp() {
         open={snackbarOpen}
         onClose={handleCloseSnackbar}
       />
+      <Modal
+        isOpen={isModalOpen}
+        onClose={onClone}
+        type={modalType}
+        message={modalMessage}
+        title={modalTitle} />
     </div>
     // </Loading>
   );

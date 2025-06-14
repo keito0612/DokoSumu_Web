@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Profiler\Profile;
 
 
 Route::get( '/some_url', function () {
-    return "Token is wrong";
+    return response()->json(['error' => 'User not authenticated'], 401);
 }
 )->name('login');
 

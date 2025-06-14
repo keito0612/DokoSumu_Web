@@ -18,7 +18,7 @@ const TextField: FC<TextFieldProps> = ({
   register,
   errorMessage
 }) => {
-  const [charCount, setCharCount] = useState(0);
+  const [charCount, setCharCount] = useState(title.length);
   const maxLength = 100;
 
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {

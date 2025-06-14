@@ -57,9 +57,13 @@ export class AuthService {
   }
 
   static getSesstion(): unknown {
-    const userInfo = localStorage.getItem('token');
-    if (userInfo) {
-      return JSON.parse(userInfo);
+    if (typeof window !== 'undefined') {
+      const userInfo = localStorage.getItem('token');
+      if (userInfo) {
+        return JSON.parse(userInfo);
+      } else {
+        return {};
+      }
     } else {
       return {};
     }

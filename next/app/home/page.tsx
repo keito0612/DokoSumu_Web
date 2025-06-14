@@ -7,14 +7,12 @@ import SheetModal from '../components/SheetModal';
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import StarsRating from '../components/StarsRating';
-import { ChartData, City, Review, User } from '@/types';
+import { ChartData, City, Review } from '@/types';
 import CityList from '../components/CityList';
 import { UtilApi } from '@/Util/Util_api';
 import Tabs, { Tab } from '../components/Tabs';
 import Loading from '../components/Loading';
 import PostButton from '../components/PostButton';
-import ReviewBody from '../components/review/ReviewBody';
-import ReviewListTile from '../components/review/ReviewListTile';
 import ReviewList from '../components/review/ReviewList';
 interface PrefectureBlockProps {
   region: string;

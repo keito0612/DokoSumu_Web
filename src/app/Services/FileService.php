@@ -19,7 +19,7 @@ class FileService
      */
     public function upload(UploadedFile $file, string $path = '', string $fileName): string
     {
-        return Storage::disk($this->disk)->putFileAs($path, $file,$fileName,'public');
+        return $this->getStorage()->putFileAs($path, $file, $fileName, 'public');
     }
 
     /**
@@ -27,7 +27,7 @@ class FileService
      */
     public function getUrl(string $filePath): string
     {
-        return Storage::disk($this->disk)->url($filePath);
+        return $this->getStorage()->url($filePath);
     }
 
     /**
@@ -35,7 +35,7 @@ class FileService
      */
     public function delete(string $filePath): bool
     {
-        return Storage::disk($this->disk)->delete($filePath);
+        return $this->getStorage()->delete($filePath);
     }
 
     /**
@@ -43,14 +43,22 @@ class FileService
      */
     public function exists(string $filePath): bool
     {
-        return Storage::disk($this->disk)->exists($filePath);
+        return $this->getStorage()->exists($filePath);
     }
 
     /**
-     * ファイルを取得する（ダウンロードやレスポンスで使う）
+     * ファイルを取得する
      */
     public function get(string $filePath)
     {
-        return Storage::disk($this->disk)->get($filePath);
+        return $this->getStorage()->get($filePath);
+    }
+
+    /**
+     * Storageインスタンスを取得する
+     */
+    protected function getStorage()
+    {
+        return Storage::disk($this->disk);
     }
 }

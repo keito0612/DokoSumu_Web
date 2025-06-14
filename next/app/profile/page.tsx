@@ -1,27 +1,29 @@
-"use client";
 import { Suspense } from 'react';
 import NavigationBottomBar from '../components/NavigationBottomBar';
 import NavBar from '../components/NavBar';
 import ProfileSkeleton from '../components/ProfileSkeleton';
-import ProfileEditBody from '../components/ProfileEditBody';
+import ProfileBody from '@/app/components/profile/ProfileBody';
+import { AuthService } from '@/service/authServise';
+import { redirect } from 'next/navigation';
 
 
-// ProfilePage Component
+
 const ProfilePage = () => {
-  return (
-    <div>
-      <div
-        className="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden"
-        style={{ fontFamily: '"Be Vietnam Pro", "Noto Sans", sans-serif' }}
-      >
-        <NavBar title='プロフィール' />
-        <Suspense fallback={<ProfileSkeleton />}>
-          <ProfileEditBody></ProfileEditBody>
-        </Suspense>
-        <NavigationBottomBar />
-      </div>
-    </div >
-  );
-};
+  const token = AuthService.getSesstion();
 
-export default ProfilePage;
+  if (!token) {
+    redirect('home')
+  }
+
+  return (
+    <div className="relative flex w-full min-h-screen flex-col bg-white overflow-x-hidden" style={{ fontFamily: '"Be Vietnam Pro", "Noto Sans", sans-serif' }}>
+      <NavBar title="プロフィール" />
+      <Suspense fallback={<ProfileSkeleton />}>
+        <ProfileBody />
+      </Suspense>
+      <NavigationBottomBar />
+    </div>
+  )
+}
+
+export default ProfilePage

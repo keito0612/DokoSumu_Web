@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['api/*'],
+    'paths' => ['api/*','storage/*'],
 
     'allowed_methods' => ['*'],  // 任意のメソッドを許可
 

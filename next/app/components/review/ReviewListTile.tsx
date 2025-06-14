@@ -1,3 +1,4 @@
+
 import { Review } from "@/types";
 import ReviewActions from "./ReviewActions";
 import ReviewBody from "./ReviewBody";
@@ -11,7 +12,7 @@ interface ReviewListTileProps {
 
 export default function ReviewListTile({ review }: ReviewListTileProps) {
   return (
-    <div className="max-w-2xl mx-auto border-t border-b p-4 bg-white space-y-4">
+    <div className="mx-auto  bg-white space-y-4">
       <ReviewHeader user={review.user} />
       <ReviewMeta />
       <ReviewBody review={review} />

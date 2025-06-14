@@ -19,7 +19,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, message, title }) 
           className="text-green-600 w-14 h-14 md:w-14 md:h-16 lg:w-16 lg:h-16"
           fill="none"
           stroke="currentColor"
-          stroke-width="2"
+          strokeWidth="2"
           viewBox="0 0 24 24"
         >
           <path xmlns="http://www.w3.org/2000/svg" strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />

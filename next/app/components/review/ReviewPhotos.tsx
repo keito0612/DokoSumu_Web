@@ -1,5 +1,4 @@
 import { Photo } from "@/types";
-import Image from "next/image";
 
 
 interface ReviewPhotos {
