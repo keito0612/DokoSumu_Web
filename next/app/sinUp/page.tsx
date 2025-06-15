@@ -32,7 +32,7 @@ function SignUp() {
   async function onSubmit(dataSet: Form) {
     setLoading(true);
     await AuthService.register({
-      url: `${UtilApi.local}api/register`,
+      url: `${UtilApi.API_URL}/api/register`,
       param: dataSet,
       success(message, token) {
         console.log(message);

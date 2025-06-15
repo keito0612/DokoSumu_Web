@@ -230,7 +230,7 @@ function Home() {
   }
 
   const getCitys = async (prefectureId: number) => {
-    const url = `${UtilApi.local}api/${prefectureId}/citys`;
+    const url = `${UtilApi.API_URL}/api/${prefectureId}/citys`;
     try {
       const res = await fetch(url, {
         method: 'GET',
@@ -252,7 +252,7 @@ function Home() {
   }
 
   const getPrefectureReviews = async (prefecturesId: number) => {
-    const url = `${UtilApi.local}api/prefecture_reviews/${prefecturesId}`;
+    const url = `${UtilApi.API_URL}/api/prefecture_reviews/${prefecturesId}`;
 
     try {
       const res = await fetch(url, {
@@ -276,7 +276,7 @@ function Home() {
   }
 
   const getCityReviews = async (prefecturesId: number, cityId: number) => {
-    const url = `${UtilApi.local}api/city_reviews/${prefecturesId}/${cityId}`;
+    const url = `${UtilApi.API_URL}/api/city_reviews/${prefecturesId}/${cityId}`;
     try {
       const res = await fetch(url, {
         method: 'GET',

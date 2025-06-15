@@ -109,14 +109,14 @@ const ProfileEditBody = async () => {
         <ProfileDetail detail='テストテストテスyとテストテストテストテストテストテストテストテストテストテストテストテスト' />
 
         <ProfileStats postCount={8} likeCount={1} />
-        <ProfileList></ProfileList>
+        <ProfileList postReviews={[]} likedReviews={[]} />
       </div>
     </div>
   )
 }
 
 async function getUser(userId: number) {
-  const url: string = `${UtilApi.local}api/profile/${userId}`;
+  const url: string = `${UtilApi.API_URL}/api/profile/${userId}`;
   const res = await fetch(url);
   return res.json();
 }

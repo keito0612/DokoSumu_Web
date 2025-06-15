@@ -15,8 +15,8 @@ const ProfileEditImageButton: React.FC<ProfileEditImageButtonProps> = ({ preview
     <div className="flex flex-col items-center justify-center space-x-3">
       <label htmlFor="profileImage" className="cursor-pointer">
         {(previewUrl == null ?
-          <SystemUiconsUserMale width={80} height={80} className="rounded-full border-2 text-green-500 border-green-500 p-1" /> :
-          <Image src={previewUrl} alt="プロフィール写真" width={80} height={80} className="w-[80px] h-[80px] rounded-full" />
+          <SystemUiconsUserMale width={100} height={100} className="rounded-full border-2 text-green-500 border-green-500 p-1" /> :
+          <Image unoptimized src={previewUrl} objectFit="cover" alt="プロフィール写真" width={100} height={100} className="w-[100px] h-[100px] rounded-full" />
         )}
       </label>
       <input

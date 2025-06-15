@@ -1,3 +1,4 @@
+"use client";
 interface ProfileStatsProps {
   postCount: number;
   likeCount: number;

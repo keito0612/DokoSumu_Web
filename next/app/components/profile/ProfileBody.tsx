@@ -9,26 +9,16 @@ import { AuthService } from '@/service/authServise';
 import ProfileSkeleton from '../ProfileSkeleton';
 import ProfileDetail from './ProfileDetail';
 import { useEffect, useState } from 'react';
-
-
-
-const ProfileAvatar = () => (
-  <div
-    className="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-24 h-24 sm:w-32 sm:h-32"
-    style={{
-      backgroundImage:
-        'url("https://cdn.usegalileo.ai/sdxl10/b1ba1f1b-c868-4445-9ede-e71b03a48fbf.png")',
-    }}
-  />
-);
+import ProfileImage from './ProfileImage';
 
 const ProfileBody: React.FC = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isSkeleton, setIsSkeleton] = useState<boolean>(false);
+  const [mounted, setMounted] = useState(false);
 
   async function getProfile() {
     try {
-      const url: string = `${UtilApi.local}api/profile`;
+      const url: string = `${UtilApi.API_URL}/api/profile`;
       const token = AuthService.getSesstion();
       const res = await fetch(url, {
         method: "GET",
@@ -53,12 +43,13 @@ const ProfileBody: React.FC = () => {
 
   useEffect(() => {
     (async () => {
+      setMounted(true);
       setIsSkeleton(true);
       await getProfile();
       setIsSkeleton(false);
     })()
   }, []);
-  if (isSkeleton || !profile) {
+  if (!mounted || isSkeleton || !profile) {
     return <ProfileSkeleton />;
   }
   return (
@@ -67,7 +58,7 @@ const ProfileBody: React.FC = () => {
         <div className="flex py-4 flex-col  gap-4">
           <div className="flex items-start justify-between w-full">
             <div className="flex gap-4 flex-row items-start">
-              <ProfileAvatar />
+              <ProfileImage imageUrl={profile.image_path} />
             </div>
 
             <div className="flex flex-col justify-end h-full">

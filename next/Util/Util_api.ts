@@ -1,5 +1,7 @@
 export class UtilApi {
-  static local = "http://localhost/";
+  static API_URL = process.env.NODE_ENV === 'development'
+    ? 'http://localhost'
+    : 'https://api.example.com';
   static selectedErrorMessage(keys: string[], errors: { [key: string]: string[] }): string {
     for (const key of keys) {
       if (errors[key]?.length) {

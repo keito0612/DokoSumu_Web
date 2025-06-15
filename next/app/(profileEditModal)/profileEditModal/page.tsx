@@ -1,7 +1,6 @@
 "use client";
 
 
-import { SystemUiconsUserMale } from "@/app/components/icons/SystemUiconsUserMale";
 import Loading2 from "@/app/components/Loading2";
 import Modal from "@/app/components/Modal";
 import ProfileEditImageButton from "@/app/components/profile/ProfileEditImageButton";
@@ -12,7 +11,7 @@ import { Profile, ResultType } from "@/types";
 import { UtilApi } from "@/Util/Util_api";
 import { Close } from "@mui/icons-material";
 import { redirect, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 
@@ -36,7 +35,6 @@ const ProfileEditModal: React.FC = () => {
   const [modalTitle, setModalTitle] = useState('');
   const [modalMessage, setModalMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
   const handleClose = () => {
     router.back();
@@ -53,7 +51,7 @@ const ProfileEditModal: React.FC = () => {
 
   async function getProfile() {
     try {
-      const url: string = `${UtilApi.local}api/profile`;
+      const url: string = `${UtilApi.API_URL}/api/profile`;
       const token = AuthService.getSesstion();
       const res = await fetch(url, {
         method: "GET",
@@ -96,14 +94,9 @@ const ProfileEditModal: React.FC = () => {
     }
   }
 
-
-  const handleClick = () => {
-    inputRef.current?.click(); // input をプログラム的にクリック
-  };
-
   const onSubmit: SubmitHandler<ProfileEditModalForm> = async (data) => {
     const formData = new FormData();
-    const url: string = `${UtilApi.local}api/profile/update`;
+    const url: string = `${UtilApi.API_URL}/api/profile/update`;
     formData.append('name', data.name);
     formData.append('comment', data.comment);
     if (file !== null) {

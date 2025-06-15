@@ -77,7 +77,7 @@ export default function RatingPost() {
   async function onSubmit(dataSet: RatingPostForm) {
     const prefectureId = params.prefectureId;
     const cityId = params.cityId;
-    const url: string = `${UtilApi.local}api/post/city_review/${prefectureId}/${cityId}`;
+    const url: string = `${UtilApi.API_URL}/api/post/city_review/${prefectureId}/${cityId}`;
     dataSet.photos = files;
     const formData = new FormData();
 

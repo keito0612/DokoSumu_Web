@@ -1,3 +1,4 @@
+"use client";
 import { Suspense } from 'react';
 import NavigationBottomBar from '../components/NavigationBottomBar';
 import NavBar from '../components/NavBar';
@@ -18,9 +19,7 @@ const ProfilePage = () => {
   return (
     <div className="relative flex w-full min-h-screen flex-col bg-white overflow-x-hidden" style={{ fontFamily: '"Be Vietnam Pro", "Noto Sans", sans-serif' }}>
       <NavBar title="プロフィール" />
-      <Suspense fallback={<ProfileSkeleton />}>
-        <ProfileBody />
-      </Suspense>
+      <ProfileBody />
       <NavigationBottomBar />
     </div>
   )
