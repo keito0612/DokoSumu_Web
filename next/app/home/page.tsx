@@ -14,6 +14,7 @@ import Tabs, { Tab } from '../components/Tabs';
 import Loading from '../components/Loading';
 import PostButton from '../components/PostButton';
 import ReviewList from '../components/review/ReviewList';
+import { AuthService } from '@/service/authServise';
 interface PrefectureBlockProps {
   region: string;
   prefectures: { id: number; name: string }[];
@@ -236,6 +237,7 @@ function Home() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${AuthService.getSesstion()}`
         }
       });
 
@@ -259,6 +261,7 @@ function Home() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${AuthService.getSesstion()}`
         }
       });
 

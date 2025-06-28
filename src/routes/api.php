@@ -20,8 +20,11 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('/{prefectures_id}/citys/', [CityController::class, 'getCitys']);
 Route::get('/prefecture_reviews/{prefectures_id}',[ReviewController::class, 'getPrefectureReviews']);
 Route::get('/city_reviews/{prefectures_id}/{city_id}',[ReviewController::class, 'getCityReviews']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/post/city_review/{prefecture_id}/{city_id}',[ReviewController::class,'postCityReview']);
+    Route::post('/post/review/like/{review_id}',[ReviewController::class,'like']);
+    Route::post('/post/review/unlike/{review_id}',[ReviewController::class,'unlike']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'getProfile']);

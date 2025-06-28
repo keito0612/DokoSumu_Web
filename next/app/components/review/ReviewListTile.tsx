@@ -12,12 +12,12 @@ interface ReviewListTileProps {
 
 export default function ReviewListTile({ review }: ReviewListTileProps) {
   return (
-    <div className="mx-auto  bg-white space-y-4">
+    <div className="mx-0  bg-white space-y-4">
       <ReviewHeader user={review.user} />
       <ReviewMeta />
       <ReviewBody review={review} />
       <ReviewPhotos photos={review.photos} />
-      <ReviewActions />
+      <ReviewActions review={review} />
     </div>
   );
 }

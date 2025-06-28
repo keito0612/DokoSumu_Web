@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 
 import { BellIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -30,6 +30,10 @@ function NavBar({ title }: NavBarProps) {
     }));
     setNavigation(updatedNavigation);
   };
+
+  useEffect(() => {
+
+  }, [])
 
   return (
     <Disclosure as="nav" className="bg-green-500 fixed top-0 left-0 w-full z-50 ">

@@ -28,6 +28,7 @@ class ReviewController extends Controller
 
     function getPrefectureReviews($prefectureId)
     {
+        $userId = optional(Auth::guard('api')->user())->id;
         $reviews = Review::where('prefecture_id', $prefectureId)->with([
             'user',
             'city',
@@ -35,13 +36,22 @@ class ReviewController extends Controller
             'photos',
             'prefecture',
             'likes'
-        ])->get();
+        ])->withCount('likes')->get()->map(function ($review) use ($userId) {
+            $likes = $review->likes;
+            if(!is_null($userId)){
+                $review->is_liked = $likes->contains('user_id', $userId);
+            }else{
+                $review->is_liked = false;
+            }
+            return $review;
+        });
         return response()->json([
             "reviews" => $reviews
         ], 200);
     }
     function getCityReviews($prefectureId, $cityId)
     {
+        $userId = optional(Auth::guard('api')->user())->id;
         $reviews = Review::where([
             'prefecture_id' => $prefectureId,
             'city_id' => $cityId
@@ -52,7 +62,15 @@ class ReviewController extends Controller
             'photos',
             'prefecture',
             'likes'
-        ])->get();
+        ])->withCount('likes')->get()->map(function ($review) use ($userId) {
+            $likes = $review->likes;
+            if(!is_null($userId)){
+                $review->is_liked = $likes->contains('user_id', $userId);
+            }else{
+                $review->is_liked = false;
+            }
+            return $review;
+        });
         return response()->json([
             "reviews" => $reviews
         ], 200);
@@ -156,25 +174,42 @@ class ReviewController extends Controller
 
     function like($reviewId)
     {
-        $userId = Auth::id();
-        Like::create(
+        DB::beginTransaction();
+        try{
+            $userId = Auth::id();
+            Like::create(
             [
                 'user_id' => $userId,
                 'review_id' => $reviewId
             ]
-        );
-        return response()->json([
-            "message" => "You Liked the review",
-        ], 201);
+            );
+            DB::commit();
+            return response()->json([
+                "message" => "You Liked the review",
+            ], 201);
+        }catch(Exception $e){
+            DB::rollback();
+            Log::debug($e);
+            return response()->json([
+                "message" => $e->getMessage(),
+            ], 500);
+        }
     }
     function unlike($reviewId)
     {
-        $userId = Auth::id();
-        $like = Like::where('review_id', $reviewId)->where('user_id', $userId)->first();
-        $like->delete();
+        try{
+            $userId = Auth::id();
+            $like = Like::where('review_id', $reviewId)->where('user_id', $userId)->first();
+            $like->delete();
 
-        return response()->json([
-            "message" => "You UnLiked the review",
-        ], 201);
+            return response()->json([
+                "message" => "You UnLiked the review",
+            ], 201);
+        }catch(Exception $e){
+            Log::debug($e);
+            return response()->json([
+                "message" => $e->getMessage(),
+            ], 500);
+        }
     }
 }

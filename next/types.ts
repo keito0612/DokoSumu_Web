@@ -1,4 +1,4 @@
-export type ResultType = "Success" | "Error";
+export type ResultType = "Success" | "Error" | "Warning";
 
 
 export interface Profile {
@@ -74,4 +74,6 @@ export interface Review {
   photos: Photo[];
   likes: unknown[];
   user: User;
+  is_liked: boolean;
+  likes_count: number;
 };

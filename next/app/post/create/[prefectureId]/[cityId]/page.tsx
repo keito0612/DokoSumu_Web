@@ -12,6 +12,8 @@ import { UtilApi } from "@/Util/Util_api";
 import { AuthService } from "@/service/authServise";
 import Loading2 from "@/app/components/Loading2";
 import Modal from "@/app/components/Modal";
+import NavBar from "@/app/components/NavBar";
+import NavigationBottomBar from "@/app/components/NavigationBottomBar";
 
 
 interface RatingPostForm {
@@ -109,6 +111,7 @@ export default function RatingPost() {
         setModalMessage('');
       } else {
         const message = UtilApi.selectedErrorMessage(["safety", "childRearing", "cityPolicies", "publicTransportation", "livability", "goodComment", "badComment"], data["errors"])
+        console.log(message);
         setIsModalOpen(true);
         setModalType('Error');
         setModalTitle('エラーが発生しました。');
@@ -120,7 +123,7 @@ export default function RatingPost() {
       setModalTitle('エラーが発生しました。');
       setModalMessage('原因不明のエラーが発生した事により、投稿できませんでした。');
       setLoading(false);
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -133,10 +136,11 @@ export default function RatingPost() {
 
   return (
     <div className="w-full h-full">
+      <NavBar title="新規投稿" />
       {loading === true && (
         <Loading2 loadingtext={"読み込み中"} />
       )}
-      <div className="flex flex-col items-center p-4 mx-auto w-full max-w-4xl">
+      <div className="flex flex-col items-center p-4 pt-24  mx-auto w-full max-w-4xl">
         {/* タイトル */}
         <h2 className="text-black text-2xl md:text-3xl font-bold text-center mb-6">あなたの評価を教えてください。</h2>
 

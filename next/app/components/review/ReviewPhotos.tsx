@@ -1,5 +1,5 @@
 import { Photo } from "@/types";
-
+import Image from "next/image";
 
 interface ReviewPhotos {
   photos: Photo[];
@@ -7,12 +7,17 @@ interface ReviewPhotos {
 export default function ReviewPhotos({ photos }: ReviewPhotos) {
   return (
 
-    <div className="grid grid-cols-2 gap-2">
+    <div className="grid grid-cols-2 gap-4">
       {photos.map((photo, i) => (
-        <div key={i} className="relative">
-          {(photo.photo_url &&
-            // < Image src={photo.photo_url} alt="投稿をした写真" width={200} height={150} className="rounded object-cover w-full h-full brightness-75" />
-            <img src={photo.photo_url} />
+        <div key={i} className="relative bg-black flex items-center justify-center aspect-square">
+          {photo.photo_url && (
+            <Image
+              unoptimized
+              src={photo.photo_url}
+              alt="投稿写真"
+              fill
+              className="object-contain"
+            />
           )}
         </div>
       ))}

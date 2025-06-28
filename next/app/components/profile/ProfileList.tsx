@@ -36,7 +36,7 @@ const ProfileList: React.FC<ProfileListProps> = (props) => {
           いいねリスト
         </TabButton>
       </div>
-      <div className="mt-4 border border-gray-300 rounded-md p-2 overflow-y-auto max-h-[500px]">
+      <div className="mt-4 border border-gray-300 rounded-md p-1 overflow-y-auto max-h-[500px]">
         <ReviewList reviewList={activeTab === 'posts' ? props.postReviews : props.likedReviews} />
       </div>
     </div>
