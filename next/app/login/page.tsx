@@ -1,83 +1,100 @@
 'use client';
-import React, { useEffect } from 'react';
-import { useState } from 'react';
-import { useForm } from "react-hook-form";
-import { useRouter } from 'next/navigation'
-import Link from "next/link";
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { AuthService } from '@/service/authServise';
 import SnackbarComponent from '../components/SnackBar';
-
-
-
+import Loading2 from '../components/Loading2';
+import Modal from '../components/Modal';
+import { ResultType } from '@/types';
 
 interface Inputs {
   email: string;
   password: string;
-};
+}
 
 function Login() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [loading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [modalType, setModalType] = useState<ResultType>('Success');
+  const [modalTitle, setModalTitle] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
   const router = useRouter();
 
-  async function onSubmit(dataSet: Inputs) {
+  const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+
+  const onSubmit = async (dataSet: Inputs) => {
     setIsLoading(true);
     await AuthService.login({
-      url: "http://localhost/api/login",
+      url: 'http://localhost/api/login',
       param: dataSet,
       success(token) {
+        setIsModalOpen(true);
+        setModalType('Success');
+        setModalTitle('ログインが完了しました');
         AuthService.setSesstion(token);
         setIsLoading(false);
-        router.push('/home');
-      }, failure(error) {
-        setSnackbarOpen(true);
+      },
+      validetionMessage(error) {
         setErrorMessage(error);
-        console.log(error);
+        setSnackbarOpen(true);
+        setIsLoading(false);
+      },
+      failure(error) {
+        setIsModalOpen(true);
+        setModalType('Error');
+        setModalTitle('ログインに失敗しました。');
+        setModalMessage(error);
         setIsLoading(false);
       },
     });
-  }
-
-  const handleCloseSnackbar = (): void => {
-    setSnackbarOpen(false);
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    setIsLoading(false);
-  }, []);
-  const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+  const onClone = () => {
+    setIsModalOpen(false);
+    if (modalType === 'Success') {
+      router.push('/home');
+    }
+  };
+
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
+
   return (
-    // <Loading
-    //   isLoading={isLoading}
-    //   loadingtext='読み込み中'
-    // >
-    <div className="Login">
-      <div className="flex flex-col items-center justify-center h-screen">
-        <form className="w-96 p-8 bg-white rounded-lg shadow-md" onSubmit={handleSubmit(onSubmit)}>
-          <h1 className="mb-4 text-2xl font-medium text-grey-700">ログイン</h1>
-          <div className="mb-4">
-            <label className="justify-start flex text-sm font-medium text-grey-600">メールアドレス</label>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+      {loading && <Loading2 loadingtext="アカウントを作成中..." />}
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+        <h1 className="text-3xl font-bold text-center text-green-600 mb-6">ログイン</h1>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* メールアドレス */}
+          <div>
+            <label htmlFor="email" className="block text-sm font-semibold text-gray-700">メールアドレス</label>
             <input
+              id="email"
+              type="email"
+              placeholder="mail@example.com"
               {...register("email", {
                 required: "メールアドレスは必須です",
                 pattern: {
-                  value: /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/,
+                  value: /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
                   message: "このメールアドレスは無効です。",
                 },
               })}
-              type="email"
-              placeholder="mail@myservice.com"
-              className="w-full p-2 mt-1 border-2 rounded-md"
+              className="mt-1 w-full px-4 text-black py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300"
             />
             {errors.email && (
-              <span className="justify-start flex text-sm text-red-600">※{errors.email.message}</span>
+              <p className="text-sm text-red-600 mt-1">※{errors.email.message}</p>
             )}
           </div>
-          <div className="mb-4">
-            <label className="justify-start flex text-sm font-medium text-grey-600">パスワード</label>
+
+          {/* パスワード */}
+          <div>
+            <label htmlFor="password" className="block text-sm font-semibold text-gray-700">パスワード</label>
             <input
+              id="password"
+              type="password"
               {...register("password", {
                 required: "パスワードは必須です",
                 minLength: {
@@ -85,33 +102,46 @@ function Login() {
                   message: "パスワードは8文字以上でなくてはなりません",
                 },
               })}
-              type="password"
-              className="w-full p-2 mt-1 border-2 rounded-md"
+              className="mt-1 text-black w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300"
             />
             {errors.password && (
-              <span className="justify-start flex text-sm text-red-600">※{errors.password.message}</span>
+              <p className="text-sm text-red-600 mt-1">※{errors.password.message}</p>
             )}
           </div>
-          <div className="flex justify-center">
-            <button type="submit" className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
+
+          {/* ボタン */}
+          <div className="pt-2">
+            <button
+              type="submit"
+              className="w-full py-2 px-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 shadow transition duration-300"
+            >
               ログイン
             </button>
           </div>
-          <div className="mt-4">
-            <span className="text-sm text-grey-600">初めてのご利用の方は</span>
-            <Link href="/sinUp" className="ml-1 text-sm font-bold text-blue-500 hover:text-blue-700">
-              こちら
+
+          {/* 新規登録リンク */}
+          <div className="text-center mt-4 text-sm text-gray-600">
+            初めてのご利用ですか？
+            <Link href="/sinUp" className="ml-1 font-semibold text-green-500 hover:text-green-600 underline">
+              新規登録はこちら
             </Link>
           </div>
         </form>
       </div>
+
       <SnackbarComponent
         message={errorMessage}
         open={snackbarOpen}
         onClose={handleCloseSnackbar}
       />
+      <Modal
+        isOpen={isModalOpen}
+        onClose={onClone}
+        type={modalType}
+        message={modalMessage}
+        title={modalTitle}
+      />
     </div>
-    // </Loading>
   );
 }
 

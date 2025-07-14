@@ -1,4 +1,5 @@
 export type ResultType = "Success" | "Error" | "Warning";
+export type MenuAction = "edit" | "delete";
 
 
 export interface Profile {
@@ -30,7 +31,7 @@ export interface City {
 export interface User {
   id: number;
   name: string;
-  imagePath: string | null;
+  image_path: string | null;
   commment: string;
 }
 

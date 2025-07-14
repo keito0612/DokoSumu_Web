@@ -12,8 +12,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Services\FileService;
+use App\Notifications\InformationNotification;
 
 class ReviewController extends Controller
 {
@@ -26,9 +26,12 @@ class ReviewController extends Controller
         $this->fileService = $fileService;
     }
 
+    private function userId(){
+        return optional(Auth::guard('api')->user())->id;
+    }
+
     function getPrefectureReviews($prefectureId)
     {
-        $userId = optional(Auth::guard('api')->user())->id;
         $reviews = Review::where('prefecture_id', $prefectureId)->with([
             'user',
             'city',
@@ -36,10 +39,10 @@ class ReviewController extends Controller
             'photos',
             'prefecture',
             'likes'
-        ])->withCount('likes')->get()->map(function ($review) use ($userId) {
+        ])->withCount('likes')->get()->map(function ($review)  {
             $likes = $review->likes;
-            if(!is_null($userId)){
-                $review->is_liked = $likes->contains('user_id', $userId);
+            if(!is_null($this->userId())){
+                $review->is_liked = $likes->contains('user_id', $this->userId());
             }else{
                 $review->is_liked = false;
             }
@@ -51,7 +54,6 @@ class ReviewController extends Controller
     }
     function getCityReviews($prefectureId, $cityId)
     {
-        $userId = optional(Auth::guard('api')->user())->id;
         $reviews = Review::where([
             'prefecture_id' => $prefectureId,
             'city_id' => $cityId
@@ -62,10 +64,10 @@ class ReviewController extends Controller
             'photos',
             'prefecture',
             'likes'
-        ])->withCount('likes')->get()->map(function ($review) use ($userId) {
+        ])->withCount('likes')->get()->map(function ($review)  {
             $likes = $review->likes;
-            if(!is_null($userId)){
-                $review->is_liked = $likes->contains('user_id', $userId);
+            if(!is_null($this->userId())){
+                $review->is_liked = $likes->contains('user_id', $this->userId());
             }else{
                 $review->is_liked = false;
             }
@@ -115,6 +117,21 @@ class ReviewController extends Controller
         }
     }
 
+    function getReview($id)
+    {
+        $review = Review::find($id);
+
+        if (!$review) {
+            return response()->json([
+                "message" => "Review not found."
+            ], 404);
+        }
+
+        return response()->json([
+            "review" => $review
+        ], 200);
+    }
+
     function updateReview($id, $prefecture_id, $city_Id, ReviewRequest $request)
     {
         $user_id = Auth::id();
@@ -154,6 +171,25 @@ class ReviewController extends Controller
         }
     }
 
+    function deleteReview($id)
+    {
+        DB::beginTransaction();
+        try{
+            $review = Review::find($id);
+            if (!$review) {
+                return response()->json(["message" => "Review not found"], 404);
+            }
+            $review->delete();
+            DB::commit();
+            return response()->json([
+                "message" => "delete review susessfully",
+            ], 201);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json(["error" => $e->getMessage()], 500);
+        }
+    }
+
     private function storePhotos($photos, $review_id)
     {
         $photoData = [];
@@ -176,10 +212,10 @@ class ReviewController extends Controller
     {
         DB::beginTransaction();
         try{
-            $userId = Auth::id();
+            $user = Auth::user();
             Like::create(
             [
-                'user_id' => $userId,
+                'user_id' => $user->id,
                 'review_id' => $reviewId
             ]
             );
@@ -189,7 +225,6 @@ class ReviewController extends Controller
             ], 201);
         }catch(Exception $e){
             DB::rollback();
-            Log::debug($e);
             return response()->json([
                 "message" => $e->getMessage(),
             ], 500);
@@ -206,7 +241,6 @@ class ReviewController extends Controller
                 "message" => "You UnLiked the review",
             ], 201);
         }catch(Exception $e){
-            Log::debug($e);
             return response()->json([
                 "message" => $e->getMessage(),
             ], 500);

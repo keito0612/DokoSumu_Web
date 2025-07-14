@@ -1,21 +1,21 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { User } from "@/types";
+import { MenuAction, User } from "@/types";
 import Image from "next/image";
 import MaterialSymbolsLightPersonOutlineRounded from "../icons/MaterialSymbolsLightPersonOutlineRounded";
 import { usePathname } from "next/navigation";
 
-type MenuAction = "edit" | "delete";
-
 interface ReviewHeaderProps {
+  reviewId?: number;
   user: User;
-  onAction?: (action: MenuAction) => void;
+  onMenuAction?: (action: MenuAction, id: number) => void | Promise<void>;
 }
 
 export default function ReviewHeader({
+  reviewId,
   user,
-  onAction,
+  onMenuAction,
 }: ReviewHeaderProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -34,13 +34,7 @@ export default function ReviewHeader({
 
   const handleSelect = (action: MenuAction) => {
     setOpen(false);
-    onAction?.(action);
-  };
-
-  const editHandle = () => {
-  };
-
-  const deleteHandle = () => {
+    onMenuAction?.(action, reviewId!);
   };
 
 
@@ -50,20 +44,14 @@ export default function ReviewHeader({
     <div className="flex items-center justify-between space-x-3">
       {/* 左側：ユーザーアイコンと名前 */}
       <div className="flex items-center space-x-3">
-        {user.imagePath == null ? (
+        {user.image_path == null ? (
           <MaterialSymbolsLightPersonOutlineRounded
             width={40}
             height={40}
             className="rounded-full border-2 text-green-500 border-green-500"
           />
         ) : (
-          <Image
-            src={user.imagePath}
-            alt="プロフィール写真"
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
+          <Image unoptimized src={user.image_path} objectFit="cover" alt="プロフィール写真" width={40} height={40} className="w-[40px] h-[40px] sm:h-[40px] sm:w-[40px] rounded-full" />
         )}
         <div>
           <div className="font-semibold text-black">{user.name}</div>

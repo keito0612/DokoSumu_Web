@@ -1,77 +1,73 @@
 'use client';
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import { AuthService } from '@/service/authServise';
-import Loading from '../components/Loading';
-import SnackbarComponent from '../components/SnackBar';
-import { UtilApi } from '@/Util/Util_api';
-import Modal from '../components/Modal';
-import { ResultType } from '@/types';
 import Loading2 from '../components/Loading2';
+import SnackbarComponent from '../components/SnackBar';
+import Modal from '../components/Modal';
+import { UtilApi } from '@/Util/Util_api';
+import { ResultType } from '@/types';
 
 interface Form {
   name: string;
   email: string;
   password: string;
-};
+}
 
 function SignUp() {
   const { register, handleSubmit, formState: { errors } } = useForm<Form>();
-  const [errorMessage, setErrorMessage] = useState("");
-  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [modalType, setModalType] = useState<ResultType>('Success');
   const [modalTitle, setModalTitle] = useState('');
   const [modalMessage, setModalMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
-
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function onSubmit(dataSet: Form) {
+  const onSubmit = async (dataSet: Form) => {
     setLoading(true);
     await AuthService.register({
       url: `${UtilApi.API_URL}/api/register`,
       param: dataSet,
       success(message, token) {
-        console.log(message);
         setLoading(false);
         AuthService.setSesstion(token);
         setIsModalOpen(true);
         setModalType('Success');
-        setModalTitle('新規登録が完了しました。');
-        setModalMessage('');
-      }, failure(error) {
+        setModalTitle('新規登録が完了しました');
+      },
+      failure(error) {
         setErrorMessage(error);
         setSnackbarOpen(true);
-        console.log(error);
         setLoading(false);
       },
     });
-  }
-  const handleCloseSnackbar = (): void => {
-    setSnackbarOpen(false);
   };
+
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   const onClone = () => {
     setIsModalOpen(false);
     if (modalType === 'Success') {
       router.push('/home');
     }
-  }
+  };
+
   return (
-    <div className="SignUp">
-      {loading === true && (
-        <Loading2 loadingtext={"アカウントを作成中"} />
-      )}
-      <div className="flex flex-col items-center justify-center h-screen">
-        <form className="w-96 p-8 bg-green-500 rounded-lg shadow-md" onSubmit={handleSubmit(onSubmit)} method='POST'>
-          <h1 className="mb-4 text-2xl font-bold text-center text-white">新規登録</h1>
-          <div className='mb-4'>
-            <label className="justify-start flex text-sm font-bold text-white">名前</label>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+      {loading && <Loading2 loadingtext="アカウントを作成中..." />}
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+        <h1 className="text-3xl font-bold text-center text-green-600 mb-6">新規登録</h1>
+        <form onSubmit={handleSubmit(onSubmit)} method="POST" className="space-y-4">
+          {/* 名前 */}
+          <div>
+            <label htmlFor="name" className="block text-sm font-semibold text-gray-700">名前</label>
             <input
               id="name"
+              type="text"
+              placeholder="例：山田太郎"
               {...register("name", {
                 required: "名前は必須です",
                 maxLength: {
@@ -79,37 +75,36 @@ function SignUp() {
                   message: "名前は8文字以内でお願いします。",
                 },
               })}
-              type="text"
-              placeholder="mail@myservice.com"
-              className="w-full p-2 mt-1 border-2 rounded-md text-black"
+              className="mt-1 text-black w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300"
             />
-            {errors.name && (
-              <span className="justify-start flex text-sm text-red-600">※{errors.name.message}</span>
-            )}
+            {errors.name && <p className="text-sm text-red-600 mt-1">※{errors.name.message}</p>}
           </div>
-          <div className="mb-4">
-            <label className="justify-start flex text-sm font-bold text-white">メールアドレス</label>
+
+          {/* メール */}
+          <div>
+            <label htmlFor="email" className="block text-sm font-semibold text-gray-700">メールアドレス</label>
             <input
               id="email"
+              type="email"
+              placeholder="mail@example.com"
               {...register("email", {
                 required: "メールアドレスは必須です",
                 pattern: {
-                  value: /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/,
+                  value: /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
                   message: "このメールアドレスは無効です。",
                 },
               })}
-              type="email"
-              placeholder="mail@myservice.com"
-              className="w-full text-black p-2 mt-1 border-2 rounded-md"
+              className="mt-1 text-black w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300"
             />
-            {errors.email && (
-              <span className="justify-start flex text-sm text-red-600">※{errors.email.message}</span>
-            )}
+            {errors.email && <p className="text-sm text-red-600 mt-1">※{errors.email.message}</p>}
           </div>
-          <div className="mb-4">
-            <label className="justify-start flex text-sm font-bold text-white">パスワード</label>
+
+          {/* パスワード */}
+          <div>
+            <label htmlFor="password" className="block text-sm font-semibold text-gray-700">パスワード</label>
             <input
               id="password"
+              type="password"
               {...register("password", {
                 required: "パスワードは必須です",
                 minLength: {
@@ -117,20 +112,23 @@ function SignUp() {
                   message: "パスワードは8文字以上でなくてはなりません",
                 },
               })}
-              type="password"
-              className="w-full  text-black p-2 mt-1 border-2 rounded-md"
+              className="mt-1 text-black w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300"
             />
-            {errors.password && (
-              <span className="justify-start flex text-sm text-red-600">※{errors.password.message}</span>
-            )}
+            {errors.password && <p className="text-sm text-red-600 mt-1">※{errors.password.message}</p>}
           </div>
-          <div className="flex justify-center">
-            <button type="submit" className="px-4 py-2 font-bold border-white border text-white bg-green-500 rounded hover:bg-green-300">
+
+          {/* ボタン */}
+          <div className="pt-2">
+            <button
+              type="submit"
+              className="w-full py-2 px-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 shadow transition duration-300"
+            >
               新規登録
             </button>
           </div>
         </form>
       </div>
+
       <SnackbarComponent
         message={errorMessage}
         open={snackbarOpen}
@@ -141,9 +139,9 @@ function SignUp() {
         onClose={onClone}
         type={modalType}
         message={modalMessage}
-        title={modalTitle} />
+        title={modalTitle}
+      />
     </div>
-    // </Loading>
   );
 }
 

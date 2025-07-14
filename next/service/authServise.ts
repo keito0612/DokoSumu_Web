@@ -2,7 +2,7 @@ import { UtilApi } from "@/Util/Util_api";
 
 export class AuthService {
 
-  static async login<T>({ url, param, success, failure }: { url: string, param: T, success: (token: string) => void, failure: (error: string) => void }) {
+  static async login<T>({ url, param, success, validetionMessage, failure }: { url: string, param: T, success: (token: string) => void, validetionMessage: (message: string) => void, failure: (error: string) => void }) {
     try {
       const res = await fetch(url, {
         method: 'POST',
@@ -18,10 +18,14 @@ export class AuthService {
       if (res.ok) {
         success(token);
       } else {
-        failure(UtilApi.selectedErrorMessage(["name", "email", "password"], data["errors"]));
+        if (data.errors) {
+          validetionMessage(UtilApi.selectedErrorMessage(['email', 'password'], data.errors));
+        } else if (data.message) {
+          failure(data.message);
+        }
       }
     } catch (error) {
-      failure('An unexpected error occurred.');
+      failure("予期しないエラーが発生しました");
       console.error('エラー発生', error);
     }
   }

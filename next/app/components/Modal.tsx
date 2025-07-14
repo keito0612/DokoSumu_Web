@@ -1,6 +1,8 @@
 'use client';
 import React from 'react';
 import { ResultType } from '@/types';
+import { MaterialSymbolsLightWarningRounded } from './icons/MaterialSymbolsLightWarningRounded';
+import { SystemUiconsWarningCircle } from './icons/SystemUiconsWarningCircle';
 
 type ModalProps = {
   isOpen: boolean;
@@ -8,12 +10,12 @@ type ModalProps = {
   title: string;
   message: string;
   type: ResultType;
-  onConfirm?: () => void;         // confirm 用
+  onConfirm?: () => void | Promise<void>;         // confirm 用
   confirmLabel?: string;          // confirm 用
   cancelLabel?: string;           // confirm 用
 };
 
-const ICON_SIZE = 'w-14 h-14 md:w-16 md:h-16';
+const ICON_SIZE = 'w-24 h-24 md:w-28 md:h-28';
 
 export default function Modal({
   isOpen,
@@ -22,7 +24,7 @@ export default function Modal({
   message,
   type,
   onConfirm,
-  confirmLabel = 'OK',
+  confirmLabel = 'はい',
   cancelLabel = 'キャンセル',
 }: ModalProps) {
   if (!isOpen) return null;
@@ -39,18 +41,14 @@ export default function Modal({
         );
       case 'Error':
         return (
-          <div className="bg-red-100 rounded-full flex items-center justify-center w-16 h-16">
-            <svg className={`${ICON_SIZE} text-red-600`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12" />
-            </svg>
+          <div className=" rounded-full flex items-center justify-center w-16 h-16">
+            <MaterialSymbolsLightWarningRounded className={`${ICON_SIZE} text-red-500`} />
           </div>
         );
       case 'Warning':
         return (
-          <div className="bg-gray-100 rounded-full flex items-center justify-center w-16 h-16">
-            <svg className={`${ICON_SIZE} text-gray-600`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10 12h4M12 10v4m0 6a10 10 0 100-20 10 10 0 000 20z" />
-            </svg>
+          <div className="bg-100 rounded-full flex items-center justify-center w-16 h-16">
+            <SystemUiconsWarningCircle className={`${ICON_SIZE} text-red-500`} />
           </div>
         );
       default:
@@ -65,14 +63,14 @@ export default function Modal({
       case 'Error':
         return 'bg-red-500 hover:bg-red-400';
       case 'Warning':
-        return 'bg-gray-600 hover:bg-gray-500';
+        return 'bg-red-600 hover:bg-red-500';
       default:
         return 'bg-blue-500 hover:bg-blue-400';
     }
   };
 
   const baseBtn =
-    'rounded font-bold w-24 h-12 text-base sm:w-28 sm:h-14 sm:text-lg md:w-32 md:h-16 md:text-xl';
+    'rounded font-bold w-24 h-10 text-base sm:w-28 sm:h-12 sm:text-lg md:w-32 md:h-12 md:text-xl';
 
   return (
     <div
@@ -84,22 +82,22 @@ export default function Modal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-center items-center">{getIcon()}</div>
-        <p className="mt-4 font-bold text-base sm:text-xl">{title}</p>
-        <p className="mt-2 text-sm sm:text-lg">{message}</p>
+        <p className="mt-4 text-black font-bold text-base sm:text-xl">{title}</p>
+        <p className="mt-2 text-black text-sm sm:text-lg">{message}</p>
 
         {type === 'Warning' && onConfirm ? (
-          <div className="mt-6 flex justify-center gap-4">
+          <div className="mt-6 flex justify-center gap-28">
             <button
               className={`${baseBtn} ${getColor()}`}
-              onClick={() => {
-                onConfirm();
+              onClick={async () => {
+                await onConfirm();
                 onClose();
               }}
             >
               {confirmLabel}
             </button>
             <button
-              className={`${baseBtn} bg-gray-400 hover:bg-gray-300`}
+              className={`${baseBtn} bg-green-400 hover:bg-green-300`}
               onClick={onClose}
             >
               {cancelLabel}

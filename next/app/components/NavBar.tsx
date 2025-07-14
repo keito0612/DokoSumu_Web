@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 
-import { BellIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
 
@@ -78,14 +78,14 @@ function NavBar({ title }: NavBarProps) {
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 invisible sm:visible">
-            <button
+            {/* <button
               type="button"
-              className="relative rounded-full bg-green-800 p-1 text-gray-400 hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+              className="relative rounded-full bg-green-500 p-1   text-white outline-none ring-2 ring-white  hover:bg-green-300"
             >
               <span className="absolute -inset-1.5" />
               <span className="sr-only">通知を見る</span>
-              <BellIcon aria-hidden="true" className="h-6 w-6" />
-            </button>
+              <NotificationBell />
+            </button> */}
             <Menu as="div" className="relative ml-3">
               <div>
                 <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">

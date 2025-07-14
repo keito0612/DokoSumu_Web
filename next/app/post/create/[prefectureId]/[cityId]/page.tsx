@@ -4,17 +4,16 @@ import Chart from "@/app/components/Chart";
 import StarsRating from "@/app/components/StarsRating";
 import TextErea from "@/app/components/TextErea";
 import { ChartData, ResultType } from "@/types";
-import { useForm } from 'react-hook-form'
+import { Path, useForm } from 'react-hook-form'
 import { useState } from "react";
-import { MaterialSymbolsLightAdd2 } from "@/app/components/icons/MaterialSymbolsLightAdd2";
 import { useParams, useRouter } from "next/navigation";
 import { UtilApi } from "@/Util/Util_api";
 import { AuthService } from "@/service/authServise";
 import Loading2 from "@/app/components/Loading2";
 import Modal from "@/app/components/Modal";
 import NavBar from "@/app/components/NavBar";
-import NavigationBottomBar from "@/app/components/NavigationBottomBar";
-
+import ImageUploader from "@/app/components/ImageUploader";
+import RatingSection from "@/app/components/RatingSection";
 
 interface RatingPostForm {
   safety: number
@@ -151,30 +150,13 @@ export default function RatingPost() {
         <Chart title="評価" data={chartData} className="mb-8 mt-8" />
         <form className="w-full" onSubmit={handleSubmit(onSubmit)} method="POST">
           {/* セレクトボタン */}
-          < div className="w-24 h-8 sm:w-24 sm:h-10 md:w-32 md:h-12 bg-lime-400 text-white rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base">
-            それぞれの評価
-          </div>
-          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
-            {categories.map((category, index) => (
-              <div key={category} className="text-center">
-                <p className="text-black text-base md:text-lg font-semibold mb-2">{categoriesTitle[index]}</p>
-                <select
-                  {...register(category as keyof RatingPostForm, {
-                    required: true
-                  })}
-                  className="w-24 md:w-32 lg:w-36 bg-lime-500 text-white rounded-md p-2"
-                  value={ratings[category]}
-                  onChange={(e) => handleRatingChange(category, Number(e.target.value))}
-                >
-                  {[0, 1, 2, 3, 4, 5].map((value) => (
-                    <option key={value} value={value} className="bg-green-400 text-white">
-                      {value}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ))}
-          </div>
+          <RatingSection
+            categories={categories as Path<RatingPostForm>[]}
+            categoriesTitle={categoriesTitle}
+            ratings={ratings}
+            register={register}
+            handleRatingChange={handleRatingChange}
+          />
           {/* 良い所欄 */}
           <TextErea title="良い所" className="pt-6 mb-3" placeholder="" errorMessage={errors.goodComment?.message} register={register("goodComment", {
             maxLength: { value: 300, message: "300文字以内で入力して下さい。" }
@@ -184,48 +166,11 @@ export default function RatingPost() {
             maxLength: { value: 300, message: "300文字以内で入力して下さい。" }
           })} />
           {/* 画像アップロード */}
-          <div className="flex flex-col justify-start">
-            < div className="w-16 h-8 mb-2 sm:w-20 sm:h-10 md:w-24 md:h-12 bg-lime-400 text-white rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base">
-              写真
-            </div>
-            <div className="bg-gray-100 my-2 ml-4 p-6 rounded-xl">
-              <div className="grid grid-cols-4 gap-2 items-center  place-items-center mt-4">
-                {previewUrls.map((url, index) => (
-                  <div key={index} className="relative 2xl:size-32 xl:size-28 lg:size-28 md:size-20">
-                    <button
-                      onClick={() => handleRemoveImage(index)}
-                      className="absolute top-1 left-1 w-6 h-6 bg-red-500 text-white text-xs flex items-center justify-center rounded-full shadow-md hover:bg-red-600 transition"
-                    >
-                      ✕
-                    </button>
-
-                    <img src={url} alt="preview" className="rounded-lg" />
-                  </div>
-                ))}
-                {previewUrls.length < 4 ? (
-                  <label
-                    htmlFor="images"
-                    className="2xl:size-28 xl:size-24 lg:size-20 md:size-16 bg-green-600 font-semibold rounded-full border-4 shadow-md cursor-pointer hover:bg-green-500 flex items-center justify-center transition duration-300"
-                  >
-                    <MaterialSymbolsLightAdd2 className="text-white font-bold size-12" />
-                  </label>
-                ) : (
-                  <div></div>
-                )}
-                <input
-                  id="images"
-                  type="file"
-                  multiple
-                  onChange={handleOnAddImage}
-                  className="hidden"
-                />
-              </div>
-
-              <div className="flex justify-between items-center mt-4">
-                <span className="text-gray-600 text-sm">写真の枚数: {previewUrls.length}</span>
-              </div>
-            </div>
-          </div>
+          <ImageUploader
+            previewUrls={previewUrls}
+            handleRemoveImage={handleRemoveImage}
+            handleOnAddImage={handleOnAddImage}
+          />
           <div className="flex justify-center mt-6">
             <button
               type="submit"

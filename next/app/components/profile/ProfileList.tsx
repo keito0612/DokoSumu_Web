@@ -1,5 +1,5 @@
 "use client";
-import { Review } from "@/types";
+import { MenuAction, Review } from "@/types";
 import { ReactNode, useState } from "react";
 import ReviewList from "../review/ReviewList";
 
@@ -22,6 +22,7 @@ const TabButton: React.FC<TabButtonProps> = ({ isActive, onClick, children }: Ta
 interface ProfileListProps {
   postReviews: Review[];
   likedReviews: Review[];
+  onMenuAction?: (action: MenuAction, id: number) => void | Promise<void>;
 }
 
 const ProfileList: React.FC<ProfileListProps> = (props) => {
@@ -37,7 +38,7 @@ const ProfileList: React.FC<ProfileListProps> = (props) => {
         </TabButton>
       </div>
       <div className="mt-4 border border-gray-300 rounded-md p-1 overflow-y-auto max-h-[500px]">
-        <ReviewList reviewList={activeTab === 'posts' ? props.postReviews : props.likedReviews} />
+        <ReviewList reviewList={activeTab === 'posts' ? props.postReviews : props.likedReviews} onMenuAction={props.onMenuAction} />
       </div>
     </div>
   )

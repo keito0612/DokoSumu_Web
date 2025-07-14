@@ -24,9 +24,6 @@ class AuthController extends Controller
         DB::beginTransaction();
 
         try {
-        // デバッグ用ログ（必要であれば有効化）
-            Log::debug('Registering user with email: ' . $request->email);
-
         // ユーザー作成
             $user = User::create([
                 'name' => $request->input('name'),

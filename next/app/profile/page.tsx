@@ -1,8 +1,6 @@
 "use client";
-import { Suspense } from 'react';
 import NavigationBottomBar from '../components/NavigationBottomBar';
 import NavBar from '../components/NavBar';
-import ProfileSkeleton from '../components/ProfileSkeleton';
 import ProfileBody from '@/app/components/profile/ProfileBody';
 import { AuthService } from '@/service/authServise';
 import { redirect } from 'next/navigation';

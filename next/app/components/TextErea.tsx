@@ -33,7 +33,7 @@ const TextErea: FC<TextEreaProps> = ({
       <textarea
 
         {...register}
-        className="h-24 md:h-32 p-2 ml-4  border border-gray-300 text-black rounded-lg resize-none"
+        className="h-28 sm:h-36 md:h-52 p-2 ml-4  border border-gray-300 text-black rounded-lg resize-none"
         placeholder={placeholder}
         onChange={
           handleTextChange
