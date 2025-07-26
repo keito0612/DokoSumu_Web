@@ -4,19 +4,38 @@ import { SystemUiconsUserMale } from "../icons/SystemUiconsUserMale";
 
 interface ProfileImageProps {
   imageUrl: string | null;
+  sizes?: number; // 基準サイズ（px）
 }
 
-export function ProfileImage({ imageUrl }: ProfileImageProps) {
+export function ProfileImage({ imageUrl, sizes = 100 }: ProfileImageProps) {
+  // 最小 40px、最大 sizes px、中央は 10vw（適度に伸縮）
+  const responsiveSize = `clamp(${sizes - 10}px, 10vw, ${sizes}px)`;
+
+  const isValidSrc = typeof imageUrl === "string" && imageUrl.trim() !== "";
+
   return (
     <div
-      className="">
-      {
-        imageUrl == null ?
-          <SystemUiconsUserMale width={80} height={80} className="rounded-full border-2 text-green-500 border-green-500 p-1" /> :
-          <Image unoptimized src={imageUrl} objectFit="cover" alt="プロフィール写真" width={80} height={80} className="w-[80px] h-[80px] sm:h-[128px] sm:w-[128px] rounded-full" />
-      }
+      className="relative rounded-full overflow-hidden"
+      style={{ width: responsiveSize, height: responsiveSize }}
+    >
+      {isValidSrc ? (
+        <Image
+          unoptimized
+          src={imageUrl}
+          alt="プロフィール写真"
+          fill
+          className="object-cover rounded-full"
+        />
+      ) : (
+        <SystemUiconsUserMale
+          width="100%"
+          height="100%"
+          className="rounded-full border-2 text-green-500 border-green-500 p-1"
+        />
+      )}
     </div>
   );
-};
+}
 
 export default ProfileImage;
+

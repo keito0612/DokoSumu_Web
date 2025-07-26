@@ -11,12 +11,15 @@ import ProfileDetail from './ProfileDetail';
 import { useEffect, useState } from 'react';
 import ProfileImage from './ProfileImage';
 import Modal from "@/app/components/Modal";
+import { useRouter } from 'next/navigation';
 
 const ProfileBody: React.FC = () => {
+  const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isSkeleton, setIsSkeleton] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [modalType, setModalType] = useState<ResultType>('Success');
   const [modalTitle, setModalTitle] = useState('');
   const [modalMessage, setModalMessage] = useState('');
@@ -59,21 +62,39 @@ const ProfileBody: React.FC = () => {
           'Authorization': `Bearer ${token}`,
         }
       });
+      setIsConfirmModalOpen(false);
       if (res.ok) {
-        setIsSkeleton(true);
-        await getProfile();
+        setIsResultModalOpen(true);
+        setModalType('Success');
+        setModalTitle('投稿を削除しました。');
+        setModalMessage('');
         setIsSkeleton(false);
       } else if (res.status === 404) {
+        setIsResultModalOpen(true);
+        setModalType('Error');
+        setModalTitle('投稿を削除できませんでした。');
+        setModalMessage('削除する投稿が見つかりませんでした。もう一度お試しください。');
       } else {
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
     } catch (e) {
+      setIsConfirmModalOpen(true);
+      setModalType('Error');
+      setModalTitle('投稿を削除できませんでした。');
+      setModalMessage('サーバーの不具合により投稿を削除できませんでした。もう一度お試しください。');
       console.error("プロフィール取得エラー:", e);
     }
   }
 
-  const handleClose = () => {
-    setIsModalOpen(false);
+  const handleClose = async () => {
+    if (modalType === 'Warning') {
+      setIsConfirmModalOpen(false);
+    } else if (modalType === 'Success') {
+      setIsResultModalOpen(false);
+      window.location.reload();
+    } else {
+      setIsResultModalOpen(false);
+    }
   };
 
   const onConfirm = async () => {
@@ -111,9 +132,9 @@ const ProfileBody: React.FC = () => {
         <ProfileList postReviews={profile.reviews} likedReviews={profile.likedReviews} onMenuAction={async (action, id) => {
           setSelectedReviewId(id);
           if (action === "edit") {
-
+            router.push(`/post/edit/${id}`);
           } else {
-            setIsModalOpen(true);
+            setIsConfirmModalOpen(true);
             setModalType('Warning');
             setModalTitle('投稿を削除しますか？');
             setModalMessage('一度削除した投稿は復元できません。');
@@ -121,7 +142,14 @@ const ProfileBody: React.FC = () => {
         }}></ProfileList>
       </div>
       <Modal
-        isOpen={isModalOpen}
+        isOpen={isConfirmModalOpen}
+        onClose={handleClose}
+        onConfirm={onConfirm}
+        type={modalType}
+        message={modalMessage}
+        title={modalTitle} />
+      <Modal
+        isOpen={isResultModalOpen}
         onClose={handleClose}
         onConfirm={onConfirm}
         type={modalType}

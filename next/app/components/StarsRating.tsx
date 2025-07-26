@@ -2,9 +2,11 @@ import { Rating } from "react-simple-star-rating";
 
 interface StarsRatingsProps {
   rating: number;
+  size?: number;
+  isScore?: boolean;
 }
 
-const StarsRatings: React.FC<StarsRatingsProps> = (props: StarsRatingsProps) => {
+const StarsRatings: React.FC<StarsRatingsProps> = ({ rating, size = 35, isScore = true }: StarsRatingsProps) => {
   return (
     <>
       <div className="flex justify-start ">
@@ -12,17 +14,15 @@ const StarsRatings: React.FC<StarsRatingsProps> = (props: StarsRatingsProps) => 
           emptyStyle={{ display: "flex" }}
           className="auto"
           fillStyle={{ display: "-webkit-inline-box" }}
-          initialValue={props.rating}
+          initialValue={rating}
           transition
-          size={35}
+          size={size}
           allowFraction
           allowHover={false}
           readonly={true}
           allowTitleTag={false}
         />
-        <span className="text-4xl pl-3 text-black">
-          {props.rating}/5.0
-        </span>
+        {isScore && <span className="text-4xl pl-3 text-black">{rating} / 5</span>}
       </div>
     </>
   );

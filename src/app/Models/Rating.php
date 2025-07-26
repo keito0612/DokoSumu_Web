@@ -14,6 +14,7 @@ class Rating extends Model
         'child_rearing',
         'safety',
         'public_transportation',
+        'average_rating'
     ];
     public function review()
     {

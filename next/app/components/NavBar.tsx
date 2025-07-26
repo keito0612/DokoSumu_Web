@@ -4,6 +4,10 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { User } from '@/types';
+import { UtilApi } from '@/Util/Util_api';
+import { AuthService } from '@/service/authServise';
+import ProfileImage from './profile/ProfileImage';
 
 
 interface NavBarProps {
@@ -31,8 +35,27 @@ function NavBar({ title }: NavBarProps) {
     setNavigation(updatedNavigation);
   };
 
-  useEffect(() => {
+  const [user, setUser] = useState<User | null>();
 
+  const getUser = async () => {
+    const url = `${UtilApi.API_URL}/api/user`;
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${AuthService.getSesstion()}`,
+      },
+    });
+    const data = await res.json();
+    const user: User = data['user'] as User;
+    setUser(user);
+  }
+  useEffect(() => {
+    (async () => {
+      if (AuthService.getSesstion()) {
+        await getUser();
+      }
+    })()
   }, [])
 
   return (
@@ -86,34 +109,31 @@ function NavBar({ title }: NavBarProps) {
               <span className="sr-only">通知を見る</span>
               <NotificationBell />
             </button> */}
-            <Menu as="div" className="relative ml-3">
-              <div>
-                <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">ユーザーメニューを開く</span>
-                  <img
-                    alt=""
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    className="h-8 w-8 rounded-full"
-                  />
-                </MenuButton>
-              </div>
-              <MenuItems
-                transition
-                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none"
-              >
-                <MenuItem>
-                  <Link className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100' href={"/profile"}>
-                    プロフィール
-                  </Link>
-                </MenuItem>
-                <MenuItem>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    サインアウト
-                  </a>
-                </MenuItem>
-              </MenuItems>
-            </Menu>
+            <div className="flex flex-row items-center justify-center">
+              <Menu as="div" className="relative ml-3">
+                <div>
+                  <MenuButton className="relative flex rounded-full text-sm focus:outline-none focus:ring-2 bg-white focus:bg-slate-400 z-10 ">
+                    <ProfileImage imageUrl={user?.image_path ? user!.image_path : null} sizes={36} />
+                  </MenuButton>
+                </div>
+                <MenuItems
+                  transition
+                  className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none"
+                >
+                  <MenuItem>
+                    <Link className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100' href={"/profile"}>
+                      プロフィール
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      サインアウト
+                    </a>
+                  </MenuItem>
+                </MenuItems>
+              </Menu>
+              <p className='font-bold ml-4'>{user?.name}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -137,7 +157,7 @@ function NavBar({ title }: NavBarProps) {
           ))}
         </div>
       </DisclosurePanel>
-    </Disclosure>
+    </Disclosure >
   );
 }
 

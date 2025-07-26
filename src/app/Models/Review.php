@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Review extends Model
 {
-
     protected $fillable = [
         'user_id',
         'prefecture_id',
@@ -15,6 +14,13 @@ class Review extends Model
         'good_comment',
         'bad_comment'
     ];
+
+    protected $appends = ['posted_at_human'];
+
+    public function getPostedAtHumanAttribute()
+    {
+        return $this->created_at->diffForHumans();
+    }
     public function likes()
     {
         return $this->hasMany(Like::class, 'review_id');

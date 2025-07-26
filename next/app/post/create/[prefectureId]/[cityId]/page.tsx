@@ -24,6 +24,7 @@ interface RatingPostForm {
   photos: File[]
   goodComment: string
   badComment: string
+  averageRating: number
 }
 
 
@@ -80,6 +81,8 @@ export default function RatingPost() {
     const cityId = params.cityId;
     const url: string = `${UtilApi.API_URL}/api/post/city_review/${prefectureId}/${cityId}`;
     dataSet.photos = files;
+    dataSet.averageRating = averageScore;
+    console.log(dataSet.averageRating);
     const formData = new FormData();
 
     formData.append('safety', dataSet.safety.toString());
@@ -89,6 +92,7 @@ export default function RatingPost() {
     formData.append('livability', dataSet.livability.toString());
     formData.append('goodComment', dataSet.goodComment);
     formData.append('badComment', dataSet.badComment);
+    formData.append('average_rating', dataSet.averageRating.toString());
     dataSet.photos.forEach((file) => {
       formData.append('photos[]', file)
     })
@@ -109,7 +113,7 @@ export default function RatingPost() {
         setModalTitle('レビューが投稿されました。');
         setModalMessage('');
       } else {
-        const message = UtilApi.selectedErrorMessage(["safety", "childRearing", "cityPolicies", "publicTransportation", "livability", "goodComment", "badComment"], data["errors"])
+        const message = UtilApi.selectedErrorMessage(["safety", "childRearing", "cityPolicies", "publicTransportation", "livability", "goodComment", "badComment", "average_rating"], data["errors"])
         console.log(message);
         setIsModalOpen(true);
         setModalType('Error');

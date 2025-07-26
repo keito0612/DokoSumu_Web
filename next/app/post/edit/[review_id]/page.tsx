@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import Chart from "@/app/components/Chart";
 import StarsRating from "@/app/components/StarsRating";
 import TextErea from "@/app/components/TextErea";
-import { ChartData, ResultType } from "@/types";
+import { ChartData, ResultType, Review } from "@/types";
 import { Path, useForm } from 'react-hook-form';
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -25,6 +25,7 @@ interface RatingEditPostForm {
   photos: File[];
   goodComment: string;
   badComment: string;
+  averageRating: number;
 }
 
 const categoriesTitle = ["治安", "子育て", "制度", "交通機関", "住みやすさ"];
@@ -45,13 +46,12 @@ export default function RatingEditPost() {
   const [modalTitle, setModalTitle] = useState('');
   const [modalMessage, setModalMessage] = useState('');
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<RatingEditPostForm>();
+  const { register, getValues, handleSubmit, setValue, reset, formState: { errors } } = useForm<RatingEditPostForm>();
 
 
   const fetchData = async () => {
-    const prefectureId = params.prefectureId;
-    const cityId = params.cityId;
-    const url = `${UtilApi.API_URL}/api/post/city_review/${prefectureId}/${cityId}`;
+    const reviewId = params.review_id;
+    const url = `${UtilApi.API_URL}/api/post/review/${reviewId}`;
     try {
       const res = await fetch(url, {
         method: "GET",
@@ -61,23 +61,34 @@ export default function RatingEditPost() {
         },
       });
       const data = await res.json();
-
-      // フィールド値セット
-      categories.forEach((key) => {
-        setValue(key as Path<RatingEditPostForm>, data[key]);
-      });
-      setValue("goodComment", data.goodComment);
-      setValue("badComment", data.badComment);
+      const review: Review = data['review'] as Review;
+      reset({
+        safety: review.rating.safety,
+        childRearing: review.rating.child_rearing,
+        cityPolicies: review.rating.city_policies,
+        publicTransportation: review.rating.public_transportation,
+        livability: review.rating.livability,
+        goodComment: review.good_comment,
+        badComment: review.bad_comment,
+        averageRating: review.rating.average_rating
+      })
 
       setRatings(
-        Object.fromEntries(categories.map((cat) => [cat, data[cat]]))
+        Object.fromEntries(
+          categories.map((cat) => {
+            const value = getValues(cat as Path<RatingEditPostForm>);
+            return [cat, typeof value === "number" ? value : Number(value)];
+          })
+        )
       );
 
-      const avg = categories.reduce((sum, cat) => sum + data[cat], 0) / categories.length;
-      setAverageScore(avg);
+      setAverageScore(review.rating.average_rating);
 
       // 画像URLをセット（ここでは画像編集できないので表示だけ）
-      setPreviewUrls(data.image_urls || []); // image_urls はAPIから返る前提
+      const imageUrls: (string)[] = review.photos.map(photo => {
+        return photo.photo_url;
+      }).filter((url): url is string => url !== null);;
+      setPreviewUrls(imageUrls);
       setLoading(false);
     } catch (err) {
       console.error("Fetch failed:", err);
@@ -121,27 +132,26 @@ export default function RatingEditPost() {
   }, []);
 
   async function onSubmit(dataSet: RatingEditPostForm) {
-    const prefectureId = params.prefectureId;
-    const cityId = params.cityId;
-    const url = `${UtilApi.API_URL}/api/post/city_review/${prefectureId}/${cityId}`;
-    dataSet.photos = files;
     const formData = new FormData();
+    const reviewId = params.review_id;
+    const url = `${UtilApi.API_URL}/api/post/review/${reviewId}/update`;
+    dataSet.photos = files;
 
     formData.append('safety', dataSet.safety.toString());
     formData.append('childRearing', dataSet.childRearing.toString());
     formData.append('cityPolicies', dataSet.cityPolicies.toString());
     formData.append('publicTransportation', dataSet.publicTransportation.toString());
     formData.append('livability', dataSet.livability.toString());
-    formData.append("goodComment", dataSet.goodComment);
-    formData.append("badComment", dataSet.badComment);
+    formData.append("goodComment", dataSet.goodComment.toString());
+    formData.append("badComment", dataSet.badComment.toString());
     dataSet.photos.forEach((file) => {
       formData.append("photos[]", file);
     });
-
     setLoading(true);
+    console.log(formData.get('badComment'));
     try {
       const res = await fetch(url, {
-        method: "POST", // 🔄 POST → PATCH に変更
+        method: "POST",
         headers: {
           'Authorization': `Bearer ${AuthService.getSesstion()}`,
         },

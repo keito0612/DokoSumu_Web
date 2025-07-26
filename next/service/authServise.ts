@@ -66,10 +66,9 @@ export class AuthService {
       if (userInfo) {
         return JSON.parse(userInfo);
       } else {
-        return {};
+        return null;
       }
-    } else {
-      return {};
     }
+    return null;
   }
 }

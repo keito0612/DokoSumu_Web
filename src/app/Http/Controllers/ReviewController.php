@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Carbon\Carbon;
 use App\Http\Requests\CityRequest;
 use App\Http\Requests\ReviewRequest;
 use App\Models\Like;
@@ -89,7 +89,7 @@ class ReviewController extends Controller
                     "prefecture_id" => $prefecture_id,
                     "city_id" => $city_id,
                     "good_comment" => $request->goodComment,
-                    "bad_comment" => $request->badComment
+                    "bad_comment" => $request->badComment,
                 ]
             );
             if ($newReview->isEmpty) {
@@ -102,10 +102,11 @@ class ReviewController extends Controller
                 "child_rearing" => $request->childRearing,
                 "safety" => $request->safety,
                 "public_transportation" => $request->publicTransportation,
-                "review_id" => $newReview->id
+                "review_id" => $newReview->id,
+                "average_rating" => $request->average_rating,
             ]);
             if ($request->hasFile('photos')) {
-                $this->storePhotos($request->file('photos'), $newReview->id);
+                $this->storePhotos($request->file('photos'), false,$newReview->id);
             }
             DB::commit();
             return response()->json([
@@ -119,7 +120,14 @@ class ReviewController extends Controller
 
     function getReview($id)
     {
-        $review = Review::find($id);
+        $review = Review::with([
+            'user',
+            'city',
+            'rating',
+            'photos',
+            'prefecture',
+            'likes'
+        ])->find($id);
 
         if (!$review) {
             return response()->json([
@@ -132,41 +140,38 @@ class ReviewController extends Controller
         ], 200);
     }
 
-    function updateReview($id, $prefecture_id, $city_Id, ReviewRequest $request)
+    function updateReview($id, ReviewRequest $request)
     {
-        $user_id = Auth::id();
+        $review = Review::find($id);
+        if(!$review){
+            return response()->json([
+                "message" => "Update review not found."
+            ], 404);
+        }
         DB::beginTransaction();
-        try {
-            $updateReview = tap(Review::where("id", $id)->first())->update(
-                [
-                    "user_id" => $user_id,
-                    "prefecture_id" => $prefecture_id,
-                    "city_id" => $city_Id,
-                    "good_comment" => $request->good_comment,
-                    "bad_comment" => $request->bad_comment
-                ]
-            );
-            if ($updateReview->isEmpty) {
-                DB::rollback();
-                return response()->json(["message" => "Review not found"], 404);
-            }
-            Rating::where("id", $id)->update([
-                "livability" => $request->livability,
-                "city_policies" => $request->city_policies,
-                "child_rearing" => $request->child_rearing,
-                "safety" => $request->safety,
-                "public_transportation" => $request->public_transportation,
-                "review_id" => $updateReview->id
+        try{
+            $review->update([
+                'good_comment' => $request->goodComment,
+                'bad_comment' => $request->badComment
+            ]);
+            $rating = Rating::where('review_id', $review->id)->first();
+            $rating->update([
+                'livability' => $request->livability,
+                'city_policies' => $request->cityPolicies,
+                'safety' => $request->safety,
+                'public_transportation' => $request->publicTransportation,
+                'child_rearing' => $request->childRearing,
+                "average_rating" => $request->average_rating,
             ]);
             if ($request->hasFile('photos')) {
-                $this->storePhotos($request->file('photos'), $updateReview->id);
+                $this->storePhotos($request->file('photos'), true,$review->id);
             }
             DB::commit();
             return response()->json([
-                "message" => "updated successfully"
-            ], 200);
+                "message" => "update review susessfully",
+            ], 201);
         } catch (Exception $e) {
-            DB::rollback();
+            DB::rollBack();
             return response()->json(["error" => $e->getMessage()], 500);
         }
     }
@@ -190,9 +195,16 @@ class ReviewController extends Controller
         }
     }
 
-    private function storePhotos($photos, $review_id)
+    private function storePhotos($photos,$isEdit = false ,$reviewId)
     {
         $photoData = [];
+        if ($isEdit) {
+            $oldPhotos = Photo::where('review_id', $reviewId)->get();
+            foreach ($oldPhotos as $oldPhoto) {
+                $this->fileService->delete($oldPhoto->photo_url);
+            }
+            Photo::where('review_id', $reviewId)->delete();
+        }
         foreach ($photos as $photo) {
             $extension = $photo->getClientOriginalExtension();
             // 英数字＋タイムスタンプのファイル名生成
@@ -201,7 +213,7 @@ class ReviewController extends Controller
             $path = $this->fileService->upload($photo, $directory,$fileName);
             $url  = $this->fileService->getUrl($path);
             $photoData[] = [
-                "review_id" => $review_id,
+                "review_id" => $reviewId,
                 "photo_url" => $url
             ];
         }
@@ -212,10 +224,10 @@ class ReviewController extends Controller
     {
         DB::beginTransaction();
         try{
-            $user = Auth::user();
+            $userId = Auth::id();
             Like::create(
             [
-                'user_id' => $user->id,
+                'user_id' => $userId,
                 'review_id' => $reviewId
             ]
             );

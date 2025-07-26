@@ -1,9 +1,15 @@
-export default function ReviewMeta() {
+import { Review } from "@/types";
+import StarsRating from "../StarsRating";
+
+interface ReviewMeta {
+  review: Review;
+}
+
+export default function ReviewMeta({ review }: ReviewMeta) {
   return (
-    <div className="text-yellow-500 flex items-center space-x-2">
-      <div>★★★★☆</div>
-      <div className="text-xs text-gray-500">1週間前</div>
-      <span className="text-xs bg-gray-200 rounded px-1">新規</span>
+    <div className="flex items-end space-x-2">
+      <StarsRating rating={review.rating.average_rating} size={20} isScore={false} />
+      <div className="text-sm text-gray-500">{review.posted_at_human}</div>
     </div>
   );
 }

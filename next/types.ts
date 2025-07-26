@@ -48,6 +48,7 @@ export interface Rating {
   child_rearing: number;
   city_policies: number;
   livability: number;
+  average_rating: number;
   created_at: string;
   updated_at: string;
 };
@@ -70,6 +71,7 @@ export interface Review {
   created_at: string;
   updated_at: string;
   city: City;
+  posted_at_human: string;
   prefecture: Prefecture;
   rating: Rating;
   photos: Photo[];

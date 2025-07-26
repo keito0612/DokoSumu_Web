@@ -15,6 +15,7 @@ import Loading from '../components/Loading';
 import PostButton from '../components/PostButton';
 import ReviewList from '../components/review/ReviewList';
 import { AuthService } from '@/service/authServise';
+import ImagesModal from '../components/review/modal/ImagesModal';
 interface PrefectureBlockProps {
   region: string;
   prefectures: { id: number; name: string }[];
@@ -54,6 +55,7 @@ function Home() {
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
   const [reviewList, setReviewList] = useState<Review[]>([]);
+
   const tabs: Tab[] = [
     {
       id: '0', label: '評価', content: 'Content for Tab 1', onTap: (tabId: string) => {
@@ -367,6 +369,7 @@ function Home() {
         </div>
       </div>
       <NavigationBottomBar />
+      <ImagesModal isOpen={imageViewerOpen} onClose={closeImageViewer} images={[imageSrc]} title={selectedName} />
     </div>
 
   );
