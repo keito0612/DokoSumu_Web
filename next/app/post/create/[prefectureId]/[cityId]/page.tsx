@@ -14,6 +14,7 @@ import Modal from "@/app/components/Modal";
 import NavBar from "@/app/components/NavBar";
 import ImageUploader from "@/app/components/ImageUploader";
 import RatingSection from "@/app/components/RatingSection";
+import NavigationBottomBar from "@/app/components/NavigationBottomBar";
 
 interface RatingPostForm {
   safety: number
@@ -82,7 +83,6 @@ export default function RatingPost() {
     const url: string = `${UtilApi.API_URL}/api/post/city_review/${prefectureId}/${cityId}`;
     dataSet.photos = files;
     dataSet.averageRating = averageScore;
-    console.log(dataSet.averageRating);
     const formData = new FormData();
 
     formData.append('safety', dataSet.safety.toString());
@@ -92,7 +92,7 @@ export default function RatingPost() {
     formData.append('livability', dataSet.livability.toString());
     formData.append('goodComment', dataSet.goodComment);
     formData.append('badComment', dataSet.badComment);
-    formData.append('average_rating', dataSet.averageRating.toString());
+    formData.append('averageRating', dataSet.averageRating.toString());
     dataSet.photos.forEach((file) => {
       formData.append('photos[]', file)
     })
@@ -143,39 +143,49 @@ export default function RatingPost() {
       {loading === true && (
         <Loading2 loadingtext={"読み込み中"} />
       )}
-      <div className="flex flex-col items-center p-4 pt-24  mx-auto w-full max-w-4xl">
+      <div className="flex flex-col items-center p-4 pt-24  mx-auto w-full max-w-4xl bg-gray-100">
         {/* タイトル */}
-        <h2 className="text-black text-2xl md:text-3xl font-bold text-center mb-6">あなたの評価を教えてください。</h2>
+        {/* <h2 className="text-black text-2xl md:text-3xl font-bold text-center mb-6">あなたの評価を教えてください。</h2> */}
 
         {/* 星評価 */}
-        <StarsRating rating={averageScore} />
+        <div className='flex flex-col items-center w-full py-4  rounded-2xl bg-white mb-4'>
+          <StarsRating rating={averageScore} />
+        </div>
 
         {/* レーダーチャート */}
-        <Chart title="評価" data={chartData} className="mb-8 mt-8" />
+        <div className='w-full flex flex-col items-center p-2 pb-16 bg-white rounded-2xl'>
+          <Chart title="評価" data={chartData} />
+        </div>
         <form className="w-full" onSubmit={handleSubmit(onSubmit)} method="POST">
           {/* セレクトボタン */}
-          <RatingSection
-            categories={categories as Path<RatingPostForm>[]}
-            categoriesTitle={categoriesTitle}
-            ratings={ratings}
-            register={register}
-            handleRatingChange={handleRatingChange}
-          />
+          <div className='w-full p-2 pb-2 my-4 bg-white rounded-2xl'>
+            <RatingSection
+              categories={categories as Path<RatingPostForm>[]}
+              categoriesTitle={categoriesTitle}
+              ratings={ratings}
+              register={register}
+              handleRatingChange={handleRatingChange}
+            />
+          </div>
           {/* 良い所欄 */}
-          <TextErea title="良い所" className="pt-6 mb-3" placeholder="" errorMessage={errors.goodComment?.message} register={register("goodComment", {
-            maxLength: { value: 300, message: "300文字以内で入力して下さい。" }
-          })} />
+          <div className='w-full p-2 pb-2 my-4 bg-white rounded-2xl'>
+            <TextErea title="良い所" className="" placeholder="" errorMessage={errors.goodComment?.message} register={register("goodComment", {
+              maxLength: { value: 300, message: "300文字以内で入力して下さい。" }
+            })} />
+          </div>
           {/* 悪いところ */}
-          <TextErea title="悪いところ" className="mb-3" placeholder="" errorMessage={errors.badComment?.message} register={register("badComment", {
-            maxLength: { value: 300, message: "300文字以内で入力して下さい。" }
-          })} />
+          <div className='w-full p-2 pb-2 my-4 bg-white rounded-2xl'>
+            <TextErea title="悪いところ" className="" placeholder="" errorMessage={errors.badComment?.message} register={register("badComment", {
+              maxLength: { value: 300, message: "300文字以内で入力して下さい。" }
+            })} />
+          </div>
           {/* 画像アップロード */}
           <ImageUploader
             previewUrls={previewUrls}
             handleRemoveImage={handleRemoveImage}
             handleOnAddImage={handleOnAddImage}
           />
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-6 pb-24">
             <button
               type="submit"
               className="w-full md:w-48 h-16 bg-lime-500 text-white font-bold rounded-full shadow-md hover:bg-lime-600 transition duration-300"
@@ -184,6 +194,7 @@ export default function RatingPost() {
             </button>
           </div>
         </form >
+        <NavigationBottomBar />
       </div >
       <Modal
         isOpen={isModalOpen}

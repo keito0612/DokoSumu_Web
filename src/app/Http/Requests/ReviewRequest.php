@@ -29,7 +29,7 @@ class ReviewRequest extends FormRequest
             'cityPolicies' => 'required|integer|in:0,1,2,3,4,5',
             'publicTransportation' => 'required|integer|in:0,1,2,3,4,5',
             'livability' =>'required|integer|in:0,1,2,3,4,5',
-            'average_rating' => 'required|numeric',
+            'averageRating' => 'required|numeric',
             'photos.*' => 'file|mimes:jpeg,png,jpg,gif|max:2048',
             'goodComment' => 'nullable|max:300',
             'badComment' => 'nullable|max:300',

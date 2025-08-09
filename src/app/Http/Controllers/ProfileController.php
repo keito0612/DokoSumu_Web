@@ -37,7 +37,16 @@ class ProfileController extends Controller
             'reviews.rating',       // レビューの評価情報
             'reviews.photos',       // レビューの写真情報
             'reviews.likes',        // レビューのいいね情報
-            'likedReviews.user'     // ユーザーがいいねしたレビューとその投稿者情報
+            'likedReviews' => function($query){
+                $query->with([
+                    'user',
+                    'city',
+                    'prefecture',
+                    'rating',
+                    'photos',
+                    'likes'
+                ]);
+            }     // ユーザーがいいねしたレビューとその投稿者情報
         ])->where('id', $userId)->first();
         $profile?->append(['reviews_count', 'liked_reviews_count']);
         return response()->json([

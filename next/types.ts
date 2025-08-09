@@ -11,7 +11,7 @@ export interface Profile {
   liked_reviews_count: number;
   reviews_count: number;
   reviews: Review[];
-  likedReviews: Review[];
+  liked_reviews: Review[];
   likes: unknown[];
 }
 
@@ -56,6 +56,7 @@ export interface Rating {
 export interface Photo {
   id: number;
   review_id: number;
+  reviews: Review[] | null;
   photo_url: string | null;
   created_at: string | null;
   updated_at: string | null;

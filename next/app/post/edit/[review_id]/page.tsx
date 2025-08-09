@@ -15,6 +15,7 @@ import Modal from "@/app/components/Modal";
 import NavBar from "@/app/components/NavBar";
 import ImageUploader from "@/app/components/ImageUploader";
 import RatingSection from "@/app/components/RatingSection";
+import NavigationBottomBar from '@/app/components/NavigationBottomBar';
 
 interface RatingEditPostForm {
   safety: number;
@@ -136,6 +137,7 @@ export default function RatingEditPost() {
     const reviewId = params.review_id;
     const url = `${UtilApi.API_URL}/api/post/review/${reviewId}/update`;
     dataSet.photos = files;
+    dataSet.averageRating = averageScore;
 
     formData.append('safety', dataSet.safety.toString());
     formData.append('childRearing', dataSet.childRearing.toString());
@@ -144,6 +146,7 @@ export default function RatingEditPost() {
     formData.append('livability', dataSet.livability.toString());
     formData.append("goodComment", dataSet.goodComment.toString());
     formData.append("badComment", dataSet.badComment.toString());
+    formData.append("averageRating", dataSet.averageRating.toString());
     dataSet.photos.forEach((file) => {
       formData.append("photos[]", file);
     });
@@ -188,41 +191,50 @@ export default function RatingEditPost() {
 
   return (
     <div className="w-full h-full">
-      <NavBar title="編集画面" />
+      <NavBar title="編集" />
       {loading && <Loading2 loadingtext="読み込み中..." />}
       {!loading && (
-        <div className="flex flex-col items-center p-4 pt-24 mx-auto w-full max-w-4xl">
-          <h2 className="text-black text-2xl md:text-3xl font-bold text-center mb-6">投稿内容を編集してください。</h2>
-          <StarsRating rating={averageScore} />
-          <Chart title="評価" data={chartData} className="mb-8 mt-8" />
+        <div className="flex flex-col items-center p-4 pt-24 mx-auto w-full max-w-4xl bg-gray-100" >
+          {/* <h2 className="text-black text-2xl md:text-3xl font-bold text-center mb-6"></h2> */}
+          <div className='flex flex-col items-center w-full py-4  rounded-2xl bg-white mb-4'>
+            <StarsRating rating={averageScore} />
+          </div>
+          <div className='w-full flex flex-col items-center p-2 pb-16 bg-white rounded-2xl'>
+            <Chart title="評価" data={chartData} />
+          </div>
           <form className="w-full" onSubmit={handleSubmit(onSubmit)} method="POST">
-            <RatingSection
-              categories={categories as Path<RatingEditPostForm>[]}
-              categoriesTitle={categoriesTitle}
-              ratings={ratings}
-              register={register}
-              handleRatingChange={handleRatingChange}
-            />
-            <TextErea
-              title="良い所"
-              className="pt-6 mb-3"
-              placeholder=""
-              errorMessage={errors.goodComment?.message}
-              register={register("goodComment", { maxLength: { value: 300, message: "300文字以内で入力して下さい。" } })}
-            />
-            <TextErea
-              title="悪いところ"
-              className="mb-3"
-              placeholder=""
-              errorMessage={errors.badComment?.message}
-              register={register("badComment", { maxLength: { value: 300, message: "300文字以内で入力して下さい。" } })}
-            />
+            <div className='w-full p-2 pb-2 my-4 bg-white rounded-2xl'>
+              <RatingSection
+                categories={categories as Path<RatingEditPostForm>[]}
+                categoriesTitle={categoriesTitle}
+                ratings={ratings}
+                register={register}
+                handleRatingChange={handleRatingChange}
+              />
+            </div>
+            <div className='w-full p-2 pb-2 my-4 bg-white rounded-2xl'>
+              <TextErea
+                title="良い所"
+                placeholder=""
+                errorMessage={errors.goodComment?.message}
+                register={register("goodComment", { maxLength: { value: 300, message: "300文字以内で入力して下さい。" } })}
+              />
+            </div>
+            <div className='w-full p-2 pb-2 my-4 bg-white rounded-2xl'>
+              <TextErea
+                title="悪いところ"
+                className="mb-3"
+                placeholder=""
+                errorMessage={errors.badComment?.message}
+                register={register("badComment", { maxLength: { value: 300, message: "300文字以内で入力して下さい。" } })}
+              />
+            </div>
             <ImageUploader
               previewUrls={previewUrls}
               handleRemoveImage={handleRemoveImage}
               handleOnAddImage={handleOnAddImage}
             />
-            <div className="flex justify-center mt-6">
+            <div className="flex justify-center mt-6 pb-24">
               <button
                 type="submit"
                 className="w-full md:w-48 h-16 bg-lime-500 text-white font-bold rounded-full shadow-md hover:bg-lime-600 transition duration-300"
@@ -231,8 +243,10 @@ export default function RatingEditPost() {
               </button>
             </div>
           </form>
-        </div>
-      )}
+          <NavigationBottomBar />
+        </div >
+      )
+      }
       <Modal
         isOpen={isModalOpen}
         onClose={onClone}
@@ -240,6 +254,6 @@ export default function RatingEditPost() {
         message={modalMessage}
         title={modalTitle}
       />
-    </div>
+    </div >
   );
 }

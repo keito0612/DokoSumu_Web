@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -59,7 +60,10 @@ class User extends Authenticatable
 
     public function likedReviews()
     {
-        return $this->belongsToMany(Review::class, 'likes', 'user_id', 'review_id')->withTimestamps();
+        $userId = Auth::id();
+        return $this->hasMany(Review::class)->whereHas('likes',function($query) use($userId) {
+            $query->where("user_id" ,"!=",$userId);
+        });
     }
 
     public function getReviewsCountAttribute(): int

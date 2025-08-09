@@ -3,7 +3,7 @@ import { FC } from "react";
 
 interface CityListProps {
   citys: City[];
-  handleButtonClick: (city: { id: number; name: string }) => void;
+  handleButtonClick: (city: City) => void;
 }
 
 const CityList: FC<CityListProps> = ({ citys, handleButtonClick }) => {

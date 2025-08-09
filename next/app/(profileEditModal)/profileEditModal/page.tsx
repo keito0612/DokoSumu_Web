@@ -116,7 +116,7 @@ const ProfileEditModal: React.FC = () => {
       if (res.ok) {
         setIsModalOpen(true);
         setModalType('Success');
-        setModalTitle('プロフィールが編集しました。');
+        setModalTitle('プロフィールを編集しました。');
         setModalMessage('');
       } else {
         console.log(data);
@@ -150,7 +150,7 @@ const ProfileEditModal: React.FC = () => {
           <Close style={{ fontSize: 30, color: 'black' }} className="h-6 w-6" />
         </button>
         <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center text-gray-800">プロフィール編集</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="">
           <div className="flex items-center justify-center space-x-3">
             <ProfileEditImageButton previewUrl={previewUrl} onChange={handleChangeImage} register={register("profileImage")} errorMessage={errors.profileImage?.message} />
           </div>

@@ -21,6 +21,10 @@ export default function ReviewHeader({
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const isEditPage = pathname.includes("/profile");
+  const [imageLoading, setImageLoading] = useState(true);
+  const setLoading = (loading: boolean) => {
+    setImageLoading(loading);
+  };
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -51,7 +55,19 @@ export default function ReviewHeader({
             className="rounded-full border-2 text-green-500 border-green-500"
           />
         ) : (
-          <Image unoptimized src={user.image_path} objectFit="cover" alt="プロフィール写真" width={40} height={40} className="w-[40px] h-[40px] sm:h-[40px] sm:w-[40px] rounded-full" />
+          <div className="relative w-[40px] h-[40px]">
+            {imageLoading && (
+              <div className="absolute inset-0 bg-black/40 animate-pulse rounded-full z-10" />
+            )}
+            <Image
+              unoptimized
+              src={user.image_path}
+              alt="プロフィール写真"
+              fill
+              className="object-cover rounded-full"
+              onLoad={() => setLoading(false)}
+            />
+          </div>
         )}
         <div>
           <div className="font-semibold text-black">{user.name}</div>

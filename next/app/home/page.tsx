@@ -5,9 +5,8 @@ import NavBar from '../components/NavBar';
 import NavigationBottomBar from '../components/NavigationBottomBar';
 import SheetModal from '../components/SheetModal';
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import StarsRating from '../components/StarsRating';
-import { ChartData, City, Review } from '@/types';
+import { ChartData, City, Photo, Review } from '@/types';
 import CityList from '../components/CityList';
 import { UtilApi } from '@/Util/Util_api';
 import Tabs, { Tab } from '../components/Tabs';
@@ -16,6 +15,7 @@ import PostButton from '../components/PostButton';
 import ReviewList from '../components/review/ReviewList';
 import { AuthService } from '@/service/authServise';
 import ImagesModal from '../components/review/modal/ImagesModal';
+import ReviewPhotoGallery from '../components/review/ReviewPhotoGallery';
 interface PrefectureBlockProps {
   region: string;
   prefectures: { id: number; name: string }[];
@@ -53,9 +53,10 @@ function Home() {
   const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
   const [selectedTab, setSelectedTab] = useState<string>('0');
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
-  const [imageSrc, setImageSrc] = useState("");
+  const [selectImageIndex, setSelectImageIndex] = useState<number | null>(null);
   const [reviewList, setReviewList] = useState<Review[]>([]);
-
+  const [averageRating, setAverageRating] = useState<number>(0);
+  const [allReviewPhotos, setAllReviewPhotos] = useState<Photo[]>([]);
   const tabs: Tab[] = [
     {
       id: '0', label: '評価', content: 'Content for Tab 1', onTap: (tabId: string) => {
@@ -76,8 +77,8 @@ function Home() {
     router.push(url.toString());
   };
 
-  const openImageViewer = (src: string) => {
-    setImageSrc(src);
+  const openImageViewer = (index: number) => {
+    setSelectImageIndex(index);
     setImageViewerOpen(true);
   };
 
@@ -210,15 +211,15 @@ function Home() {
   const handlePrefectureButtonClick = async (prefecture: { id: number; name: string }) => {
     setIsLoading(true);
     setIsModalOpen(true);
+    setSelectedPrefectureId(prefecture.id);
+    setSelectedName(prefecture.name);
     addQueryParameter("prefecture", prefecture.id.toString());
     await getCitys(prefecture.id);
     await getPrefectureReviews(prefecture.id);
-    setSelectedName(prefecture.name);
-    setSelectedPrefectureId(prefecture.id);
     setIsLoading(false);
   };
 
-  const hendleCityButtonClick = async (city: { id: number; name: string }) => {
+  const hendleCityButtonClick = async (city: City) => {
     setIsLoading(true);
     setIsModalOpen(true);
     setSelectedCityId(city.id);
@@ -273,14 +274,18 @@ function Home() {
 
       const data = await res.json();
       const reviewList: Review[] = data['reviews'];
+      const allReviewPhotos: Photo[] = data['photos'];
+      setAllReviewPhotos(allReviewPhotos);
+      const averageRating: number = reviewListAverageRating(reviewList);
+      setAverageRating(averageRating);
       setReviewList(reviewList);
-      console.log(reviewList);
     } catch (error) {
       console.error('エラー発生', error);
     }
   }
 
   const getCityReviews = async (prefecturesId: number, cityId: number) => {
+    console.log(cityId);
     const url = `${UtilApi.API_URL}/api/city_reviews/${prefecturesId}/${cityId}`;
     try {
       const res = await fetch(url, {
@@ -297,11 +302,25 @@ function Home() {
 
       const data = await res.json();
       const reviewList: Review[] = data['reviews'];
+      const allReviewPhotos: Photo[] = data['photos'];
+      const averageRating: number = reviewListAverageRating(reviewList);
+      setAverageRating(averageRating);
+      setAllReviewPhotos(allReviewPhotos);
       setReviewList(reviewList);
-      console.log(reviewList);
+      console.log(allReviewPhotos);
     } catch (error) {
       console.error('エラー発生', error);
     }
+  }
+
+
+  function reviewListAverageRating(reviewList: Review[]): number {
+    const totalAverageRating: number = reviewList.map((review) => review.rating.average_rating).reduce((sum, rating) => sum + rating, 0);
+    const averageOfAverages: number = reviewList.length > 0
+      ? totalAverageRating / reviewList.length
+      : 0;
+    const roundedAverage = Math.ceil(averageOfAverages * 10) / 10;
+    return roundedAverage;
   }
 
   return (
@@ -314,18 +333,19 @@ function Home() {
             <Tabs tabs={tabs} />
             {selectedTab === "0" ? (
               <div className='p-4'>
-                <Image
-                  src="/images/noImage.png"
-                  alt="画像がありません"
-                  width={650}
-                  height={400}
-                  onClick={() => openImageViewer("/images/noImage.png")}
+                <ReviewPhotoGallery
+                  photos={allReviewPhotos} // 空配列ならnoImageが表示される
+                  onImageClick={(index: number | null) => {
+                    if (index != null) {
+                      openImageViewer(index);
+                    }
+                  }}
                 />
                 <div className="flex justify-start flex-col">
                   <p className="text-gray-600 text-2xl pb-3 font-bold">
                     {selectedName}
                   </p>
-                  <StarsRating rating={5.0} />
+                  <StarsRating rating={averageRating} />
                   {selectedPrefectureId !== null && selectedCityId !== null ? (
                     <PostButton className={'bottom-4 right-4 pt-3'} onClick={function (): void {
                       postButtonClick(selectedPrefectureId!, selectedCityId!);
@@ -369,7 +389,7 @@ function Home() {
         </div>
       </div>
       <NavigationBottomBar />
-      <ImagesModal isOpen={imageViewerOpen} onClose={closeImageViewer} images={[imageSrc]} title={selectedName} />
+      <ImagesModal isOpen={imageViewerOpen} onClose={closeImageViewer} images={allReviewPhotos} selectImageIndex={selectImageIndex} title={selectedName} />
     </div>
 
   );

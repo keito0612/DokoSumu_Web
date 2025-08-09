@@ -39,7 +39,7 @@ class ReviewController extends Controller
             'photos',
             'prefecture',
             'likes'
-        ])->withCount('likes')->get()->map(function ($review)  {
+        ])->withCount('likes')->orderBy('created_at', 'desc')->get()->map(function ($review)  {
             $likes = $review->likes;
             if(!is_null($this->userId())){
                 $review->is_liked = $likes->contains('user_id', $this->userId());
@@ -48,8 +48,12 @@ class ReviewController extends Controller
             }
             return $review;
         });
+        $photos = Photo::whereHas('review', function ($query) use ($prefectureId) {
+                    $query->where("prefecture_id",$prefectureId);
+        })->with('review.user')->get();
         return response()->json([
-            "reviews" => $reviews
+            "reviews" => $reviews,
+            "photos" => $photos
         ], 200);
     }
     function getCityReviews($prefectureId, $cityId)
@@ -64,7 +68,7 @@ class ReviewController extends Controller
             'photos',
             'prefecture',
             'likes'
-        ])->withCount('likes')->get()->map(function ($review)  {
+        ])->withCount('likes')->orderBy('created_at', 'desc')->get()->map(function ($review)  {
             $likes = $review->likes;
             if(!is_null($this->userId())){
                 $review->is_liked = $likes->contains('user_id', $this->userId());
@@ -73,8 +77,15 @@ class ReviewController extends Controller
             }
             return $review;
         });
+        $photos = Photo::whereHas('review', function ($query) use ($prefectureId, $cityId) {
+                    $query->where([
+                        ["prefecture_id", '=', $prefectureId],
+                        ["city_id","=", $cityId],
+                    ]);
+        })->with('review.user')->get();
         return response()->json([
-            "reviews" => $reviews
+            "reviews" => $reviews,
+            "photos" => $photos
         ], 200);
     }
 
@@ -103,7 +114,7 @@ class ReviewController extends Controller
                 "safety" => $request->safety,
                 "public_transportation" => $request->publicTransportation,
                 "review_id" => $newReview->id,
-                "average_rating" => $request->average_rating,
+                "average_rating" => $request->averageRating,
             ]);
             if ($request->hasFile('photos')) {
                 $this->storePhotos($request->file('photos'), false,$newReview->id);
@@ -161,7 +172,7 @@ class ReviewController extends Controller
                 'safety' => $request->safety,
                 'public_transportation' => $request->publicTransportation,
                 'child_rearing' => $request->childRearing,
-                "average_rating" => $request->average_rating,
+                "average_rating" => $request->averageRating,
             ]);
             if ($request->hasFile('photos')) {
                 $this->storePhotos($request->file('photos'), true,$review->id);

@@ -129,7 +129,7 @@ const ProfileBody: React.FC = () => {
         </div>
         <ProfileDetail detail={profile.comment} />
         <ProfileStats postCount={profile.reviews_count} likeCount={profile.liked_reviews_count} />
-        <ProfileList postReviews={profile.reviews} likedReviews={profile.likedReviews} onMenuAction={async (action, id) => {
+        <ProfileList postReviews={profile.reviews} likedReviews={profile.liked_reviews} onMenuAction={async (action, id) => {
           setSelectedReviewId(id);
           if (action === "edit") {
             router.push(`/post/edit/${id}`);
