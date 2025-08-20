@@ -19,9 +19,9 @@ Route::get( '/some_url', function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
-Route::get('/{prefectures_id}/citys/', [CityController::class, 'getCitys']);
-Route::get('/prefecture_reviews/{prefectures_id}',[ReviewController::class, 'getPrefectureReviews']);
-Route::get('/city_reviews/{prefectures_id}/{city_id}',[ReviewController::class, 'getCityReviews']);
+Route::get('/{prefecture_id}/citys/', [CityController::class, 'getCitys']);
+Route::get('/prefecture_reviews/{prefecture_id}',[ReviewController::class, 'getPrefectureReviews']);
+Route::get('/city_reviews/{prefecture_id}/{city_id}',[ReviewController::class, 'getCityReviews']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::prefix('/post')->group(function () {

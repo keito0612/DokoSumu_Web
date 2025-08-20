@@ -25,7 +25,7 @@ class ProfileRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'comment' => 'string|max:300|',
+            'comment' => 'nullable|string|max:300|',
             'profileImage' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ];
     }

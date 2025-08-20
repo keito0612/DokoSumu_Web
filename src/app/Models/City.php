@@ -13,6 +13,6 @@ class City extends Model
 
     function prefectures()
     {
-        return $this->belongsTo(Prefectures::class);
+        return $this->belongsTo(Prefecture::class);
     }
 }

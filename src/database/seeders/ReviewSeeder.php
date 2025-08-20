@@ -2,7 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Photo;
+use App\Models\Rating;
 use App\Models\Review;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -14,16 +17,14 @@ class ReviewSeeder extends Seeder
      */
     public function run(): void
     {
-        $now = Carbon::now();
-        DB::table('reviews')->insert(
-            [
-                "prefecture_id" => 1,
-                "city_id" => 1,
-                "user_id" => 1,
-                "good_comment" => "とても良かった。",
-                "bad_comment" => "迷惑な外国人が多くて嫌だった。",
-                "created_at" => $now,
-            ]
-        );
+        $userCount = User::count();
+
+        // 各ユーザーが平均して3つのレビューを持つように計算し、まとめて作成
+        $totalReviews = $userCount * 3;
+
+        Review::factory($totalReviews)
+            ->has(Rating::factory())
+            ->has(Photo::factory(4))
+            ->create();
     }
 }

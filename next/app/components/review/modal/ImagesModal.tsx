@@ -3,8 +3,9 @@
 import { Photo } from "@/types";
 import { Dialog } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
 import { useState, useEffect } from "react";
+import CustomImage from "../../CustomImage";
+import MaterialSymbolsLightPersonOutlineRounded from "../../icons/MaterialSymbolsLightPersonOutlineRounded";
 
 interface ImageModalProps {
   isOpen: boolean;
@@ -22,76 +23,160 @@ export default function ImageModal({
   images,
 }: ImageModalProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(selectImageIndex ?? 0);
-  const [imageLoading, setImageLoading] = useState(true);
 
-  // 画像切り替え時にローディング状態をリセット
   useEffect(() => {
-    setImageLoading(true);
     setSelectedImageIndex(selectImageIndex ?? 0);
   }, [selectImageIndex]);
-
 
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       {/* 背景 */}
       <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
 
-      {/* モーダル */}
-      <div className="fixed inset-0 flex items-center justify-center p-4">
+      {/* モーダル本体 */}
+      <div className="fixed inset-0 flex items-center justify-center">
         <Dialog.Panel
-          className="w-full max-w-[95vw] sm:max-w-7xl h-[95vh] sm:h-[900px] bg-white
-          rounded-lg shadow-xl flex overflow-hidden flex-col sm:flex-row"
+          className="w-full h-full lg:w-[90vw] lg:h-[90vh] bg-white rounded-none lg:rounded-lg shadow-xl overflow-hidden flex flex-col lg:flex-row"
         >
-          {/* 左側：画像一覧 */}
-          <div className="w-[180px] overflow-y-auto border-r  p-2 space-y-2">
+          {/* モバイル & iPad */}
+          <div className="flex-1 block lg:hidden bg-black">
+            <div className="flex w-full h-full overflow-x-auto snap-x snap-mandatory">
+              {images.map((img, i) => (
+                <div
+                  key={i}
+                  className="flex-shrink-0 w-full h-full snap-center flex flex-col bg-black relative"
+                >
+                  <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-4 bg-gradient-to-b from-black/80 to-transparent">
+                    <div className="flex items-center space-x-2 text-white">
+                      {img.review?.user?.image_path == null ? (
+                        <MaterialSymbolsLightPersonOutlineRounded
+                          width={40}
+                          height={40}
+                          className="rounded-full border-2 text-white border-white"
+                        />
+                      ) : (
+                        <div className="relative w-[40px] h-[40px] rounded-full overflow-hidden">
+                          <CustomImage
+                            src={img.review.user.image_path}
+                            alt="プロフィール写真"
+                            fill
+                            objectFit="cover"
+                            className="object-cover rounded-full"
+                          />
+                        </div>
+                      )}
+                      <div className="flex flex-col text-sm">
+                        <div className="font-bold">{img.review?.user?.name ?? "匿名ユーザー"}</div>
+                        <div className="text-xs text-gray-400">{img.review?.posted_at_human ?? ""}</div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={onClose}
+                      className="text-white hover:text-gray-300 transition-colors"
+                      aria-label="画像を閉じる"
+                    >
+                      <XMarkIcon className="w-8 h-8" />
+                    </button>
+                  </div>
+
+                  <div className="relative flex-1">
+                    <CustomImage
+                      src={img.photo_url!}
+                      alt={`image-${i}`}
+                      fill
+                      objectFit="contain"
+                      className="bg-black"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* PC サムネイル */}
+          <div className="hidden lg:flex w-[180px] flex-col border-r p-2 space-y-2 overflow-y-auto">
             {images.map((img, i) => (
-              <Image
-                key={i}
-                width={180}
-                height={180}
-                unoptimized
-                src={img.photo_url!}
-                alt={`image-${i}`}
-                style={{ objectFit: "cover" }}
-                onClick={() => setSelectedImageIndex(i)}
-                className={`object-cover cursor-pointer rounded border ${selectedImageIndex === i ? "border-lime-500 border-2" : "border-transparent"
-                  }`}
-              />
+              <div key={i} className="flex-shrink-0">
+                <CustomImage
+                  src={img.photo_url!}
+                  alt={`thumb-${i}`}
+                  width={180}
+                  height={180}
+                  objectFit="cover"
+                  className={`object-cover cursor-pointer rounded border ${selectedImageIndex === i
+                    ? "border-lime-500 border-2"
+                    : "border-transparent"
+                    }`}
+                  onClick={() => setSelectedImageIndex(i)}
+                />
+              </div>
             ))}
           </div>
 
-          {/* 右側 */}
-          <div className="flex-1 flex flex-col">
-            {/* ヘッダー */}
-            <div className="flex justify-between items-center px-4 py-2 border-b">
+          {/* PC メイン画像 */}
+          <div className="hidden lg:flex flex-1 flex-col bg-black">
+            {/* 既存のタイトル・Xボタンの行を削除 */}
+            {/* <div className="flex justify-between items-center px-4 py-2 border-b">
               <h2 className="text-lg font-bold text-black">{title}</h2>
               <button onClick={onClose}>
                 <XMarkIcon className="w-6 h-6 text-gray-500 hover:text-black" />
               </button>
-            </div>
+            </div> */}
+            <div className="flex-col justify-center">
+              <div className="flex justify-start bg-white items-center p-4 border-b-2">
+                <span className="text-black font-bold">{title}</span>
+              </div>
+              <div className="flex-1 p-4 w-full flex bg-black items-center justify-center overflow-hidden relative">
+                {/* ここに写真にあるヘッダーオーバーレイを追加 */}
+                {images[selectedImageIndex] && (
+                  <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-4 bg-gradient-to-b from-black/80 to-transparent">
+                    <div className="flex items-center space-x-2 text-white">
+                      {images[selectedImageIndex].review?.user?.image_path == null ? (
+                        <div className="w-8 h-8 rounded-full overflow-hidden">
+                          <MaterialSymbolsLightPersonOutlineRounded
+                            width={32}
+                            height={32}
+                            className="text-white"
+                          />
+                        </div>
+                      ) : (
+                        <div className="relative w-8 h-8 rounded-full overflow-hidden">
+                          <CustomImage
+                            src={images[selectedImageIndex].review.user.image_path}
+                            alt="プロフィール写真"
+                            fill
+                            objectFit="cover"
+                            className="object-cover rounded-full"
+                          />
+                        </div>
+                      )}
+                      <div className="flex flex-col text-sm">
+                        <div className="font-bold">{images[selectedImageIndex].review?.user?.name ?? "匿名ユーザー"}</div>
+                        <div className="text-xs text-gray-400">{images[selectedImageIndex].review?.posted_at_human ?? ""}</div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={onClose}
+                      className="text-white hover:text-gray-300 transition-colors"
+                      aria-label="画像を閉じる"
+                    >
+                      <XMarkIcon className="w-8 h-8" />
+                    </button>
+                  </div>
+                )}
 
-            {/* メイン画像 */}
-            <div className="flex-1 p-4 w-full flex  bg-black items-center justify-center overflow-hidden">
-              {imageLoading && (
-                <div className="animate-pulse bg-gray-700 w-full aspect-square " />
-              )}
-              {images[selectedImageIndex ?? 0] && (
-                <div
-                  className={`relative w-full h-auto aspect-square flex items-center justify-center  transition-opacity duration-300 ${imageLoading ? "opacity-0" : "opacity-100"
-                    }`}
-                >
-                  <Image
-                    unoptimized
-                    src={images[selectedImageIndex ?? 0].photo_url!}
-                    fill
-                    style={{ objectFit: "contain" }}
-                    alt="メイン画像"
-                    // style={{ objectFit: "contain" }}
-                    onLoad={() => setImageLoading(false)}
-                    className="cursor-pointer rounded"
-                  />
-                </div>
-              )}
+                {images[selectedImageIndex ?? 0] && (
+                  <div className="relative w-4/5 h-auto aspect-square flex items-center justify-center">
+                    <CustomImage
+                      src={images[selectedImageIndex ?? 0].photo_url!}
+                      alt="メイン画像"
+                      fill
+                      objectFit="contain"
+                      className="cursor-pointer rounded"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </Dialog.Panel>
@@ -99,4 +184,3 @@ export default function ImageModal({
     </Dialog>
   );
 }
-

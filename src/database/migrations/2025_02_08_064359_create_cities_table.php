@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
             $table->string('name')->comment('市の名前');
-            $table->unsignedBigInteger('prefectures_id')->comment('県の外部キー');
-            $table->foreign('prefectures_id')->references('id')->on('prefectures');
+            $table->unsignedBigInteger('prefecture_id')->comment('県の外部キー');
+            $table->foreign('prefecture_id')->references('id')->on('prefectures');
         });
     }
 

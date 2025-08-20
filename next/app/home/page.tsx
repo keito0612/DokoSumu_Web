@@ -353,7 +353,7 @@ function Home() {
                   ) : null}
                   <hr className="mt-4" />
                 </div>
-                <div className="flex justify-center flex-col">
+                <div className="flex justify-center flex-col pb-20">
                   <Chart data={mocChartData} />
                   <hr className="mb-4" />
                   {selectedCityId === null ? (

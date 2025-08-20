@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Review extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'user_id',
         'prefecture_id',
@@ -35,7 +37,7 @@ class Review extends Model
     }
     public function prefecture()
     {
-        return $this->belongsTo(Prefectures::class, 'prefecture_id');
+        return $this->belongsTo(Prefecture::class, 'prefecture_id');
     }
     public function city()
     {

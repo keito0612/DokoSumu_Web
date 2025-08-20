@@ -24,7 +24,7 @@ export interface ChartData {
 export interface City {
   id: number;
   name: string;
-  prefectures_id: number;
+  prefecture_id: number;
 }
 
 
@@ -56,7 +56,7 @@ export interface Rating {
 export interface Photo {
   id: number;
   review_id: number;
-  reviews: Review[] | null;
+  review: Review | null;
   photo_url: string | null;
   created_at: string | null;
   updated_at: string | null;
