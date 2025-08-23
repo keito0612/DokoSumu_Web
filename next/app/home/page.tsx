@@ -6,7 +6,7 @@ import NavigationBottomBar from '../components/NavigationBottomBar';
 import SheetModal from '../components/SheetModal';
 import { useRouter } from 'next/navigation'
 import StarsRating from '../components/StarsRating';
-import { ChartData, City, Photo, Review } from '@/types';
+import { ChartData, City, Photo, Rating, RatingProperty, Review } from '@/types';
 import CityList from '../components/CityList';
 import { UtilApi } from '@/Util/Util_api';
 import Tabs, { Tab } from '../components/Tabs';
@@ -87,33 +87,34 @@ function Home() {
   };
 
   const Chart = dynamic(() => import('../components/Chart'), { ssr: false })
-  const mocChartData: ChartData[] = [
+
+  const [chartData, setChartData] = useState<ChartData[]>([
     {
       name: "治安",
-      score: 5,
+      score: 0,
       fullMark: 5
     },
     {
       name: "制度",
-      score: 2,
+      score: 0,
       fullMark: 5
     },
     {
       name: "住みやすさ",
-      score: 5,
+      score: 0,
       fullMark: 5
     },
     {
       name: "人",
-      score: 5,
+      score: 0,
       fullMark: 5
     },
     {
       name: "子育て",
-      score: 5,
+      score: 0,
       fullMark: 5
     }
-  ];
+  ]);
 
   const deleteQueryParameters = (paramNames: string[]) => {
     const url = new URL(window.location.href);
@@ -275,8 +276,37 @@ function Home() {
       const data = await res.json();
       const reviewList: Review[] = data['reviews'];
       const allReviewPhotos: Photo[] = data['photos'];
+      const ratingsOnly: Rating[] = reviewList.map(review => review.rating);
       setAllReviewPhotos(allReviewPhotos);
-      const averageRating: number = reviewListAverageRating(reviewList);
+      const averageRating: number = calculateRatingAverage(ratingsOnly, 'average_rating');
+      const chartData: ChartData[] = [
+        {
+          name: "治安",
+          score: calculateRatingAverage(ratingsOnly, 'safety'),
+          fullMark: 5
+        },
+        {
+          name: "制度",
+          score: calculateRatingAverage(ratingsOnly, 'city_policies'),
+          fullMark: 5
+        },
+        {
+          name: "住みやすさ",
+          score: calculateRatingAverage(ratingsOnly, 'livability'),
+          fullMark: 5
+        },
+        {
+          name: "人",
+          score: calculateRatingAverage(ratingsOnly, 'public_transportation'),
+          fullMark: 5
+        },
+        {
+          name: "子育て",
+          score: calculateRatingAverage(ratingsOnly, 'child_rearing'),
+          fullMark: 5
+        }
+      ]
+      setChartData(chartData);
       setAverageRating(averageRating);
       setReviewList(reviewList);
     } catch (error) {
@@ -285,7 +315,6 @@ function Home() {
   }
 
   const getCityReviews = async (prefecturesId: number, cityId: number) => {
-    console.log(cityId);
     const url = `${UtilApi.API_URL}/api/city_reviews/${prefecturesId}/${cityId}`;
     try {
       const res = await fetch(url, {
@@ -303,7 +332,36 @@ function Home() {
       const data = await res.json();
       const reviewList: Review[] = data['reviews'];
       const allReviewPhotos: Photo[] = data['photos'];
-      const averageRating: number = reviewListAverageRating(reviewList);
+      const ratingsOnly: Rating[] = reviewList.map(review => review.rating);
+      const averageRating: number = calculateRatingAverage(ratingsOnly, 'safety');
+      const chartData: ChartData[] = [
+        {
+          name: "治安",
+          score: calculateRatingAverage(ratingsOnly, 'safety'),
+          fullMark: 5
+        },
+        {
+          name: "制度",
+          score: calculateRatingAverage(ratingsOnly, 'city_policies'),
+          fullMark: 5
+        },
+        {
+          name: "住みやすさ",
+          score: calculateRatingAverage(ratingsOnly, 'livability'),
+          fullMark: 5
+        },
+        {
+          name: "人",
+          score: calculateRatingAverage(ratingsOnly, 'public_transportation'),
+          fullMark: 5
+        },
+        {
+          name: "子育て",
+          score: calculateRatingAverage(ratingsOnly, 'child_rearing'),
+          fullMark: 5
+        }
+      ]
+      setChartData(chartData);
       setAverageRating(averageRating);
       setAllReviewPhotos(allReviewPhotos);
       setReviewList(reviewList);
@@ -314,12 +372,13 @@ function Home() {
   }
 
 
-  function reviewListAverageRating(reviewList: Review[]): number {
-    const totalAverageRating: number = reviewList.map((review) => review.rating.average_rating).reduce((sum, rating) => sum + rating, 0);
-    const averageOfAverages: number = reviewList.length > 0
-      ? totalAverageRating / reviewList.length
-      : 0;
-    const roundedAverage = Math.ceil(averageOfAverages * 10) / 10;
+  function calculateRatingAverage(ratingList: Rating[], property: RatingProperty): number {
+    if (ratingList.length === 0) {
+      return 0;
+    }
+    const totalRating = ratingList.reduce((sum, item) => sum + item[property], 0);
+    const average = totalRating / ratingList.length;
+    const roundedAverage = Math.ceil(average * 10) / 10;
     return roundedAverage;
   }
 
@@ -354,7 +413,7 @@ function Home() {
                   <hr className="mt-4" />
                 </div>
                 <div className="flex justify-center flex-col pb-20">
-                  <Chart data={mocChartData} />
+                  <Chart data={chartData} />
                   <hr className="mb-4" />
                   {selectedCityId === null ? (
                     <div>

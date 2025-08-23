@@ -1,5 +1,6 @@
 export type ResultType = "Success" | "Error" | "Warning";
 export type MenuAction = "edit" | "delete";
+export type RatingProperty = 'safety' | 'public_transportation' | 'child_rearing' | 'city_policies' | 'livability' | 'average_rating';
 
 
 export interface Profile {

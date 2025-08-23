@@ -1,7 +1,7 @@
 "use client";
 
 import { ChartData } from '@/types';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Legend } from "recharts";
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Legend, Tooltip } from "recharts";
 
 interface ChartProps {
   width?: string;
@@ -16,7 +16,7 @@ const Chart: React.FC<ChartProps> = ({ width = "100%", height = "min(65vw, 500px
     <div className={className} style={{ width: width, height: height }}>
       {
         title !== "" ?
-          < div className="w-16 h-8 sm:w-20 sm:h-10 md:w-24 md:h-12 bg-lime-400 text-white rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base">
+          < div className="w-16 h-8 sm:w-20 sm:h-10 md:w-24 md:h-12 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base">
             {title}
           </div> : <div></div>
       }
@@ -24,8 +24,9 @@ const Chart: React.FC<ChartProps> = ({ width = "100%", height = "min(65vw, 500px
         <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
           <PolarGrid />
           <PolarAngleAxis dataKey="name" />
-          <PolarRadiusAxis angle={90} domain={[0, 1, 2, 3, 4, 5]} />
-          <Radar name="評価" dataKey="score" stroke="#00FB00" fill="#00FB00" fillOpacity={0.6} />
+          <PolarRadiusAxis angle={90} domain={[0, 5]} tickCount={6} />
+          <Radar name="評価" dataKey="score" stroke="#00E200FF" fill="#00E200FF" fillOpacity={0.6} />
+          <Tooltip />
           <Legend />
         </RadarChart>
       </ResponsiveContainer>

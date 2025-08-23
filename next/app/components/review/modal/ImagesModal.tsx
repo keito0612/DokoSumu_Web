@@ -126,10 +126,10 @@ export default function ImageModal({
               <div className="flex justify-start bg-white items-center p-4 border-b-2">
                 <span className="text-black font-bold">{title}</span>
               </div>
-              <div className="flex-1 p-4 w-full flex bg-black items-center justify-center overflow-hidden relative">
+              <div className="flex-1 w-full flex-col bg-black items-center justify-center overflow-hidden relative">
                 {/* ここに写真にあるヘッダーオーバーレイを追加 */}
                 {images[selectedImageIndex] && (
-                  <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-4 bg-gradient-to-b from-black/80 to-transparent">
+                  <div className="top-0 left-0 right-0 z-10 flex items-center justify-between p-2 bg-gradient-to-b from-black/80 to-transparent">
                     <div className="flex items-center space-x-2 text-white">
                       {images[selectedImageIndex].review?.user?.image_path == null ? (
                         <div className="w-8 h-8 rounded-full overflow-hidden">
@@ -166,7 +166,7 @@ export default function ImageModal({
                 )}
 
                 {images[selectedImageIndex ?? 0] && (
-                  <div className="relative w-4/5 h-auto aspect-square flex items-center justify-center">
+                  <div className="relative w-3/4 h-auto aspect-square flex items-center justify-center mx-auto">
                     <CustomImage
                       src={images[selectedImageIndex ?? 0].photo_url!}
                       alt="メイン画像"
