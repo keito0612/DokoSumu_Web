@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { Close } from "@mui/icons-material";
+import { MaterialSymbolsArrowBackIosRounded } from "./icons/MaterialSymbolsArrowBackIosRounded";
 
 interface SheetModalProps {
   title: string;
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  showBackButton?: boolean;
+  backButtonOnClick: () => void;
 }
 
-const SheetModal: React.FC<SheetModalProps> = ({ title, isOpen, onClose, children }) => {
+const SheetModal: React.FC<SheetModalProps> = ({ title, isOpen, onClose, children, showBackButton = true, backButtonOnClick }) => {
   const [isExpanded, setIsExpanded] = useState(false); // モーダルの拡張状態を管理
   const [startY, setStartY] = useState<number | null>(null); // ドラッグの開始位置を管理
 
@@ -50,7 +53,7 @@ const SheetModal: React.FC<SheetModalProps> = ({ title, isOpen, onClose, childre
       {/* Modal */}
       <div
         className={`fixed bg-white rounded-t-2xl shadow-lg transform transition-transform duration-300
-        w-full md:w-[550px]  max-h-screen overflow-y-auto
+        w-full md:w-[750px]  max-h-screen overflow-y-auto
         ${isOpen ? "translate-y-0 md:translate-x-0" : "translate-y-full md:translate-x-full"}
         ${isExpanded
             ? "h-[90%] sm:h-[90%]"
@@ -59,14 +62,26 @@ const SheetModal: React.FC<SheetModalProps> = ({ title, isOpen, onClose, childre
         md:h-[90%] top-20 md:bottom-auto md:right-4 sm:bottom-0`}
         onMouseDown={handleMouseDownWrapper}
       >
-        <div className=" z-30 bg-white sticky top-0 p-4 border-b flex justify-center items-center">
-          <h2 className="text-lg pl-7 m-auto text-black font-bold">{title}</h2>
+        <div className="z-30 bg-white top-0 p-6 sticky border-b flex justify-between items-center relative">
+          {/* Back Button */}
+          {showBackButton && (
+            <button
+              className="text-gray-500 hover:text-black absolute left-4"
+              onClick={backButtonOnClick}
+              aria-label="Back"
+            >
+              <MaterialSymbolsArrowBackIosRounded className="w-6 h-6" />
+            </button>
+          )}
+          {/* Title */}
+          <h2 className="text-lg font-bold text-black text-center absolute left-1/2 transform -translate-x-1/2">{title}</h2>
+          {/* Close Button */}
           <button
-            className="text-gray-500 hover:text-black  "
+            className="text-gray-500 hover:text-black absolute right-4"
             onClick={onClose}
             aria-label="Close Modal"
           >
-            < Close style={{ fontSize: 30, color: 'black' }} className="hidden h-6 w-6  group-data-[open]:block" />
+            <Close style={{ fontSize: 30, color: 'black' }} className="h-6 w-6" />
           </button>
         </div>
         <div className="">{children}</div>

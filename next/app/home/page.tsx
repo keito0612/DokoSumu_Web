@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import NavBar from '../components/NavBar';
 import NavigationBottomBar from '../components/NavigationBottomBar';
 import SheetModal from '../components/SheetModal';
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import StarsRating from '../components/StarsRating';
 import { ChartData, City, Photo, Rating, RatingProperty, Review } from '@/types';
 import CityList from '../components/CityList';
@@ -57,6 +57,8 @@ function Home() {
   const [reviewList, setReviewList] = useState<Review[]>([]);
   const [averageRating, setAverageRating] = useState<number>(0);
   const [allReviewPhotos, setAllReviewPhotos] = useState<Photo[]>([]);
+  const [showBackButton, setShowBackButton] = useState<boolean>(false);
+  const searchParams = useSearchParams();
   const tabs: Tab[] = [
     {
       id: '0', label: '評価', content: 'Content for Tab 1', onTap: (tabId: string) => {
@@ -223,6 +225,7 @@ function Home() {
   const hendleCityButtonClick = async (city: City) => {
     setIsLoading(true);
     setIsModalOpen(true);
+    setShowBackButton(true);
     setSelectedCityId(city.id);
     addQueryParameter("city_id", city.id.toString());
     setSelectedName(city.name);
@@ -371,6 +374,23 @@ function Home() {
     }
   }
 
+  const backButtonOnClick = async () => {
+    const allPrefectures = regions.flatMap(region => region.prefectures);
+    const prefectureId = parseInt(searchParams.get("prefecture")!);
+    const foundPrefecture = allPrefectures.find(
+      (prefecture) => prefecture.id === prefectureId
+    );
+    setIsLoading(true);
+    setSelectedName(foundPrefecture!.name);
+    deleteQueryParameters(["city_id"]);
+    setSelectedCityId(null);
+    setShowBackButton(false);
+    router.back();
+    await getPrefectureReviews(selectedPrefectureId!);
+    setIsLoading(false);
+  }
+
+
 
   function calculateRatingAverage(ratingList: Rating[], property: RatingProperty): number {
     if (ratingList.length === 0) {
@@ -386,7 +406,7 @@ function Home() {
     <div className={`Home h-screen ${isModalOpen ? "overflow-hidden" : "overflow-visible"}`}>
       {/* {imageViewerOpen && <ImageViewer imageSrc={imageSrc} onClose={closeImageViewer} user={ } />} */}
       {/*市の評価*/}
-      <SheetModal title={selectedName} isOpen={isModalOpen} onClose={closeModal}>
+      <SheetModal title={selectedName} isOpen={isModalOpen} onClose={closeModal} showBackButton={showBackButton} backButtonOnClick={backButtonOnClick}>
         {isLoading === false ? (
           <>
             <Tabs tabs={tabs} />
