@@ -125,7 +125,9 @@ const ProfileBody: React.FC = () => {
               <ProfileEditButton />
             </div>
           </div>
-          <ProfileName name={profile.name} />
+          <div className='pl-3'>
+            <ProfileName name={profile.name} />
+          </div>
         </div>
         <ProfileDetail detail={profile.comment} />
         <ProfileStats postCount={profile.reviews_count} likeCount={profile.liked_reviews_count} />

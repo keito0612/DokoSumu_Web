@@ -1,8 +1,13 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import ContentLoader from "react-content-loader";
 
 const ProfileSkeleton: React.FC = () => {
+  const [mounted, setMounted] = React.useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
   return (
     <div className="px-4  flex justify-center py-1 pt-24 pb-24">
       <div className="max-w-[960px] w-full flex flex-col gap-4">

@@ -9,6 +9,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserController;
 use App\Models\Review;
+use Illuminate\Container\Attributes\Auth;
 use Symfony\Component\HttpKernel\Profiler\Profile;
 
 
@@ -22,7 +23,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('/{prefecture_id}/citys/', [CityController::class, 'getCitys']);
 Route::get('/prefecture_reviews/{prefecture_id}',[ReviewController::class, 'getPrefectureReviews']);
 Route::get('/city_reviews/{prefecture_id}/{city_id}',[ReviewController::class, 'getCityReviews']);
-
+Route::post('/password/email', [AuthController::class, 'sendPasswordResetEmail']);
+Route::post('/password/reset', [AuthController::class, 'resetPassword']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::prefix('/post')->group(function () {
         Route::post('/city_review/{prefecture_id}/{city_id}',[ReviewController::class,'postCityReview']);

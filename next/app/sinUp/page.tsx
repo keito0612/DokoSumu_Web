@@ -105,6 +105,7 @@ function SignUp() {
             <input
               id="password"
               type="password"
+              placeholder='パスワードは8文字以上入力してください。'
               {...register("password", {
                 required: "パスワードは必須です",
                 minLength: {

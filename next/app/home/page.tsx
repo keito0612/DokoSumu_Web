@@ -336,7 +336,7 @@ function Home() {
       const reviewList: Review[] = data['reviews'];
       const allReviewPhotos: Photo[] = data['photos'];
       const ratingsOnly: Rating[] = reviewList.map(review => review.rating);
-      const averageRating: number = calculateRatingAverage(ratingsOnly, 'safety');
+      const averageRating: number = calculateRatingAverage(ratingsOnly, 'average_rating');
       const chartData: ChartData[] = [
         {
           name: "治安",

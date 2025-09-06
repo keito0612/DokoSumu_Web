@@ -13,7 +13,6 @@ const ReviewLikeButton: React.FC<ReviewLikeButtonProps> = ({ review }) => {
   const [likesCount, setLikesCount] = useState<number>(review.likes_count);
 
   async function handleLikeClick() {
-    console.log(isLiked);
     let url: string = ''
     if (isLiked) {
       url = `${UtilApi.API_URL}/api/post/review/unlike/${review.id}`;

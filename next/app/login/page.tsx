@@ -126,7 +126,16 @@ function Login() {
               新規登録はこちら
             </Link>
           </div>
+          <div className="text-center mt-4">
+            <Link
+              href="/forgot-password"
+              className="ml-1 font-semibold text-green-500 hover:text-green-600 underline"
+            >
+              メール再設定はこちら
+            </Link>
+          </div>
         </form>
+
       </div>
 
       <SnackbarComponent
