@@ -8,6 +8,7 @@ import SnackbarComponent from '../components/SnackBar';
 import Modal from '../components/Modal';
 import { UtilApi } from '@/Util/Util_api';
 import { ResultType } from '@/types';
+import NavBar from '../components/NavBar';
 
 interface Form {
   name: string;
@@ -56,93 +57,96 @@ function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-      {loading && <Loading2 loadingtext="アカウントを作成中..." />}
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-        <h1 className="text-3xl font-bold text-center text-green-600 mb-6">新規登録</h1>
-        <form onSubmit={handleSubmit(onSubmit)} method="POST" className="space-y-4">
-          {/* 名前 */}
-          <div>
-            <label htmlFor="name" className="block text-sm font-semibold text-gray-700">名前</label>
-            <input
-              id="name"
-              type="text"
-              placeholder="例：山田太郎"
-              {...register("name", {
-                required: "名前は必須です",
-                maxLength: {
-                  value: 8,
-                  message: "名前は8文字以内でお願いします。",
-                },
-              })}
-              className="mt-1 text-black w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300"
-            />
-            {errors.name && <p className="text-sm text-red-600 mt-1">※{errors.name.message}</p>}
-          </div>
+    <>
+      <NavBar title='新規登録' />
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+        {loading && <Loading2 loadingtext="アカウントを作成中..." />}
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+          <h1 className="text-3xl font-bold text-center text-green-600 mb-6">新規登録</h1>
+          <form onSubmit={handleSubmit(onSubmit)} method="POST" className="space-y-4">
+            {/* 名前 */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-semibold text-gray-700">名前</label>
+              <input
+                id="name"
+                type="text"
+                placeholder="例：山田太郎"
+                {...register("name", {
+                  required: "名前は必須です",
+                  maxLength: {
+                    value: 8,
+                    message: "名前は8文字以内でお願いします。",
+                  },
+                })}
+                className="mt-1 text-black w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300"
+              />
+              {errors.name && <p className="text-sm text-red-600 mt-1">※{errors.name.message}</p>}
+            </div>
 
-          {/* メール */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-semibold text-gray-700">メールアドレス</label>
-            <input
-              id="email"
-              type="email"
-              placeholder="mail@example.com"
-              {...register("email", {
-                required: "メールアドレスは必須です",
-                pattern: {
-                  value: /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
-                  message: "このメールアドレスは無効です。",
-                },
-              })}
-              className="mt-1 text-black w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300"
-            />
-            {errors.email && <p className="text-sm text-red-600 mt-1">※{errors.email.message}</p>}
-          </div>
+            {/* メール */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700">メールアドレス</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="mail@example.com"
+                {...register("email", {
+                  required: "メールアドレスは必須です",
+                  pattern: {
+                    value: /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
+                    message: "このメールアドレスは無効です。",
+                  },
+                })}
+                className="mt-1 text-black w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300"
+              />
+              {errors.email && <p className="text-sm text-red-600 mt-1">※{errors.email.message}</p>}
+            </div>
 
-          {/* パスワード */}
-          <div>
-            <label htmlFor="password" className="block text-sm font-semibold text-gray-700">パスワード</label>
-            <input
-              id="password"
-              type="password"
-              placeholder='パスワードは8文字以上入力してください。'
-              {...register("password", {
-                required: "パスワードは必須です",
-                minLength: {
-                  value: 8,
-                  message: "パスワードは8文字以上でなくてはなりません",
-                },
-              })}
-              className="mt-1 text-black w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300"
-            />
-            {errors.password && <p className="text-sm text-red-600 mt-1">※{errors.password.message}</p>}
-          </div>
+            {/* パスワード */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700">パスワード</label>
+              <input
+                id="password"
+                type="password"
+                placeholder='パスワードは8文字以上入力してください。'
+                {...register("password", {
+                  required: "パスワードは必須です",
+                  minLength: {
+                    value: 8,
+                    message: "パスワードは8文字以上でなくてはなりません",
+                  },
+                })}
+                className="mt-1 text-black w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300"
+              />
+              {errors.password && <p className="text-sm text-red-600 mt-1">※{errors.password.message}</p>}
+            </div>
 
-          {/* ボタン */}
-          <div className="pt-2">
-            <button
-              type="submit"
-              className="w-full py-2 px-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 shadow transition duration-300"
-            >
-              新規登録
-            </button>
-          </div>
-        </form>
+            {/* ボタン */}
+            <div className="pt-2">
+              <button
+                type="submit"
+                className="w-full py-2 px-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 shadow transition duration-300"
+              >
+                新規登録
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <SnackbarComponent
+          message={errorMessage}
+          open={snackbarOpen}
+          onClose={handleCloseSnackbar}
+        />
+        <Modal
+          isOpen={isModalOpen}
+          onClose={onClone}
+          type={modalType}
+          message={modalMessage}
+          title={modalTitle}
+        />
       </div>
-
-      <SnackbarComponent
-        message={errorMessage}
-        open={snackbarOpen}
-        onClose={handleCloseSnackbar}
-      />
-      <Modal
-        isOpen={isModalOpen}
-        onClose={onClone}
-        type={modalType}
-        message={modalMessage}
-        title={modalTitle}
-      />
-    </div>
+    </>
   );
 }
 

@@ -12,13 +12,13 @@ export default function ReviewBody({ review }: ReviewBodyProps) {
       <div className="flex flex-row justify-start w-full pb-3" >
         <span className=" text-xs lg:text-sm font-bold">良いところ：</span>
         <div className="flex-1">
-          <ExpandableText text={review.good_comment} maxLength={200} />
+          <ExpandableText text={review.good_comment} maxLength={150} />
         </div>
       </div>
       <div className="flex flex-row justify-start" >
         <span className="text-xs lg:text-sm font-bold">悪いところ：</span>
         <div className="flex-1">
-          <ExpandableText text={review.bad_comment} maxLength={200} />
+          <ExpandableText text={review.bad_comment} maxLength={150} />
         </div>
       </div>
     </div>

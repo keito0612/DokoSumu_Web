@@ -64,6 +64,8 @@ export default function Modal({
         return 'bg-red-500 hover:bg-red-400';
       case 'Warning':
         return 'bg-red-600 hover:bg-red-500';
+      case 'Normal':
+        return 'bg-green-600 hover:bg-green-500';
       default:
         return 'bg-blue-500 hover:bg-blue-400';
     }
@@ -85,7 +87,7 @@ export default function Modal({
         <p className="mt-4 text-black font-bold text-base sm:text-xl">{title}</p>
         <p className="mt-2 text-black text-sm sm:text-lg">{message}</p>
 
-        {type === 'Warning' && onConfirm ? (
+        {(type === 'Warning' || type === 'Normal') && onConfirm ? (
           <div className="mt-6 flex justify-center gap-28">
             <button
               className={`${baseBtn} ${getColor()}`}

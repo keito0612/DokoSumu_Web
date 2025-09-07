@@ -60,7 +60,11 @@ export class AuthService {
     localStorage.setItem('token', JSON.stringify(token));
   }
 
-  static getSesstion(): unknown {
+  static deleteSesstion() {
+    localStorage.removeItem('token');
+  }
+
+  static getSesstion(): null {
     if (typeof window !== 'undefined') {
       const userInfo = localStorage.getItem('token');
       if (userInfo) {

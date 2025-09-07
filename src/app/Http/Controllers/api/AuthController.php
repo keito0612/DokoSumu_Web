@@ -93,10 +93,8 @@ class AuthController extends Controller
             $request->user()->tokens->each(function ($token) {
                 $token->delete();
             });
-            Log::debug('Logout token: ', ['token' => $request->user()->currentAccessToken()]);
             return response()->json(['message' => 'ログアウトしました。'], Response::HTTP_OK);
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
             return response()->json(['message' => '内部サーバーエラー'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
