@@ -99,7 +99,7 @@ export default function Modal({
               {confirmLabel}
             </button>
             <button
-              className={`${baseBtn} bg-green-400 hover:bg-green-300`}
+              className={`${baseBtn} bg-gray-400 hover:bg-gray-300`}
               onClick={onClose}
             >
               {cancelLabel}

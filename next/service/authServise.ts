@@ -40,9 +40,7 @@ export class AuthService {
         },
         body: JSON.stringify(param),
       });
-
       const data = await res.json();
-
       const token = data.token as string;
       if (res.ok) {
         success("新規登録が完了しました。", token);

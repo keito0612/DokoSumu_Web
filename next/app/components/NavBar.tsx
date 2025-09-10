@@ -184,8 +184,8 @@ function NavBar({ title }: NavBarProps) {
             </div>
 
             {/* 右側のユーザー情報 */}
-            {mounted && token && (
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+            {mounted && (
+              <div className="hidden md:flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <div className="flex flex-row items-center justify-center">
                   <Menu as="div" className="relative ml-3">
                     <div>

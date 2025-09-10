@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Mail\ResetPasswordMail;
+use App\Mail\WelcomeMail;
 use App\Models\User;
 use App\Servises\EmailServise;
 use Illuminate\Container\Attributes\Log as AttributesLog;
@@ -36,9 +37,8 @@ class AuthController extends Controller
 
             // トークン発行
             $token = $user->createToken("login:user{$user->id}")->plainTextToken;
-
+            Mail::to($user->email)->send(new WelcomeMail($user));
             DB::commit();
-
             return response()->json([
                 'message' => 'ユーザー登録が完了しました。',
                 'token' => $token,
@@ -46,7 +46,7 @@ class AuthController extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            Log::error('ユーザー登録エラー: ' . $e->getMessage());
+            Log::debug($e);
             return response()->json([
                 'message' => '内部サーバーエラー'
             ]    , Response::HTTP_INTERNAL_SERVER_ERROR);
