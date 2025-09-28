@@ -29,15 +29,17 @@ class ProfileController extends Controller
         if (!(Auth::check())) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
+
         $userId = Auth::id();
+
         $profile = User::with([
-            'reviews.user',         // ユーザーが投稿したレビューとその投稿者情報
-            'reviews.city',         // レビューの都市情報
-            'reviews.prefecture',   // レビューの都道府県情報
-            'reviews.rating',       // レビューの評価情報
-            'reviews.photos',       // レビューの写真情報
-            'reviews.likes',        // レビューのいいね情報
-            'likedReviews' => function($query){
+            'reviews.user',
+            'reviews.city',
+            'reviews.prefecture',
+            'reviews.rating',
+            'reviews.photos',
+            'reviews.likes',
+            'likedReviews' => function($query) {
                 $query->with([
                     'user',
                     'city',
@@ -45,14 +47,30 @@ class ProfileController extends Controller
                     'rating',
                     'photos',
                     'likes'
-                ]);
-            }     // ユーザーがいいねしたレビューとその投稿者情報
-        ])->where('id', $userId)->first();
+                ])->withCount('likes');
+            }
+        ])
+        ->where('id', $userId)
+        ->with(['reviews' => function($query) {
+            $query->withCount('likes');
+        }])
+        ->first();
+
+        // reviews に is_liked を追加
+        if ($profile && $profile->reviews) {
+            $profile->reviews->map(function ($review) use ($userId) {
+                $review->is_liked = $review->likes->contains('user_id', $userId);
+                return $review;
+            });
+        }
+
         $profile?->append(['reviews_count', 'liked_reviews_count']);
+
         return response()->json([
             'profile' => $profile
         ], 200);
     }
+
 
     function update(ProfileRequest $request)
     {
@@ -83,5 +101,48 @@ class ProfileController extends Controller
             DB::rollback();
             return response()->json(["error" => $e->getMessage()], 500);
         }
+    }
+
+    function detail($id)
+    {
+        if(!(User::where('id',$id)->exists())){
+            return response()->json(['error' => 'user not found'], 404);
+        }
+        $user = Auth::user();
+        $profile = User::with([
+            'reviews.user',         // ユーザーが投稿したレビューとその投稿者情報
+            'reviews.city',         // レビューの都市情報
+            'reviews.prefecture',   // レビューの都道府県情報
+            'reviews.rating',       // レビューの評価情報
+            'reviews.photos',       // レビューの写真情報
+            'reviews.likes',        // レビューのいいね情報
+            'likedReviews' => function($query){
+                $query->with([
+                    'user',
+                    'city',
+                    'prefecture',
+                    'rating',
+                    'photos',
+                    'likes'
+                ])->withCount('likes');
+            }     // ユーザーがいいねしたレビューとその投稿者情報
+        ])->where('id', $id)->with(['reviews' => function($query) {
+            $query->withCount('likes');
+        }])->first();
+        $profile?->append(['reviews_count', 'liked_reviews_count']);
+
+        if ($profile && $profile->reviews) {
+            $profile->reviews->map(function ($review) use ($user) {
+                if(!is_null($user)){
+                    $review->is_liked = $review->likes->contains('user_id', $user->id);
+                }else{
+                    $review->is_liked = false;
+                }
+                return $review;
+            });
+        }
+        return response()->json([
+            'profile' => $profile
+        ], 200);
     }
 }

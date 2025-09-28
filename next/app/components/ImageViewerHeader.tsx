@@ -11,8 +11,8 @@ interface ImageViwerHeaderProps {
 const ImageViwerHeader: FC<ImageViwerHeaderProps> = ({ user, onClose }) => {
   return (
     <div className="fixed left-0 top-16 h-28 top-4 w-full sm:w-1/2 bg-black bg-opacity-90 flex flex-row items-start justify-start">
-      {user.imagePath !== null ?
-        <Image className="size-12" src={user.imagePath!} alt="Preview" width={500} height={500} /> :
+      {user.image_path !== null ?
+        <Image className="size-12" src={user.image_path!} alt="Preview" width={500} height={500} /> :
         <SystemUiconsUserMale className="text-white font-bold size-24" />
       }
       <button

@@ -46,7 +46,7 @@ export default function RatingEditPost() {
   const [modalType, setModalType] = useState<ResultType>('Success');
   const [modalTitle, setModalTitle] = useState('');
   const [modalMessage, setModalMessage] = useState('');
-
+  const [deletedImageUrls, setDeletedImageUrls] = useState<string[]>([]);
   const { register, getValues, handleSubmit, setValue, reset, formState: { errors } } = useForm<RatingEditPostForm>();
 
 
@@ -110,13 +110,26 @@ export default function RatingEditPost() {
     if (event.target.files) {
       const newFiles = Array.from(event.target.files);
       const newUrls = newFiles.map((file) => URL.createObjectURL(file));
-      setFiles((prev) => [...prev, ...newFiles]);
-      setPreviewUrls((prev) => [...prev, ...newUrls]);
+
+      setFiles((prevFiles) => {
+        if (prevFiles.length >= 4) return prevFiles; // すでに4枚なら追加しない
+        const combined = [...prevFiles, ...newFiles];
+        return combined.slice(0, 4); // 最大4枚まで
+      });
+
+      setPreviewUrls((prevUrls) => {
+        if (prevUrls.length >= 4) return prevUrls;
+        const combined = [...prevUrls, ...newUrls];
+        return combined.slice(0, 4);
+      });
     }
   };
 
   const handleRemoveImage = (index: number) => {
+    const deletedImageUrl = previewUrls[index];
     setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setDeletedImageUrls(prev => [...prev, deletedImageUrl]);
   };
 
   const onClone = () => {
@@ -150,8 +163,10 @@ export default function RatingEditPost() {
     dataSet.photos.forEach((file) => {
       formData.append("photos[]", file);
     });
+    deletedImageUrls.forEach(url => {
+      formData.append("deletePhotos[]", url);
+    });
     setLoading(true);
-    console.log(formData.get('badComment'));
     try {
       const res = await fetch(url, {
         method: "POST",
@@ -237,7 +252,7 @@ export default function RatingEditPost() {
             <div className="flex justify-center mt-6 pb-24">
               <button
                 type="submit"
-                className="w-full md:w-48 h-16 bg-lime-500 text-white font-bold rounded-full shadow-md hover:bg-lime-600 transition duration-300"
+                className="w-full md:w-48 h-16 bg-green-500 text-white font-bold rounded-full shadow-md hover:bg-lime-600 transition duration-300"
               >
                 編集
               </button>

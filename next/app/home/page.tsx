@@ -447,7 +447,9 @@ function Home() {
               </div>
             ) :
               (
-                <ReviewList reviewList={reviewList} />
+                <ReviewList reviewList={reviewList} onUserClick={(userId: number) => {
+                  router.push(`/profile/detail/${userId}`);
+                }} />
               )}
           </>
         ) : (

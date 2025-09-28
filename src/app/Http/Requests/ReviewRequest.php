@@ -33,6 +33,7 @@ class ReviewRequest extends FormRequest
             'photos.*' => 'file|mimes:jpeg,png,jpg,gif|max:2048',
             'goodComment' => 'nullable|max:300',
             'badComment' => 'nullable|max:300',
+            'deletePhotos' => 'nullable'
         ];
     }
 

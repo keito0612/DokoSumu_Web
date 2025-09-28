@@ -60,10 +60,12 @@ class User extends Authenticatable
 
     public function likedReviews()
     {
-        $userId = Auth::id();
-        return $this->hasMany(Review::class)->whereHas('likes',function($query) use($userId) {
-            $query->where("user_id" ,"!=",$userId);
-        });
+        return $this->belongsToMany(
+            Review::class, // 取得したいモデル
+            'likes',       // 中間テーブル
+            'user_id',     // likes.user_id = users.id
+            'review_id'    // likes.review_id = reviews.id
+        );
     }
 
     public function getReviewsCountAttribute(): int

@@ -39,7 +39,19 @@ export default function RatingPost() {
   const router = useRouter();
   const params = useParams();
   const [loading, setLoading] = useState<boolean>(false);
-  const { register, handleSubmit, formState: { errors } } = useForm<RatingPostForm>();
+  const { register, handleSubmit, formState: { errors } } = useForm<RatingPostForm>({
+    defaultValues: {
+      safety: 0,
+      childRearing: 0,
+      cityPolicies: 0,
+      publicTransportation: 0,
+      livability: 0,
+      photos: [],
+      goodComment: "",
+      badComment: "",
+      averageRating: 0,
+    }
+  });
   const [averageScore, setAverageScore] = useState<number>(0);
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
@@ -55,19 +67,29 @@ export default function RatingPost() {
       return newRatings;
     });
   };
+
   const handleOnAddImage = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const newFiles = Array.from(event.target.files);
-      const newUrls = Array.from(event.target.files).map((file) =>
-        URL.createObjectURL(file)
-      );
-      setFiles(((prev) => [...prev, ...newFiles]));
-      setPreviewUrls((prev) => [...prev, ...newUrls]);
+      const newUrls = newFiles.map((file) => URL.createObjectURL(file));
+
+      setFiles((prevFiles) => {
+        if (prevFiles.length >= 4) return prevFiles; // すでに4枚なら追加しない
+        const combined = [...prevFiles, ...newFiles];
+        return combined.slice(0, 4); // 最大4枚まで
+      });
+
+      setPreviewUrls((prevUrls) => {
+        if (prevUrls.length >= 4) return prevUrls;
+        const combined = [...prevUrls, ...newUrls];
+        return combined.slice(0, 4);
+      });
     }
   };
 
   const handleRemoveImage = (index: number) => {
     setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+    setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const onClone = () => {
@@ -84,7 +106,6 @@ export default function RatingPost() {
     dataSet.photos = files;
     dataSet.averageRating = averageScore;
     const formData = new FormData();
-
     formData.append('safety', dataSet.safety.toString());
     formData.append('childRearing', dataSet.childRearing.toString());
     formData.append('cityPolicies', dataSet.cityPolicies.toString());
@@ -94,8 +115,8 @@ export default function RatingPost() {
     formData.append('badComment', dataSet.badComment);
     formData.append('averageRating', dataSet.averageRating.toString());
     dataSet.photos.forEach((file) => {
-      formData.append('photos[]', file)
-    })
+      formData.append("photos[]", file);
+    });
     setLoading(true);
     try {
       const res = await fetch(url, {
@@ -188,7 +209,7 @@ export default function RatingPost() {
           <div className="flex justify-center mt-6 pb-24">
             <button
               type="submit"
-              className="w-full md:w-48 h-16 bg-lime-500 text-white font-bold rounded-full shadow-md hover:bg-lime-600 transition duration-300"
+              className="w-full md:w-48 h-16 bg-green-500 text-white font-bold rounded-full shadow-md hover:bg-lime-600 transition duration-300"
             >
               投稿する
             </button>

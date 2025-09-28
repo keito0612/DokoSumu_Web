@@ -2,14 +2,19 @@
 
 import Link from "next/link";
 
+interface ProfileEditButtonProps {
+  className?: string;
+}
 
-const ProfileEditButton: React.FC = () => {
+const ProfileEditButton: React.FC<ProfileEditButtonProps> = ({ className = "" }: ProfileEditButtonProps) => {
   return (
-    <Link href='/profileEditModal'>
-      <button className="w-40 border border-green-500 bg-transparent text-green-500 px-4 py-2 rounded-full hover:bg-green-500 hover:text-white transition" >
-        <span className="text-sm font-semibold">プロフィールを編集</span>
-      </button >
-    </Link>
+    <div className={className}>
+      <Link href='/profileEditModal'>
+        <button className="w-20 border border-green-500 bg-transparent text-green-500  py-1 rounded-xl hover:bg-green-500 hover:text-white transition" >
+          <span className="text-lg font-semibold">編集</span>
+        </button >
+      </Link>
+    </div>
   )
 };
 

@@ -9,6 +9,7 @@ import Modal from '../components/Modal';
 import { UtilApi } from '@/Util/Util_api';
 import { ResultType } from '@/types';
 import NavBar from '../components/NavBar';
+import NavigationBottomBar from '../components/NavigationBottomBar';
 
 interface Form {
   name: string;
@@ -146,6 +147,7 @@ function SignUp() {
           title={modalTitle}
         />
       </div>
+      <NavigationBottomBar />
     </>
   );
 }

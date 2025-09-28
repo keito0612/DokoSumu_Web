@@ -10,12 +10,13 @@ import ReviewLocation from "./ReviewLocation";
 interface ReviewListTileProps {
   review: Review;
   onMenuAction?: (action: MenuAction, id: number) => void | Promise<void>;
+  onUserClick?: (userId: number) => void;
 }
 
-export default function ReviewListTile({ review, onMenuAction }: ReviewListTileProps) {
+export default function ReviewListTile({ review, onMenuAction, onUserClick }: ReviewListTileProps) {
   return (
     <div className="mx-0  bg-white space-y-4">
-      <ReviewHeader user={review.user} reviewId={review.id} onMenuAction={onMenuAction} />
+      <ReviewHeader user={review.user} reviewId={review.id} onMenuAction={onMenuAction} onUserClick={onUserClick} />
       <ReviewLocation review={review} />
       <ReviewMeta review={review} />
       <ReviewBody review={review} />

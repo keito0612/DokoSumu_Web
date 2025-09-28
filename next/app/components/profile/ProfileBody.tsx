@@ -1,20 +1,17 @@
 "use client";
 import { UtilApi } from '@/Util/Util_api';
 import { Profile, ResultType } from '@/types';
-import ProfileName from './ProfileName';
-import ProfileEditButton from './ProfileButton';
-import ProfileStats from './ProfileStats';
 import ProfileList from './ProfileList';
 import { AuthService } from '@/service/authServise';
 import ProfileSkeleton from '../ProfileSkeleton';
-import ProfileDetail from './ProfileDetail';
 import { useEffect, useState } from 'react';
-import ProfileImage from './ProfileImage';
 import Modal from "@/app/components/Modal";
-import { useRouter } from 'next/navigation';
+import { notFound, useParams, useRouter } from 'next/navigation';
+import ProfileHeader from './ProfileHeader';
 
 const ProfileBody: React.FC = () => {
   const router = useRouter();
+  const params = useParams();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isSkeleton, setIsSkeleton] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
@@ -26,8 +23,14 @@ const ProfileBody: React.FC = () => {
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
 
   async function getProfile() {
+    const userId = params.user_id;
+    let url: string = '';
     try {
-      const url: string = `${UtilApi.API_URL}/api/profile`;
+      if (userId === undefined) {
+        url = `${UtilApi.API_URL}/api/profile`;
+      } else {
+        url = `${UtilApi.API_URL}/api/profile/detail/${userId}`;
+      }
       const token = AuthService.getSesstion();
       const res = await fetch(url, {
         method: "GET",
@@ -42,6 +45,9 @@ const ProfileBody: React.FC = () => {
         setProfile(profileData);
       } else if (res.status === 401) {
         setProfile(null);
+        router.push("/unauthorized")
+      } else if (res.status === 404) {
+        notFound();
       } else {
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
@@ -110,27 +116,14 @@ const ProfileBody: React.FC = () => {
       setIsSkeleton(false);
     })()
   }, []);
+
   if (!mounted || isSkeleton || !profile) {
     return <ProfileSkeleton />;
   }
   return (
     < div className="px-4 sm:px-20 flex flex-1 justify-center py-5 pt-16  pb-24  sm:pb-0 md:pb-0 lg:pb-0 2xl:pb-0 xl:pb-0 " >
       <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
-        <div className="flex pt-4 flex-col  gap-4">
-          <div className="flex items-start justify-between w-full">
-            <div className="flex flex-col items-start gap-2">
-              <ProfileImage imageUrl={profile.image_path} />
-            </div>
-            <div className="flex flex-col justify-end  h-full">
-              <ProfileEditButton />
-            </div>
-          </div>
-          <div className='pl-3'>
-            <ProfileName name={profile.name} />
-          </div>
-        </div>
-        <ProfileDetail detail={profile.comment} />
-        <ProfileStats postCount={profile.reviews_count} likeCount={profile.liked_reviews_count} />
+        <ProfileHeader profile={profile} />
         <ProfileList postReviews={profile.reviews} likedReviews={profile.liked_reviews} onMenuAction={async (action, id) => {
           setSelectedReviewId(id);
           if (action === "edit") {

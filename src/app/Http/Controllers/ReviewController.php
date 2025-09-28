@@ -174,8 +174,18 @@ class ReviewController extends Controller
                 'child_rearing' => $request->childRearing,
                 "average_rating" => $request->averageRating,
             ]);
+
+            if ($request->has('deletePhotos')) {
+                $deletePhotos = $request->deletePhotos;
+                $photosToDelete = Photo::whereIn('photo_url', $deletePhotos)->get();
+                foreach ($photosToDelete as $photo) {
+                    $this->fileService->delete($photo->photo_url);
+                    $photo->delete();
+                }
+            }
+
             if ($request->hasFile('photos')) {
-                $this->storePhotos($request->file('photos'), true,$review->id);
+                $this->storePhotos($request->file('photos'), $review->id);
             }
             DB::commit();
             return response()->json([
@@ -206,16 +216,9 @@ class ReviewController extends Controller
         }
     }
 
-    private function storePhotos($photos,$isEdit = false ,$reviewId)
+    private function storePhotos($photos,$reviewId)
     {
         $photoData = [];
-        if ($isEdit) {
-            $oldPhotos = Photo::where('review_id', $reviewId)->get();
-            foreach ($oldPhotos as $oldPhoto) {
-                $this->fileService->delete($oldPhoto->photo_url);
-            }
-            Photo::where('review_id', $reviewId)->delete();
-        }
         foreach ($photos as $photo) {
             $extension = $photo->getClientOriginalExtension();
             // 英数字＋タイムスタンプのファイル名生成

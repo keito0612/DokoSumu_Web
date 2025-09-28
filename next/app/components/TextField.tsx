@@ -28,7 +28,7 @@ const TextField: FC<TextFieldProps> = ({
   return (
     <div className={`flex flex-col justify-start ${className}`}>
       {title && (
-        <div className="w-16 h-8 mb-2 sm:w-20 sm:h-10 md:w-24 md:h-12 bg-lime-400 text-white rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base">
+        <div className="w-16 h-8 mb-2 sm:w-20 sm:h-10 md:w-24 md:h-12 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base">
           {title}
         </div>
       )}

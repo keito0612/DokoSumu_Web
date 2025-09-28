@@ -22,7 +22,7 @@ const RatingSection = <T extends FieldValues>({
 }: RatingSectionProps<T>): React.ReactElement => {
   return (
     <div>
-      <div className="w-24 h-8 sm:w-24 sm:h-10 md:w-32 md:h-12 bg-lime-400 text-white rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base">
+      <div className="w-24 h-8 sm:w-24 sm:h-10 md:w-32 md:h-12 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base">
         それぞれの評価
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 mt-6">
@@ -35,7 +35,7 @@ const RatingSection = <T extends FieldValues>({
               {...register(category, {
                 required: true,
               })}
-              className="w-full bg-white border border-gray-300 rounded-lg shadow-sm p-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-lime-400"
+              className="w-full bg-white border border-gray-300 rounded-lg shadow-sm p-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500"
               value={ratings[category]}
               onChange={(e) => handleRatingChange(category, Number(e.target.value))}
             >

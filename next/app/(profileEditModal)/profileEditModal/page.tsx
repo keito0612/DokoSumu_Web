@@ -43,7 +43,6 @@ const ProfileEditModal: React.FC = () => {
 
   const handleChangeImage = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      console.log(event.target.files[0]);
       setFile(event.target.files[0]);
       setPreviewUrl(URL.createObjectURL(event.target.files[0]));
     }
@@ -161,6 +160,7 @@ const ProfileEditModal: React.FC = () => {
             placeholder="名前を入力してください"
           />
           <TextErea
+            className="pb-8"
             title="自己紹介"
             register={register("comment", { maxLength: { value: 300, message: "300文字以内で入力してください。" } })} // コメントは任意項目のため、バリデーションは省略
             errorMessage={errors.comment?.message} // 必要であればコメントにもバリデーションとエラーメッセージ

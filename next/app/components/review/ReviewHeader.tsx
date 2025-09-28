@@ -10,17 +10,19 @@ interface ReviewHeaderProps {
   reviewId?: number;
   user: User;
   onMenuAction?: (action: MenuAction, id: number) => void | Promise<void>;
+  onUserClick?: (userId: number) => void;
 }
 
 export default function ReviewHeader({
   reviewId,
   user,
   onMenuAction,
+  onUserClick,
 }: ReviewHeaderProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const isEditPage = pathname.includes("/profile");
+  const isEditPage = pathname === "/profile";
   const [imageLoading, setImageLoading] = useState(true);
   const setLoading = (loading: boolean) => {
     setImageLoading(loading);
@@ -45,7 +47,12 @@ export default function ReviewHeader({
 
 
   return (
-    <div className="flex items-center justify-between space-x-3">
+    <div
+      className="flex items-center justify-between space-x-3"
+      onClick={() => {
+        onUserClick?.(user.id);
+      }}
+    >
       {/* 左側：ユーザーアイコンと名前 */}
       <div className="flex items-center space-x-3">
         {user.image_path == null ? (

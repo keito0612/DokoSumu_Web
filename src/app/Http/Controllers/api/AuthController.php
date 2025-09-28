@@ -138,7 +138,6 @@ class AuthController extends Controller
             return response()->json(['message' => 'パスワードリセットメールを送信しました'], Response::HTTP_OK);
 
         } catch (\Exception $e) {
-            Log::error('パスワードリセットメール送信エラー: ' . $e->getMessage());
             return response()->json(['message' => 'サーバーに問題が発生しました。もう一度お試しください。'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

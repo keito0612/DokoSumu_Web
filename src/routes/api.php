@@ -25,6 +25,9 @@ Route::get('/prefecture_reviews/{prefecture_id}',[ReviewController::class, 'getP
 Route::get('/city_reviews/{prefecture_id}/{city_id}',[ReviewController::class, 'getCityReviews']);
 Route::post('/password/email', [AuthController::class, 'sendPasswordResetEmail']);
 Route::post('/password/reset', [AuthController::class, 'resetPassword']);
+Route::prefix('profile')->group(function () {
+    Route::get('/detail/{id}', [ProfileController::class, 'detail']);
+});
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::prefix('/post')->group(function () {
         Route::post('/city_review/{prefecture_id}/{city_id}',[ReviewController::class,'postCityReview']);

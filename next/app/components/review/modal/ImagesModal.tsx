@@ -115,13 +115,6 @@ export default function ImageModal({
 
           {/* PC メイン画像 */}
           <div className="hidden lg:flex flex-1 flex-col bg-black">
-            {/* 既存のタイトル・Xボタンの行を削除 */}
-            {/* <div className="flex justify-between items-center px-4 py-2 border-b">
-              <h2 className="text-lg font-bold text-black">{title}</h2>
-              <button onClick={onClose}>
-                <XMarkIcon className="w-6 h-6 text-gray-500 hover:text-black" />
-              </button>
-            </div> */}
             <div className="flex-col justify-center">
               <div className="flex justify-start bg-white items-center p-4 border-b-2">
                 <span className="text-black font-bold">{title}</span>

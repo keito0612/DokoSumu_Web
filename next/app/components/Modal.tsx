@@ -59,7 +59,7 @@ export default function Modal({
   const getColor = () => {
     switch (type) {
       case 'Success':
-        return 'bg-green-500 hover:bg-green-400';
+        return 'bg-green-500 hover:bg-green-500';
       case 'Error':
         return 'bg-red-500 hover:bg-red-400';
       case 'Warning':

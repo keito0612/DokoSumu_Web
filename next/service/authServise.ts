@@ -55,16 +55,16 @@ export class AuthService {
 
 
   static setSesstion(token: string) {
-    localStorage.setItem('token', JSON.stringify(token));
+    sessionStorage.setItem('token', JSON.stringify(token));
   }
 
   static deleteSesstion() {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
   }
 
   static getSesstion(): null {
     if (typeof window !== 'undefined') {
-      const userInfo = localStorage.getItem('token');
+      const userInfo = sessionStorage.getItem('token');
       if (userInfo) {
         return JSON.parse(userInfo);
       } else {
