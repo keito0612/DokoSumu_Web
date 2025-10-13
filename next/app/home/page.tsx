@@ -79,6 +79,8 @@ function Home() {
     router.push(url.toString());
   };
 
+  const token = AuthService.getSesstion();
+
   const openImageViewer = (index: number) => {
     setSelectImageIndex(index);
     setImageViewerOpen(true);
@@ -234,7 +236,11 @@ function Home() {
   }
 
   const postButtonClick = (prefectureId: number, cityId: number) => {
-    router.push(`/post/create/${prefectureId}/${cityId}`);
+    if (token) {
+      router.push(`/post/create/${prefectureId}/${cityId}`);
+    } else {
+      router.push("/unauthorized");
+    }
   }
 
   const getCitys = async (prefectureId: number) => {
@@ -268,7 +274,7 @@ function Home() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${AuthService.getSesstion()}`
+          'Authorization': `Bearer ${token}`
         }
       });
 
@@ -324,7 +330,7 @@ function Home() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${AuthService.getSesstion()}`
+          'Authorization': `Bearer ${token}`
         }
       });
 

@@ -31,8 +31,20 @@ class InformationNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['mail','database'];
     }
+
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject($this->payload['title'])
+            ->markdown('emails.notification', [
+                'title'   => $this->payload['title'],
+                'content' => $this->payload['content'],
+                'url'     => $this->payload['url'] ?? null,
+            ]);
+    }
+
 
     /**
      * Get the array representation of the notification.
@@ -42,9 +54,11 @@ class InformationNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'date' =>$this->payload['date'],
+            'date' =>$this->payload['date'] ?? now()->toDateString(),
             'title' => $this->payload['title'],
-            'content' => $this->payload['content']
+            'content' => $this->payload['content'],
+            'liked_by_user' => $this->payload['liked_by_user'] ?? null,
+            'type' => $this->payload['type']
         ];
     }
 }

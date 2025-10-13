@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Constants\NotificationType;
 use Carbon\Carbon;
 use App\Http\Requests\CityRequest;
 use App\Http\Requests\ReviewRequest;
@@ -8,12 +9,15 @@ use App\Models\Like;
 use App\Models\Photo;
 use App\Models\Rating;
 use App\Models\Review;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Services\FileService;
 use App\Notifications\InformationNotification;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\ErrorHandler\Debug;
 
 class ReviewController extends Controller
 {
@@ -238,13 +242,25 @@ class ReviewController extends Controller
     {
         DB::beginTransaction();
         try{
-            $userId = Auth::id();
+            $user = Auth::user();
             Like::create(
             [
-                'user_id' => $userId,
+                'user_id' => $user->id,
                 'review_id' => $reviewId
-            ]
-            );
+            ]);
+            $postedBy = User::whereHas('reviews',function($query) use($reviewId){
+                $query->where('id',$reviewId);
+            })->first();
+            $url =  config('app.frontend_url'). '/'. 'home';
+            $payload = [
+                'title'   => 'あなたの投稿にいいねされました！',
+                'content' => "{$user->name} さんがあなたの投稿にいいねしました。",
+                'url'     => $url,
+                'liked_by_user' => $user,
+                'type'   => \App\Consts\NotificationType::LIKE,
+                'date' => now()->toDateString()
+            ];
+            $postedBy->notify(new InformationNotification($payload));
             DB::commit();
             return response()->json([
                 "message" => "You Liked the review",

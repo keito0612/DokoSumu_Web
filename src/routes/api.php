@@ -40,7 +40,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::prefix('/notifications')->group(function () {
         Route::get('/',[NotificationController::class,'getNotifications']);
         Route::get('/unread_count', [NotificationController::class, 'unreadCount']);
-        Route::post('/all_delete',[NotificationController::class,'allDeleteNotification']);
+        Route::get('/detail/{id}',[NotificationController::class,'detail']);
+        Route::delete('/all_delete',[NotificationController::class,'allDeleteNotification']);
+        Route::delete('/delete/{id}',[NotificationController::class,'deleteNotification']);
     });
     Route::get('/user', [UserController::class, 'getUser']);
     Route::post('/logout', [AuthController::class, 'logout']);

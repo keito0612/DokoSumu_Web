@@ -3,7 +3,7 @@ import { LocalStorageServise } from '@/service/localStorageServise';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { BsFileEarmarkText, BsStar, BsCamera } from 'react-icons/bs';
+import { BsFileEarmarkText, BsStar, BsCamera } from "react-icons/bs";
 // 背景画像のURLを任意の画像に置き換えてください
 const backgroundImage = '/images/big-photo0000-0705.jpg';
 

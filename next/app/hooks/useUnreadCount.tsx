@@ -4,13 +4,12 @@ import { fetcher } from '@/lib/fetcher';
 
 export function useUnreadCount() {
   const { data, error } = useSWR<{ unread_count: number }>(
-    `${process.env.NEXT_PUBLIC_API_BASE}/notifications/unread-count`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/notifications/unread_count`,
     fetcher,
     {
       refreshInterval: 30_000,
     },
   );
-
   return {
     count: data?.unread_count ?? 0,
     isLoading: !error && data === undefined,

@@ -85,10 +85,9 @@ export default function RatingEditPost() {
 
       setAverageScore(review.rating.average_rating);
 
-      // 画像URLをセット（ここでは画像編集できないので表示だけ）
       const imageUrls: (string)[] = review.photos.map(photo => {
         return photo.photo_url;
-      }).filter((url): url is string => url !== null);;
+      }).filter((url): url is string => url !== null);
       setPreviewUrls(imageUrls);
       setLoading(false);
     } catch (err) {

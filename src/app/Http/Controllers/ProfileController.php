@@ -24,6 +24,10 @@ class ProfileController extends Controller
     {
         $this->fileService = $fileService;
     }
+
+    private function userId(){
+        return optional(Auth::guard('api')->user())->id;
+    }
     function getProfile()
     {
         if (!(Auth::check())) {
@@ -108,7 +112,6 @@ class ProfileController extends Controller
         if(!(User::where('id',$id)->exists())){
             return response()->json(['error' => 'user not found'], 404);
         }
-        $user = Auth::user();
         $profile = User::with([
             'reviews.user',         // ユーザーが投稿したレビューとその投稿者情報
             'reviews.city',         // レビューの都市情報
@@ -132,9 +135,9 @@ class ProfileController extends Controller
         $profile?->append(['reviews_count', 'liked_reviews_count']);
 
         if ($profile && $profile->reviews) {
-            $profile->reviews->map(function ($review) use ($user) {
-                if(!is_null($user)){
-                    $review->is_liked = $review->likes->contains('user_id', $user->id);
+            $profile->reviews->map(function ($review) {
+                if(!(is_null($this->userId()))){
+                    $review->is_liked = $review->likes->contains('user_id', $this->userId());
                 }else{
                     $review->is_liked = false;
                 }

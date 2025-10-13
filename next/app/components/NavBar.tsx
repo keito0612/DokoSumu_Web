@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   Disclosure,
   DisclosureButton,
@@ -18,9 +18,14 @@ import { AuthService } from "@/service/authServise";
 import ProfileImage from "./profile/ProfileImage";
 import Modal from "./Modal";
 import { useRouter } from "next/navigation";
+import NotificationBell from "./NotificationBell";
+import { FiArrowLeft } from "react-icons/fi";
 
 interface NavBarProps {
   title: string;
+  rightButton?: React.ReactNode;
+  onBackClick?: () => void;
+  onBack?: boolean;
 }
 
 const navigation = [
@@ -33,7 +38,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-function NavBar({ title }: NavBarProps) {
+function NavBar({ title, rightButton, onBackClick = () => { }, onBack = false }: NavBarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -80,6 +85,11 @@ function NavBar({ title }: NavBarProps) {
     window.location.reload();
   }
 
+  const backClick = () => {
+    onBackClick();
+    router.back();
+  }
+
   const logout = async () => {
     const url = `${UtilApi.API_URL}/api/logout`;
     try {
@@ -123,34 +133,41 @@ function NavBar({ title }: NavBarProps) {
       <Disclosure as="nav" className="bg-green-500 fixed top-0 left-0 w-full z-50">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-center sm:justify-between">
-            {/* モバイルメニュー（ハンバーガーアイコン） */}
-            <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-              <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                <span className="sr-only">メインメニューを開く</span>
-                <Bars3Icon
-                  aria-hidden="true"
-                  className="block h-6 w-6 group-data-[open]:hidden"
-                />
-                <XMarkIcon
-                  aria-hidden="true"
-                  className="hidden h-6 w-6 group-data-[open]:block"
-                />
-              </DisclosureButton>
-            </div>
 
             {/* 左側のロゴ・タイトル */}
-            <div className="flex items-center justify-center sm:items-stretch sm:justify-start">
-              <div className="flex flex-shrink-0 items-center">
+            <div className="flex items-center justify-between w-full relative">
+              {/* 左側：ロゴまたは戻るボタン */}
+              <div className="flex items-center min-w-[40px]">
+                {/* PCのみロゴ表示 */}
                 <img
                   alt="Your Company"
                   src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                  className="w-0 sm:h-8 sm:w-auto invisible sm:visible"
+                  className="hidden sm:block h-8 w-auto"
                 />
-                <span className="text-white visible sm:hidden text-center text-lg font-bold">
+
+                {/* モバイルのみ戻るボタン表示 */}
+                {onBack && (
+                  <button
+                    className="sm:hidden"
+                    onClick={backClick}
+                    aria-label="戻る"
+                  >
+                    <FiArrowLeft className="text-2xl text-white" />
+                  </button>
+                )}
+              </div>
+
+              {/* 中央：タイトル */}
+              <div className="absolute left-1/2 transform -translate-x-1/2 sm:hidden">
+                <span className="text-white text-lg font-bold sm:text-xl whitespace-nowrap">
                   {title}
                 </span>
               </div>
 
+              {/* 右側：ボタン（ない場合は空のスペース） */}
+              <div className="flex items-center min-w-[40px]">
+                {rightButton}
+              </div>
               {/* PC用ナビゲーション */}
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
@@ -182,43 +199,41 @@ function NavBar({ title }: NavBarProps) {
                 </div>
               </div>
             </div>
-
             {/* 右側のユーザー情報 */}
-            {mounted && (
-              <div className="hidden md:flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <div className="flex flex-row items-center justify-center">
-                  <Menu as="div" className="relative ml-3">
-                    <div>
-                      <MenuButton className="relative flex rounded-full text-sm focus:outline-none focus:ring-2 bg-white focus:bg-slate-400 z-10">
-                        <ProfileImage
-                          imageUrl={user?.image_path ?? null}
-                          sizes={36}
-                        />
-                      </MenuButton>
-                    </div>
-                    <MenuItems
-                      className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                    >
-                      <MenuItem>
-                        <Link
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          href={"/profile"}
-                        >
-                          プロフィール
-                        </Link>
-                      </MenuItem>
-                      {
-                        token ?
-                          <MenuItem as="button" onClick={logoutClick} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            サインアウト
-                          </MenuItem> : null
-                      }
-                    </MenuItems>
-                  </Menu>
-                  <p className="font-bold ml-4">{user?.name}</p>
-                </div>
+            <div className="hidden md:flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <div className="flex flex-row items-center justify-center">
+                <NotificationBell />
+                <Menu as="div" className="relative ml-3">
+                  <div>
+                    <MenuButton className="relative flex rounded-full text-sm focus:outline-none focus:ring-2 bg-white focus:bg-slate-400 z-10">
+                      <ProfileImage
+                        imageUrl={user?.image_path ?? null}
+                        sizes={36}
+                      />
+                    </MenuButton>
+                  </div>
+                  <MenuItems
+                    className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  >
+                    <MenuItem>
+                      <Link
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        href={"/profile"}
+                      >
+                        プロフィール
+                      </Link>
+                    </MenuItem>
+                    {
+                      token ?
+                        <MenuItem as="button" onClick={logoutClick} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          サインアウト
+                        </MenuItem> : null
+                    }
+                  </MenuItems>
+                </Menu>
+                <p className="font-bold ml-4">{user?.name}</p>
               </div>
-            )}
+            </div>
           </div>
         </div>
 

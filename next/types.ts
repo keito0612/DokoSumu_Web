@@ -1,7 +1,14 @@
 export type ResultType = "Normal" | "Success" | "Error" | "Warning";
 export type MenuAction = "edit" | "delete";
 export type RatingProperty = 'safety' | 'public_transportation' | 'child_rearing' | 'city_policies' | 'livability' | 'average_rating';
+export const NotificationType = {
+  POST: "post",
+  LIKE: "like",
+  NOTICE: "notice",
+} as const;
 
+export type NotificationType =
+  (typeof NotificationType)[keyof typeof NotificationType];
 
 export interface Profile {
   id: number;
@@ -82,3 +89,13 @@ export interface Review {
   is_liked: boolean;
   likes_count: number;
 };
+
+export interface Notification {
+  id: string;
+  type: string;
+  title: string;
+  content: string;
+  time: string;
+  liked_by_user?: User | null;
+}
+

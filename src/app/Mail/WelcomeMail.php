@@ -28,7 +28,7 @@ class WelcomeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '【DokoSumu】パスワード再設定のご案内',
+            subject: '【DokoSumu】登録完了のお知らせ。',
         );
     }
 

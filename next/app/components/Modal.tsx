@@ -90,7 +90,7 @@ export default function Modal({
         {(type === 'Warning' || type === 'Normal') && onConfirm ? (
           <div className="mt-6 flex justify-center gap-28">
             <button
-              className={`${baseBtn} ${getColor()}`}
+              className={`${baseBtn} ${getColor()} text-white`}
               onClick={async () => {
                 await onConfirm();
                 onClose();
@@ -99,14 +99,14 @@ export default function Modal({
               {confirmLabel}
             </button>
             <button
-              className={`${baseBtn} bg-gray-400 hover:bg-gray-300`}
+              className={`${baseBtn} bg-gray-400 hover:bg-gray-300 text-white`}
               onClick={onClose}
             >
               {cancelLabel}
             </button>
           </div>
         ) : (
-          <button className={`mt-6 ${baseBtn} ${getColor()}`} onClick={onClose}>
+          <button className={`mt-6 text-white ${baseBtn} ${getColor()}`} onClick={onClose}>
             閉じる
           </button>
         )}

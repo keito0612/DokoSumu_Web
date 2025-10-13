@@ -1,5 +1,7 @@
+import { AuthService } from "@/service/authServise";
+
 export const fetcher = async (url: string) => {
-  const token = localStorage.getItem('token'); // 事前にトークンを保存しておくこと
+  const token = AuthService.getSesstion();
 
   if (!token) {
     throw new Error('No token found');
