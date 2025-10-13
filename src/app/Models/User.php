@@ -60,12 +60,10 @@ class User extends Authenticatable
 
     public function likedReviews()
     {
-        return $this->belongsToMany(
-            Review::class, // 取得したいモデル
-            'likes',       // 中間テーブル
-            'user_id',     // likes.user_id = users.id
-            'review_id'    // likes.review_id = reviews.id
-        );
+        return $this->hasMany(Review::class, 'user_id')
+        ->whereHas('likes', function ($query) {
+            $query->where('user_id', '!=', $this->id);
+        });
     }
 
     public function getReviewsCountAttribute(): int
@@ -75,6 +73,9 @@ class User extends Authenticatable
 
     public function getLikedReviewsCountAttribute(): int
     {
-        return $this->likedReviews()->count();
+        return $this->hasMany(Review::class, 'user_id')
+        ->withCount('likes')
+        ->get()
+        ->sum('likes_count');
     }
 }
