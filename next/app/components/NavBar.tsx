@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Disclosure,
   DisclosureButton,
@@ -10,7 +10,6 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { ResultType, User } from "@/types";
 import { UtilApi } from "@/Util/Util_api";

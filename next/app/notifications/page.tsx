@@ -57,11 +57,11 @@ function Notifications() {
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
     } catch (e) {
-      console.error("通知取得エラー:", e);
       setModalType('Error');
       setModalTitle('エラーが発生しました。');
       setModalMessage('原因不明のエラーが発生した事により、データを取得することができませんでした。\n お手数ですが、もう一度お試しください。');
       setIsOpanModal(true);
+      console.error("通知取得エラー:", e);
     } finally {
       setIsLoading(false);
     }

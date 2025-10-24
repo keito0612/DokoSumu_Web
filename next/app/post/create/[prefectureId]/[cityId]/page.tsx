@@ -103,19 +103,19 @@ export default function RatingPost() {
     const prefectureId = params.prefectureId;
     const cityId = params.cityId;
     const url: string = `${UtilApi.API_URL}/api/post/city_review/${prefectureId}/${cityId}`;
+    const formData = new FormData();
     dataSet.photos = files;
     dataSet.averageRating = averageScore;
-    const formData = new FormData();
     formData.append('safety', dataSet.safety.toString());
     formData.append('childRearing', dataSet.childRearing.toString());
     formData.append('cityPolicies', dataSet.cityPolicies.toString());
     formData.append('publicTransportation', dataSet.publicTransportation.toString());
     formData.append('livability', dataSet.livability.toString());
-    formData.append('goodComment', dataSet.goodComment);
-    formData.append('badComment', dataSet.badComment);
-    formData.append('averageRating', dataSet.averageRating.toString());
-    dataSet.photos.forEach((file) => {
-      formData.append("photos[]", file);
+    formData.append("goodComment", dataSet.goodComment.toString());
+    formData.append("badComment", dataSet.badComment.toString());
+    formData.append("averageRating", dataSet.averageRating.toString());
+    files.forEach((file, index) => {
+      formData.append('photos[' + index + ']', file)
     });
     setLoading(true);
     try {

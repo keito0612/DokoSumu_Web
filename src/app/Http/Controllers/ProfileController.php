@@ -101,7 +101,6 @@ class ProfileController extends Controller
             DB::commit();
             return response()->json(['success' => true], Response::HTTP_OK);
         }catch(Exception $e){
-            Log::debug($e->getMessage());
             DB::rollback();
             return response()->json(["error" => $e->getMessage()], 500);
         }

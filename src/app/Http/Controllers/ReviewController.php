@@ -121,7 +121,7 @@ class ReviewController extends Controller
                 "average_rating" => $request->averageRating,
             ]);
             if ($request->hasFile('photos')) {
-                $this->storePhotos($request->file('photos'), false,$newReview->id);
+                $this->storePhotos($request->file('photos'),$newReview->id);
             }
             DB::commit();
             return response()->json([
@@ -181,11 +181,7 @@ class ReviewController extends Controller
 
             if ($request->has('deletePhotos')) {
                 $deletePhotos = $request->deletePhotos;
-                $photosToDelete = Photo::whereIn('photo_url', $deletePhotos)->get();
-                foreach ($photosToDelete as $photo) {
-                    $this->fileService->delete($photo->photo_url);
-                    $photo->delete();
-                }
+                $this->deletePhotos($deletePhotos);
             }
 
             if ($request->hasFile('photos')) {
@@ -236,6 +232,15 @@ class ReviewController extends Controller
             ];
         }
         Photo::insert($photoData);
+    }
+
+    private function deletePhotos($deletePhotos)
+    {
+        $photosToDelete = Photo::whereIn('photo_url', $deletePhotos)->get();
+        foreach ($photosToDelete as $photo) {
+            $this->fileService->delete($photo->photo_url);
+            $photo->delete();
+        }
     }
 
     function like($reviewId)

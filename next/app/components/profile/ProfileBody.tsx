@@ -121,7 +121,7 @@ const ProfileBody: React.FC = () => {
     return <ProfileSkeleton />;
   }
   return (
-    < div className="px-4 sm:px-20 flex flex-1 justify-center py-5 pt-16  pb-24  sm:pb-0 md:pb-0 lg:pb-0 2xl:pb-0 xl:pb-0 " >
+    <div className="px-4 sm:px-20 flex flex-1 justify-center py-5 pt-16  pb-24  sm:pb-0 md:pb-0 lg:pb-0 2xl:pb-0 xl:pb-0 " >
       <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
         <ProfileHeader profile={profile} />
         <ProfileList postReviews={profile.reviews} likedReviews={profile.liked_reviews} onMenuAction={async (action, id) => {

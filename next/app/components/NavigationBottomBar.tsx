@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { HomeIcon, UserIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, UserIcon, Cog8ToothIcon } from '@heroicons/react/24/outline';
 
 const NavigationBottomBar = () => {
   const pathname = usePathname();
@@ -10,6 +10,7 @@ const NavigationBottomBar = () => {
   const navItems = [
     { label: 'Home', href: '/home', icon: HomeIcon },
     { label: 'Profile', href: '/profile', icon: UserIcon },
+    { label: '設定', href: '/setting', icon: Cog8ToothIcon }
   ];
 
 
