@@ -29,6 +29,7 @@ interface NavBarProps {
 
 const navigation = [
   { name: "ホーム", href: "/home" },
+  { name: '設定', href: "/setting" },
   { name: "ログイン", href: "/login" },
   { name: "新規登録", href: "/sinUp" },
 ];
@@ -225,12 +226,16 @@ function NavBar({ title, rightButton, onBackClick = () => { }, onBack = false }:
                     {
                       token ?
                         <MenuItem as="button" onClick={logoutClick} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          サインアウト
+                          ログアウト
                         </MenuItem> : null
                     }
                   </MenuItems>
                 </Menu>
-                <p className="font-bold ml-4">{user?.name}</p>
+                {user?.name && (
+                  <p className="font-bold ml-1 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
+                    {user.name}
+                  </p>
+                )}
               </div>
             </div>
           </div>

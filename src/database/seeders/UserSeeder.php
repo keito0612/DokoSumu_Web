@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\UserSetting;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +24,6 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('password'),
             ]
         );
-        User::factory(50)->create();
+        User::factory(50)->has(UserSetting::factory())->create();
     }
 }

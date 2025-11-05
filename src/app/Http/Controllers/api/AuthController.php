@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Mail\ResetPasswordMail;
 use App\Mail\WelcomeMail;
 use App\Models\User;
+use App\Models\UserSetting;
 use App\Servises\EmailServise;
 use Illuminate\Container\Attributes\Log as AttributesLog;
 use Illuminate\Support\Facades\Log;
@@ -33,6 +34,10 @@ class AuthController extends Controller
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
                 'password' => Hash::make($request->input('password')),
+            ]);
+
+            UserSetting::create([
+                'user_id' => $user->id
             ]);
 
             // トークン発行

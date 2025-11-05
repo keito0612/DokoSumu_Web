@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { FiArrowLeft, FiUserPlus, FiX } from 'react-icons/fi';
+import { FiUserPlus, FiX } from 'react-icons/fi';
 import ProfileImage from '@/app/components/profile/ProfileImage';
 import NavBar from '@/app/components/NavBar';
 import NavigationBottomBar from '@/app/components/NavigationBottomBar';
@@ -11,6 +11,7 @@ import { AuthService } from '@/service/authServise';
 import { Notification, NotificationType, ResultType } from '@/types';
 import Loading2 from '@/app/components/Loading2';
 import Modal from '@/app/components/Modal';
+import PageHeader from '@/app/components/PageHeader';
 
 function NotificationDetail() {
   const [notification, setNotification] = useState<Notification | null>(null);
@@ -26,7 +27,6 @@ function NotificationDetail() {
   const [modalTitle2, setModalTitle2] = useState<string>('');
   const [modalMessage2, setModalMessage2] = useState<string>('');
   const [modalType2, setModalType2] = useState<ResultType>('Normal');
-  const [modalOnConfirm2, setModalOnConfirm2] = useState<() => void>();
 
   useEffect(() => {
     if (params.id) {
@@ -93,15 +93,16 @@ function NotificationDetail() {
       if (res.ok) {
         setModalType2('Success');
         setModalTitle2('通知を削除しました。');
+        setModalMessage2('');
         setIsOpanModal2(true);
       }
     } catch (e) {
+      setModalType2('Success');
+      setModalTitle2('通知を削除することができませんでした。');
+      setModalMessage2('サーバーに何らかの問題が発生したので通知を削除できませんでした。\nもう一度お試しください。');
+      setIsOpanModal2(true);
       console.error("通知削除エラー:", e);
     }
-  };
-
-  const handleBack = () => {
-    router.back();
   };
 
   const onClone = () => {
@@ -127,23 +128,12 @@ function NotificationDetail() {
         title={modalTitle2}
         message={modalMessage2}
         type={modalType2}
-        onConfirm={modalOnConfirm2}
       />
       <NavBar title="通知詳細" onBack={true} />
       <div className='relative flex w-full min-h-screen flex-col bg-gray-50 overflow-x-hidden'>
         <div className="px-4 sm:px-20 flex flex-1 justify-center py-5 pt-16 pb-24 sm:pb-0 md:pb-0 lg:pb-0 2xl:pb-0 xl:pb-0">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
-            {/* ヘッダー */}
-            <div className="sm:flex items-center gap-4 mb-6 mt-3 hidden">
-              <button
-                onClick={handleBack}
-                className="p-2 hover:bg-gray-200 rounded-full transition"
-                aria-label="戻る"
-              >
-                <FiArrowLeft className="text-2xl text-gray-700" />
-              </button>
-              <h1 className="text-3xl font-bold text-black">通知詳細</h1>
-            </div>
+            <PageHeader title={"通知詳細"} />
 
             {/* 通知カード */}
             <div className="bg-white rounded-2xl shadow-sm p-8 mt-2 border border-gray-200">

@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserSettingController;
 use App\Models\Review;
 use Illuminate\Container\Attributes\Auth;
 use Symfony\Component\HttpKernel\Profiler\Profile;
@@ -50,6 +51,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/', [ProfileController::class, 'getProfile']);
         Route::post('/update', [ProfileController::class, 'update']);
     });
-
+    Route::prefix('/user_setting')->group(function(){
+        Route::post('/', [UserSettingController::class,'index']);
+        Route::post('/email_notification', [UserSettingController::class,'emailNotification']);
+    });
 });
 

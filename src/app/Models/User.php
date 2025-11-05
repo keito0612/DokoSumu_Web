@@ -66,6 +66,11 @@ class User extends Authenticatable
         });
     }
 
+    public function userSetting()
+    {
+        return $this->hasOne(UserSetting::class);
+    }
+
     public function getReviewsCountAttribute(): int
     {
         return $this->reviews()->count();

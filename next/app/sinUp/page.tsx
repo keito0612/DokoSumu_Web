@@ -75,8 +75,8 @@ function SignUp() {
                 {...register("name", {
                   required: "名前は必須です",
                   maxLength: {
-                    value: 8,
-                    message: "名前は8文字以内でお願いします。",
+                    value: 100,
+                    message: "名前は100文字以内でお願いします。",
                   },
                 })}
                 className="mt-1 text-black w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300"
