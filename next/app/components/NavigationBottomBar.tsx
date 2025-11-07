@@ -15,7 +15,7 @@ const NavigationBottomBar = () => {
 
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md sm:hidden">
+    <nav className="fixed  bottom-0 left-0 right-0 bg-white border-t shadow-md sm:hidden">
       <ul className="flex justify-around items-center p-2">
         {navItems.map((item) => (
           <li key={item.href}>

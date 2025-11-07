@@ -1,12 +1,10 @@
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  MdNotifications,
   MdChevronRight,
   MdEmail,
   MdLogout,
-  MdInfo,
-  MdHelp,
+  MdLogin,
   MdPrivacyTip,
   MdDescription,
   MdContactSupport
@@ -15,10 +13,12 @@ import NavBar from '../components/NavBar';
 import NavigationBottomBar from '../components/NavigationBottomBar';
 import { IconType } from 'react-icons/lib';
 import Modal from '../components/Modal';
-import { ResultType } from '@/types';
+import { ResultType, UserSetting } from '@/types';
 import { UtilApi } from '@/Util/Util_api';
 import { AuthService } from '@/service/authServise';
 import { useRouter } from 'next/navigation';
+import Loading2 from '../components/Loading2';
+import Link from 'next/link';
 
 interface SettingItemProps {
   icon: IconType;
@@ -41,13 +41,14 @@ interface SectionProps {
 
 export default function SettingsPage() {
   const router = useRouter();
-  const [notifications, setNotifications] = useState(true);
-  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [emailNotifications, setEmailNotifications] = useState(false);
   const [modalType, setModalType] = useState<ResultType>('Success');
   const [modalTitle, setModalTitle] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isConfirmModal, setIsConfirmModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
 
   const SettingItem = ({ icon: Icon, title, subtitle, action, onClick }: SettingItemProps) => (
     <div
@@ -93,7 +94,23 @@ export default function SettingsPage() {
       </div>
     )
   }
+  const LoginButton = () => {
+    return (
+      <button onClick={() => onClick('/login')} className="w-full bg-white rounded-lg shadow-sm p-4 flex items-center justify-center gap-3 text-green-600 hover:bg-red-50 transition-colors font-medium">
+        <MdLogin size={20} />
+        ログイン
+      </button>
+    );
+  }
 
+  const LogoutButton = () => {
+    return (
+      <button onClick={logoutClick} className="w-full bg-white rounded-lg shadow-sm p-4 flex items-center justify-center gap-3 text-red-600 hover:bg-red-50 transition-colors font-medium">
+        <MdLogout size={20} />
+        ログアウト
+      </button>
+    );
+  }
 
   const onConfirm = async () => {
     setIsModalOpen(false);
@@ -102,6 +119,29 @@ export default function SettingsPage() {
   const onClone = () => {
     router.refresh();
     window.location.reload();
+  }
+
+  const onEmailNotificationsClick = async () => {
+    await emailNotification();
+  }
+  const emailNotification = async () => {
+    const url = `${UtilApi.API_URL}/api/user_setting/email_notification`;
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthService.getSesstion()}`,
+        },
+      });
+      if (res.ok) {
+        setEmailNotifications(!emailNotifications);
+      } else {
+        console.log(res.json());
+      }
+    } catch (error) {
+      console.error("Failed to fetch user:", error);
+    }
   }
 
   const logout = async () => {
@@ -133,8 +173,52 @@ export default function SettingsPage() {
     }
   };
 
+
+  const logoutClick = async () => {
+    setModalType('Normal');
+    setModalTitle('ログアウト');
+    setModalMessage('ログアウトしますか？');
+    setIsModalOpen(true);
+  }
+
+
+  const onClick = (path: string) => {
+    router.push(path);
+  }
+
+  useEffect((() => {
+    setToken(AuthService.getSesstion);
+    const getUserSetting = async () => {
+      setIsLoading(true);
+      const url = `${UtilApi.API_URL}/api/user_setting`;
+      try {
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${AuthService.getSesstion()}`,
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const userSetting = data['user_setting'] as UserSetting;
+          setEmailNotifications(userSetting.email_notification);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    if (AuthService.getSesstion() !== null) {
+      getUserSetting();
+    }
+  }), [])
   return (
     <>
+      {isLoading &&
+        <Loading2 loadingtext={'読み込み中'} />
+      }
       <div className="min-h-screen bg-gray-50">
         <NavBar title={'設定'} />
         {/* Main Content */}
@@ -145,44 +229,45 @@ export default function SettingsPage() {
               設定
             </h1>
           </div>
+          {
+            token &&
+            <Section title={'通知設定'}>
+              <SettingItem
+                icon={MdEmail}
+                title="メール通知"
+                subtitle="重要な更新をメールで受け取る"
+                action={<Toggle checked={emailNotifications} onChange={async () => {
+                  await onEmailNotificationsClick();
+                }} />} onClick={onEmailNotificationsClick} />
 
-          <Section title={'通知設定'}>
-            <SettingItem
-              icon={MdNotifications}
-              title="プッシュ通知"
-              subtitle="アプリの通知を受け取る"
-              action={<Toggle checked={notifications} onChange={setNotifications} />} onClick={undefined} />
-            <SettingItem
-              icon={MdEmail}
-              title="メール通知"
-              subtitle="重要な更新をメールで受け取る"
-              action={<Toggle checked={emailNotifications} onChange={setEmailNotifications} />} onClick={undefined} />
-          </Section>
+            </Section>
+          }
           <Section title={'その他'} >
             <SettingItem
               icon={MdDescription}
-              title="利用規約" subtitle={undefined} action={undefined} onClick={undefined} />
+              title="利用規約" subtitle={undefined} action={undefined} onClick={() => {
+                onClick('/terms-of-service');
+              }} />
             <SettingItem
               icon={MdPrivacyTip}
-              title="プライバシーポリシー" subtitle={undefined} action={undefined} onClick={undefined} />
-            <SettingItem
-              icon={MdContactSupport}
-              title="お問い合わせ"
-              subtitle="ご質問やご意見をお聞かせください" action={undefined} onClick={undefined} />
-            <SettingItem
-              icon={MdHelp}
-              title="ヘルプとサポート" subtitle={undefined} action={undefined} onClick={undefined} />
-            <SettingItem
-              icon={MdInfo}
-              title="アプリについて"
-              subtitle="バージョン 1.0.0" action={undefined} onClick={undefined} />
+              title="プライバシーポリシー" subtitle={undefined} action={undefined} onClick={() => {
+                onClick('/privacy-policy');
+              }} />
+            <Link href={'https://docs.google.com/forms/d/e/1FAIpQLSe4hUxg84q0M53ruYppi7H-7Fiyx8zW-z5vfi_fmhB__vF9kg/viewform?usp=dialog'}>
+              <SettingItem
+                icon={MdContactSupport}
+                title="お問い合わせ"
+                subtitle="ご質問やご意見をお聞かせください" action={undefined} onClick={undefined} />
+            </Link>
           </Section>
           {/* Logout Button */}
           <div className="mb-8">
-            <button className="w-full bg-white rounded-lg shadow-sm p-4 flex items-center justify-center gap-3 text-red-600 hover:bg-red-50 transition-colors font-medium">
-              <MdLogout size={20} />
-              ログアウト
-            </button>
+
+
+            {
+              token !== null ?
+                LogoutButton() : LoginButton()
+            }
           </div>
           <NavigationBottomBar />
         </main>

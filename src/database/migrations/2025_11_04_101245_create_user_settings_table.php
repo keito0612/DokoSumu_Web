@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_settings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->comment("ユーザーID")->constrained()->onDelete('cascade');
-            $table->boolean('is_like_notification')->default(true)->comment('いいねメール通知');
+            $table->boolean('email_notification')->default(true)->comment('いいねメール通知');
             $table->timestamps();
         });
     }

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\Log;
 use Nette\Schema\Expect;
 
 class UserSettingController extends Controller
@@ -26,21 +27,16 @@ class UserSettingController extends Controller
         ] ,200);
     }
 
-    function likeNotification(Request $request)
+    function emailNotification()
     {
-        $request->validate([
-            'like_notification' => 'required|boolean'
-        ]);
-
         try {
             $userSetting = UserSetting::where('user_id', $this->userId())->firstOrFail();
 
+            $emailNotification = $userSetting->email_notification;
             $userSetting->update([
-                'like_notification' => $request->like_notification
+                'email_notification' => !$emailNotification
             ]);
-
-            return response()->json(['message' => '通知設定を更新しました'], 200);
-
+            return response()->json(['message' => 'メール通知を更新しました'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'ユーザー設定が見つかりません'], 404);
         } catch (Exception $e) {

@@ -68,7 +68,7 @@ class User extends Authenticatable
 
     public function userSetting()
     {
-        return $this->hasOne(UserSetting::class);
+        return $this->hasOne(UserSetting::class, 'user_id');
     }
 
     public function getReviewsCountAttribute(): int

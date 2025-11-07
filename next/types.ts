@@ -23,6 +23,10 @@ export interface Profile {
   likes: unknown[];
 }
 
+export interface UserSetting {
+  email_notification: boolean;
+}
+
 export interface ChartData {
   name: string;
   score: number;

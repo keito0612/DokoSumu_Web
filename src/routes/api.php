@@ -52,7 +52,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/update', [ProfileController::class, 'update']);
     });
     Route::prefix('/user_setting')->group(function(){
-        Route::post('/', [UserSettingController::class,'index']);
+        Route::get('/', [UserSettingController::class,'index']);
         Route::post('/email_notification', [UserSettingController::class,'emailNotification']);
     });
 });

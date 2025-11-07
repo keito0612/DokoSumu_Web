@@ -265,12 +265,15 @@ class ReviewController extends Controller
                 'type'   => \App\Consts\NotificationType::LIKE,
                 'date' => now()->toDateString()
             ];
-            $postedBy->notify(new InformationNotification($payload));
+            if($postedBy->userSetting->email_notification){
+                $postedBy->notify(new InformationNotification($payload));
+            }
             DB::commit();
             return response()->json([
                 "message" => "You Liked the review",
             ], 201);
         }catch(Exception $e){
+            Log::debug($e);
             DB::rollback();
             return response()->json([
                 "message" => $e->getMessage(),
