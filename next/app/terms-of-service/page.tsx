@@ -19,7 +19,7 @@ function TermsOfServicePage() {
                   <h1 className="text-3xl font-bold text-gray-900 mb-4">利用規約</h1>
                   <p className="text-sm text-gray-600 mb-6">最終更新日: 2025年10月25日</p>
                   <p className="mb-4">
-                    この利用規約（以下「本規約」）は、DokoSumu（以下「当サービス」）の利用条件を定めるものです。ユーザーの皆様には、本規約に同意いただいた上で当サービスをご利用いただきます。
+                    この利用規約（以下「本規約」）は、PrefReview（以下「当サービス」）の利用条件を定めるものです。ユーザーの皆様には、本規約に同意いただいた上で当サービスをご利用いただきます。
                   </p>
                 </div>
 
@@ -182,8 +182,8 @@ function TermsOfServicePage() {
                     本規約に関するご質問やご意見がございましたら、以下の連絡先までお問い合わせください。
                   </p>
                   <div className="mt-4 p-4 bg-gray-100 rounded">
-                    <p className="font-semibold">DokoSumu運営チーム</p>
-                    <p>メールアドレス: support@dokosumu.example.com</p>
+                    <p className="font-semibold">PrefReview運営チーム</p>
+                    <p>メールアドレス: support@PrefReview.example.com</p>
                   </div>
                 </section>
               </div>

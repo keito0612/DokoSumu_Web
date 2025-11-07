@@ -28,7 +28,7 @@ class ResetPasswordMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '【DokoSumu】パスワード再設定のご案内',
+            subject: '【PrefReview】パスワード再設定のご案内',
         );
     }
 

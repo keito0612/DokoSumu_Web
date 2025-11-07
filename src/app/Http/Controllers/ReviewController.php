@@ -273,7 +273,6 @@ class ReviewController extends Controller
                 "message" => "You Liked the review",
             ], 201);
         }catch(Exception $e){
-            Log::debug($e);
             DB::rollback();
             return response()->json([
                 "message" => $e->getMessage(),

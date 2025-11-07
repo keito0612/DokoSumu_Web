@@ -163,9 +163,11 @@ function NavBar({ title, rightButton, onBackClick = () => { }, onBack = false }:
                   {title}
                 </span>
               </div>
-
               {/* 右側：ボタン（ない場合は空のスペース） */}
               <div className="flex items-center min-w-[40px]">
+                <div className="sm:hidden flex items-center">
+                  <NotificationBell />
+                </div>
                 {rightButton}
               </div>
               {/* PC用ナビゲーション */}

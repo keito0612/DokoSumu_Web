@@ -51,7 +51,6 @@ class AuthController extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            Log::debug($e);
             return response()->json([
                 'message' => '内部サーバーエラー'
             ]    , Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -86,7 +85,6 @@ class AuthController extends Controller
             $token = $user->createToken("login:user{$user->id}")->plainTextToken;
             return response()->json(['token' => $token], Response::HTTP_OK);
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
             return response()->json(['message' => '内部サーバーエラー'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -198,7 +196,6 @@ class AuthController extends Controller
             return response()->json(['message' => 'パスワードが更新されました'], Response::HTTP_OK);
 
         } catch (\Exception $e) {
-            Log::error('パスワード更新エラー: ' . $e->getMessage());
             return response()->json(['message' => 'サーバ側で問題'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

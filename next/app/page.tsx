@@ -30,7 +30,7 @@ const HeroSection = ({ onClick }: HeroSectionProps) => (
     {/* Content */}
     <div className="relative z-20 flex flex-col items-center justify-center h-full px-4 text-center">
       <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg">
-        DokoSumuで、<br />あなたにぴったりの街を見つけよう。
+        PrefReviewで、<br />あなたにぴったりの街を見つけよう。
       </h1>
       <p className="text-sm md:text-base lg:text-lg mb-8 max-w-xl drop-shadow-lg">
         各都道府県市の街の雰囲気や状況、良い点と悪い点をしり、<br />あなたの次の住まいを見つけましょう！。
@@ -60,7 +60,7 @@ const FeatureCard = ({ icon, title, description }: FeatureCardProps) => (
 const FeaturesSection = () => (
   <div className="container mx-auto py-16 px-4">
     <div className="text-center mb-12">
-      <h2 className="text-3xl font-bold text-gray-800 mb-2">DokoSumuの主な機能</h2>
+      <h2 className="text-3xl font-bold text-gray-800 mb-2">PrefReviewの主な機能</h2>
       <p className="text-base text-gray-600">
         移住や引越しの意思決定をサポートする、様々な情報を提供します。
       </p>
@@ -151,8 +151,8 @@ export default function Home() {
         />
         <CallToActionSection imageSrc={pinGreenImageSrc}
           imageAlt={'２個目のセッションの画像。'}
-          heading={'あなたの理想の暮らしを \n DokoSumuで見つけよう。'}
-          body={' DokoSumuは、ユーザーが各都道府県の都市の雰囲気、状況、長所と短所を理解し、居住地を決定するのに役立つ情報源となることを目指しています。'}
+          heading={'あなたの理想の暮らしを \n PrefReviewで見つけよう。'}
+          body={' PrefReviewは、ユーザーが各都道府県の都市の雰囲気、状況、長所と短所を理解し、居住地を決定するのに役立つ情報源となることを目指しています。'}
         />
       </div>
     </div>

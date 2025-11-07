@@ -2,15 +2,15 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>DokoSumu - 新規登録完了</title>
+    <title>PrefReview - 新規登録完了</title>
 </head>
 <body>
     <p>{{ $user->name }} 様</p>
 
-    <p>この度は <strong>DokoSumu</strong> にご登録いただき、誠にありがとうございます。</p>
+    <p>この度は <strong>PrefReview</strong> にご登録いただき、誠にありがとうございます。</p>
 
     <p>
-        <strong>DokoSumu</strong> は、自分が住んでいる <strong>県や市に対してレビューを投稿</strong> できるアプリです。<br>
+        <strong>PrefReview</strong> は、自分が住んでいる <strong>県や市に対してレビューを投稿</strong> できるアプリです。<br>
         また、<strong>新規登録をしなくても他のユーザーのレビューを自由に閲覧</strong>できるため、さまざまな市の状況や魅力を知ることができます。
     </p>
 
@@ -27,13 +27,13 @@
     </p>
 
     <p>
-        ぜひ <strong>DokoSumu</strong> を通じて、住んでいる街の魅力や改善点をシェアし、他の人の意見も参考にしてみてください。
+        ぜひ <strong>PrefReview</strong> を通じて、住んでいる街の魅力や改善点をシェアし、他の人の意見も参考にしてみてください。
     </p>
 
     <br><br>
     <hr style="border:none; border-top:1px solid #ccc;">
     <p style="font-size: 13px; color: #555;">
-        DokoSumu 運営チーム<br>
+        PrefReview 運営チーム<br>
         お問い合わせ: <a href="mailto:support@docosumu.com">support@docosumu.com</a>
     </p>
     <hr style="border:none; border-top:1px solid #ccc;">

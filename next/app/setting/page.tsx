@@ -96,7 +96,7 @@ export default function SettingsPage() {
   }
   const LoginButton = () => {
     return (
-      <button onClick={() => onClick('/login')} className="w-full bg-white rounded-lg shadow-sm p-4 flex items-center justify-center gap-3 text-green-600 hover:bg-red-50 transition-colors font-medium">
+      <button onClick={() => onClick('/login')} className="w-full bg-white rounded-lg shadow-sm p-4 flex items-center justify-center gap-3 text-green-600 hover:bg-gray-50 transition-colors font-medium">
         <MdLogin size={20} />
         ログイン
       </button>
@@ -262,8 +262,6 @@ export default function SettingsPage() {
           </Section>
           {/* Logout Button */}
           <div className="mb-8">
-
-
             {
               token !== null ?
                 LogoutButton() : LoginButton()
