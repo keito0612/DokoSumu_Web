@@ -15,7 +15,7 @@ export function ProfileImage({ imageUrl, sizes = 100 }: ProfileImageProps) {
 
   return (
     <div
-      className="relative rounded-full overflow-hidden"
+      className="relative rounded-full overflow-hidden ring-2 ring-white shadow-md"
       style={{ width: responsiveSize, height: responsiveSize }}
     >
       {isValidSrc ? (
@@ -27,11 +27,13 @@ export function ProfileImage({ imageUrl, sizes = 100 }: ProfileImageProps) {
           className="object-cover rounded-full"
         />
       ) : (
-        <SystemUiconsUserMale
-          width="100%"
-          height="100%"
-          className="rounded-full border-2 text-green-500 border-green-500 p-1"
-        />
+        <div className="w-full h-full bg-green-50 rounded-full flex items-center justify-center">
+          <SystemUiconsUserMale
+            width="70%"
+            height="70%"
+            className="text-green-500"
+          />
+        </div>
       )}
     </div>
   );

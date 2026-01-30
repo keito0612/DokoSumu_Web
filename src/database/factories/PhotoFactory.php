@@ -20,22 +20,13 @@ class PhotoFactory extends Factory
      * @return array<string, mixed>
      */
     protected $model = Photo::class;
-    public function definition(): array
-    {
-        $imageName = 'items/' . Str::random(10) . '.jpg';
-        $image = $this->faker->image();
-
-        // ファイル名をリネームして保存
-        $path =  Storage::disk('public')->putFileAs('reviewImage', new \Illuminate\Http\File($image), $imageName);
-
-        // 保存した画像のURLを取得
-        $photoUrl = Storage::disk('public')->url($path);
+   public function definition(): array
+   {
+       // https://picsum.photos/ のランダム画像URLをそのまま入れる
+        $randomId = $this->faker->numberBetween(1, 1000);
         return [
-              // 外部キーとしてレビューIDを紐付け
             'review_id' => Review::factory(),
-
-            // ダミーの画像URLを生成
-            'photo_url' => $photoUrl,
+            'photo_url' => "https://picsum.photos/id/{$randomId}/640/480",
         ];
     }
 }

@@ -72,25 +72,27 @@ export default function Modal({
   };
 
   const baseBtn =
-    'rounded font-bold w-24 h-10 text-base sm:w-28 sm:h-12 sm:text-lg md:w-32 md:h-12 md:text-xl';
+    'rounded-xl font-semibold px-6 py-3 text-sm sm:text-base transition-all duration-200 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2';
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 animate-fade-in"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg p-6 shadow-lg text-center w-11/12 sm:w-96 md:w-[500px] lg:w-[600px]"
+        className="bg-white rounded-2xl p-8 shadow-modal text-center w-11/12 sm:w-96 md:w-[450px] animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-center items-center">{getIcon()}</div>
-        <p className="mt-4 text-black font-bold text-base sm:text-xl">{title}</p>
-        <p className="mt-2 text-black text-sm sm:text-lg">{message}</p>
+        <div className="flex justify-center items-center mb-4">{getIcon()}</div>
+        <h3 className="text-gray-900 font-bold text-lg sm:text-xl">{title}</h3>
+        {message && (
+          <p className="mt-2 text-gray-600 text-sm sm:text-base leading-relaxed">{message}</p>
+        )}
 
         {(type === 'Warning' || type === 'Normal') && onConfirm ? (
-          <div className="mt-6 flex justify-center gap-28">
+          <div className="mt-8 flex justify-center gap-4">
             <button
-              className={`${baseBtn} ${getColor()} text-white`}
+              className={`${baseBtn} ${getColor()} text-white focus:ring-green-500`}
               onClick={async () => {
                 await onConfirm();
                 onClose();
@@ -99,14 +101,14 @@ export default function Modal({
               {confirmLabel}
             </button>
             <button
-              className={`${baseBtn} bg-gray-400 hover:bg-gray-300 text-white`}
+              className={`${baseBtn} bg-gray-100 hover:bg-gray-200 text-gray-700 focus:ring-gray-400`}
               onClick={onClose}
             >
               {cancelLabel}
             </button>
           </div>
         ) : (
-          <button className={`mt-6 text-white ${baseBtn} ${getColor()}`} onClick={onClose}>
+          <button className={`mt-8 text-white ${baseBtn} ${getColor()} focus:ring-green-500`} onClick={onClose}>
             閉じる
           </button>
         )}

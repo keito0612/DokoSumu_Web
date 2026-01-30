@@ -2,20 +2,18 @@
 
 namespace App\Notifications;
 
+use App\Services\FcmService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class InformationNotification extends Notification
 {
     use Queueable;
+
     /** @var array<string,mixed> 通知内容 */
     protected array $payload;
 
-    /**
-     * Create a new notification instance.
-     */
     /**
      * @param  array<string,mixed> $payload 例) ['title' => '…', 'body' => '…', 'url' => '…']
      */
@@ -34,6 +32,19 @@ class InformationNotification extends Notification
         return ['mail','database'];
     }
 
+    /**
+     * Send FCM push notification.
+     */
+    public function sendFcmNotification(object $notifiable): void
+    {
+        if (empty($notifiable->fcm_token)) {
+            return;
+        }
+
+        $fcmService = app(FcmService::class);
+        $fcmService->sendNotification($notifiable->fcm_token, $this->payload);
+    }
+
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
@@ -45,7 +56,6 @@ class InformationNotification extends Notification
             ]);
     }
 
-
     /**
      * Get the array representation of the notification.
      *
@@ -54,7 +64,7 @@ class InformationNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'date' =>$this->payload['date'] ?? now()->toDateString(),
+            'date' => $this->payload['date'] ?? now()->toDateString(),
             'title' => $this->payload['title'],
             'content' => $this->payload['content'],
             'liked_by_user' => $this->payload['liked_by_user'] ?? null,

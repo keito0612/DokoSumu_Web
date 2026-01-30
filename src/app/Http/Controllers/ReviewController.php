@@ -220,6 +220,10 @@ class ReviewController extends Controller
     {
         $photoData = [];
         foreach ($photos as $photo) {
+            // 空または無効なファイルをスキップ
+            if (!$photo instanceof \Illuminate\Http\UploadedFile || !$photo->isValid()) {
+                continue;
+            }
             $extension = $photo->getClientOriginalExtension();
             // 英数字＋タイムスタンプのファイル名生成
             $fileName = time() . '_' . bin2hex(random_bytes(8)) . '.' . $extension;
@@ -265,9 +269,9 @@ class ReviewController extends Controller
                 'type'   => \App\Consts\NotificationType::LIKE,
                 'date' => now()->toDateString()
             ];
-            if($postedBy->userSetting->email_notification){
-                $postedBy->notify(new InformationNotification($payload));
-            }
+            $notification = new InformationNotification($payload);
+            $postedBy->notify($notification);
+            $notification->sendFcmNotification($postedBy);
             DB::commit();
             return response()->json([
                 "message" => "You Liked the review",

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\FcmController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\NotificationController;
@@ -54,6 +55,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::prefix('/user_setting')->group(function(){
         Route::get('/', [UserSettingController::class,'index']);
         Route::post('/email_notification', [UserSettingController::class,'emailNotification']);
+    });
+    Route::prefix('/fcm')->group(function(){
+        Route::post('/token', [FcmController::class, 'updateToken']);
+        Route::delete('/token', [FcmController::class, 'deleteToken']);
     });
 });
 

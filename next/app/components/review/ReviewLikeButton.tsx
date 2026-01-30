@@ -40,10 +40,14 @@ const ReviewLikeButton: React.FC<ReviewLikeButtonProps> = ({ review }) => {
   return (
     <button
       onClick={handleLikeClick}
-      className="flex items-center gap-1 text-sm text-neutral-600"
+      className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 active:scale-95 ${
+        isLiked
+          ? 'bg-green-50 text-green-600'
+          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+      }`}
     >
       <IconParkOutlineThumbsUp
-        className={`w-5 h-5 ${isLiked ? 'text-green-500' : 'text-gray-400'}`}
+        className={`w-5 h-5 transition-transform duration-200 ${isLiked ? 'text-green-500 scale-110' : 'text-gray-400'}`}
       />
       <span>{likesCount}</span>
     </button>

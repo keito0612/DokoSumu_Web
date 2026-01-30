@@ -10,7 +10,8 @@ export class CookieServise {
 
   static setCookie(name: string, value: string, days?: number): void {
     Cookies.set(name, value, {
-      expires: days, path: '/', httpOnly: true,
+      expires: days,
+      path: '/',
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
     });

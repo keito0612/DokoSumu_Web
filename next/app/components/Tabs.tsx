@@ -19,20 +19,27 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
   }
 
   return (
-    <div>
-      <div className="w-full flex border-b justify-center ">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => ButtonOnClick(tab.id, tab)}
-            className={`py-2 w-1/2 -mb-px mr-1 cursor-pointer  ${activeTab === tab.id
-              ? 'border-b-2 border-green-500 text-green-500'
-              : 'text-gray-500 hover:text-green-500'
+    <div className="w-full">
+      <div className="flex border-b border-gray-200 justify-center bg-white">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => ButtonOnClick(tab.id, tab)}
+              className={`relative py-3 px-6 w-1/2 font-medium text-sm transition-colors duration-200 ${
+                isActive
+                  ? 'text-green-600'
+                  : 'text-gray-500 hover:text-gray-700'
               }`}
-          >
-            <p>{tab.label}</p>
-          </button>
-        ))}
+            >
+              {tab.label}
+              {isActive && (
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-green-500 rounded-full" />
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

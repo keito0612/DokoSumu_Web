@@ -12,11 +12,11 @@ const PostButton = (props: PostButtonProps) => {
   return (
     <div className={props.className}>
       <button
-        className="border-green-500 border bg-white font-bold text-green-500 px-4 py-1  rounded-3xl shadow hover:text-white hover:bg-green-500"
+        className="bg-green-500 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm hover:bg-green-600 hover:shadow-md active:scale-[0.98] transition-all duration-200"
         onClick={props.onClick}
       >
-        <div className='flex flex-row justify-start items-center m-0'>
-          <MaterialSymbolsLightContractEditSharp className='pr-1 size-7' />
+        <div className='flex flex-row justify-center items-center gap-2'>
+          <MaterialSymbolsLightContractEditSharp className='size-5' />
           <span>レビューを投稿</span>
         </div>
       </button>

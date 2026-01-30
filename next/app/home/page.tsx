@@ -24,14 +24,17 @@ interface PrefectureBlockProps {
 
 const PrefectureBlock: React.FC<PrefectureBlockProps> = ({ region, prefectures, handleButtonClick }) => {
   return (
-    <div className="border-2 border-white p-4 m-4 bg-green-500 rounded-lg">
-      <h2 className="text-white text-xl   text-center   font-bold mb-4">{region}</h2>
-      <div className={`flex flex-wrap gap-4  justify-center sm:justify-start  ${prefectures.length === 1 ? 'justify-center' : ''}`}>
+    <div className="bg-white rounded-2xl shadow-card p-5 mb-4 transition-shadow duration-200 hover:shadow-elevated">
+      <h2 className="text-gray-800 text-lg font-bold mb-4 flex items-center gap-2">
+        <span className="w-1 h-5 bg-green-500 rounded-full"></span>
+        {region}
+      </h2>
+      <div className={`flex flex-wrap gap-2 ${prefectures.length === 1 ? 'justify-center' : ''}`}>
         {prefectures.map((prefecture) => (
           <button
             key={prefecture.id}
             onClick={() => handleButtonClick(prefecture)}
-            className="border  bg-green-500 border-white text-white py-2 px-4 rounded-lg hover:bg-green-300 hover:text-gray-200 transition"
+            className="bg-green-50 text-green-700 font-medium py-2 px-4 rounded-xl hover:bg-green-500 hover:text-white active:scale-[0.97] transition-all duration-200"
           >
             {prefecture.name}
           </button>
@@ -463,8 +466,8 @@ function Home() {
         )}
       </SheetModal>
       <NavBar title='ホーム' />
-      <div className="py-14 p-6 h-full ">
-        <div className='pb-14'>
+      <div className="pt-20 pb-24 px-4 min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+        <div className='max-w-4xl mx-auto'>
           {regions.map((region, index) => (
             <PrefectureBlock
               key={index}

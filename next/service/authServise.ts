@@ -1,4 +1,8 @@
 import { UtilApi } from "@/Util/Util_api";
+import { CookieServise } from "./cookieServise";
+
+const TOKEN_KEY = 'token';
+const TOKEN_EXPIRY_DAYS = 7;
 
 export class AuthService {
 
@@ -55,21 +59,17 @@ export class AuthService {
 
 
   static setSesstion(token: string) {
-    sessionStorage.setItem('token', JSON.stringify(token));
+    CookieServise.setCookie(TOKEN_KEY, token, TOKEN_EXPIRY_DAYS);
   }
 
   static deleteSesstion() {
-    sessionStorage.removeItem('token');
+    CookieServise.deleteCookie(TOKEN_KEY);
   }
 
-  static getSesstion(): null {
+  static getSesstion(): string | null {
     if (typeof window !== 'undefined') {
-      const userInfo = sessionStorage.getItem('token');
-      if (userInfo) {
-        return JSON.parse(userInfo);
-      } else {
-        return null;
-      }
+      const token = CookieServise.getCookie(TOKEN_KEY);
+      return token ?? null;
     }
     return null;
   }

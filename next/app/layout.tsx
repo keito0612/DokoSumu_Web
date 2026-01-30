@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Noto_Sans_JP } from 'next/font/google'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -12,6 +13,15 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
+
+const notoSansJp = Noto_Sans_JP({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  preload: false,
+  variable: '--font-noto-sans-jp',
+  display: 'swap',
+  fallback: ['Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'sans-serif'],
+})
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,7 +36,7 @@ export default function RootLayout({
   modal: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" suppressHydrationWarning>
+    <html lang="ja" className={`${notoSansJp.variable}`} suppressHydrationWarning>
       <body
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

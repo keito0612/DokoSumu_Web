@@ -130,7 +130,7 @@ function NavBar({ title, rightButton, onBackClick = () => { }, onBack = false }:
 
   return (
     <>
-      <Disclosure as="nav" className="bg-green-500 fixed top-0 left-0 w-full z-50">
+      <Disclosure as="nav" className="bg-green-500/95 backdrop-blur-md fixed top-0 left-0 w-full z-50 shadow-subtle">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-center sm:justify-between">
 
@@ -148,7 +148,7 @@ function NavBar({ title, rightButton, onBackClick = () => { }, onBack = false }:
                 {/* モバイルのみ戻るボタン表示 */}
                 {onBack && (
                   <button
-                    className="sm:hidden"
+                    className="sm:hidden p-2 rounded-full hover:bg-green-600 transition-colors duration-200 active:scale-95"
                     onClick={backClick}
                     aria-label="戻る"
                   >
@@ -190,8 +190,8 @@ function NavBar({ title, rightButton, onBackClick = () => { }, onBack = false }:
                           className={classNames(
                             isCurrent
                               ? "bg-green-600 text-white"
-                              : "text-gray-300 hover:bg-green-600 hover:text-white",
-                            "rounded-md px-3 py-2 text-sm font-medium"
+                              : "text-gray-100 hover:bg-green-600 hover:text-white",
+                            "rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200"
                           )}
                         >
                           {item.name}
@@ -215,7 +215,7 @@ function NavBar({ title, rightButton, onBackClick = () => { }, onBack = false }:
                     </MenuButton>
                   </div>
                   <MenuItems
-                    className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-xl bg-white py-2 shadow-modal ring-1 ring-black/5 focus:outline-none animate-scale-in"
                   >
                     <MenuItem>
                       <Link
