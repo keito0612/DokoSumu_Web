@@ -59,7 +59,7 @@ const SheetModal: React.FC<SheetModalProps> = ({ title, isOpen, onClose, childre
             ? "h-[90%] sm:h-[90%]"
             : "h-[90%] sm:h-[90%]"
           }
-        md:h-[90%] top-20 md:bottom-auto md:right-4 sm:bottom-0`}
+        md:h-[85%] top-20 lg:top-24 md:bottom-auto md:right-4 sm:bottom-0`}
         onMouseDown={handleMouseDownWrapper}
       >
         <div className="z-30 bg-white top-0 p-6 sticky border-b flex justify-between items-center relative">
