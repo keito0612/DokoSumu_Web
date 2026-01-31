@@ -16,37 +16,36 @@ export const ProfileHeader = ({ profile }: ProfileHeaderProps) => {
   const pathname = usePathname();
   const isEditPage = pathname === "/profile";
   return (
-    <>
-      <div className="flex py-10 flex-col gap-4">
-        {/* モバイル用 */}
-        <div className='xl:hidden flex flex-col items-center'>
-          <div className='pb-4'>
-            <ProfileImage imageUrl={profile.image_path} sizes={120} />
-          </div>
-          <ProfileName name={profile.name} />
-          {
-            isEditPage && <ProfileEditButton className='py-4' />
-          }
-          <ProfileStats postCount={profile.reviews_count} likeCount={profile.liked_reviews_count} />
+    <div className="bg-white rounded-2xl shadow-sm p-6">
+      {/* モバイル用 */}
+      <div className='lg:hidden flex flex-col items-center'>
+        <div className='pb-4'>
+          <ProfileImage imageUrl={profile.image_path} sizes={100} />
         </div>
-        {/* パソコンサイズ */}
-        <div className="hidden xl:flex items-center w-full">
-          <div className='pr-5'>
-            <ProfileImage imageUrl={profile.image_path} sizes={120} />
+        <ProfileName name={profile.name} />
+        {
+          isEditPage && <ProfileEditButton className='py-3' />
+        }
+        <ProfileStats postCount={profile.reviews_count} likeCount={profile.liked_reviews_count} />
+        <ProfileDetail detail={profile.comment} />
+      </div>
+      {/* パソコンサイズ */}
+      <div className="hidden lg:flex items-start w-full gap-6">
+        <div className='flex-shrink-0'>
+          <ProfileImage imageUrl={profile.image_path} sizes={120} />
+        </div>
+        <div className='flex flex-col w-full'>
+          <div className="flex flex-row pb-3 justify-between items-center">
+            <ProfileName name={profile.name} />
+            {
+              isEditPage && <ProfileEditButton />
+            }
           </div>
-          <div className='flex flex-col w-full'>
-            <div className="flex flex-row pb-3 justify-between">
-              <ProfileName name={profile.name} />
-              {
-                isEditPage && <ProfileEditButton />
-              }
-            </div>
-            <ProfileStats postCount={profile.reviews_count} likeCount={profile.liked_reviews_count} />
-          </div>
+          <ProfileStats postCount={profile.reviews_count} likeCount={profile.liked_reviews_count} />
+          <ProfileDetail detail={profile.comment} />
         </div>
       </div>
-      <ProfileDetail detail={profile.comment} />
-    </>
+    </div>
   )
 }
 

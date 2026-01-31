@@ -68,13 +68,7 @@ function SignUp() {
         {loading && <Loading2 loadingtext="アカウントを作成中..." />}
         <div className="w-full max-w-md bg-white rounded-2xl shadow-card p-8 animate-fade-in">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-              </svg>
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900">アカウント作成</h1>
-            <p className="text-gray-500 mt-1">無料で始めましょう</p>
+            <h1 className="text-2xl font-bold text-gray-900">新規登録</h1>
           </div>
           <form onSubmit={handleSubmit(onSubmit)} method="POST" className="space-y-5">
             {/* 名前 */}

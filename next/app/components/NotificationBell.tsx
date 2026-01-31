@@ -9,7 +9,7 @@ export default function NotificationBell() {
   const router = useRouter();
   if (isError) return (
     <div className="rounded-full transition duration-200 ease-in-out hover:opacity-75">
-      <BellIcon aria-hidden="true" className="h-6 w-6 text-white " />
+      <BellIcon aria-hidden="true" className="h-6 w-6 text-white lg:text-green-600" />
     </div>
   );
 
@@ -22,10 +22,10 @@ export default function NotificationBell() {
 
   return (
     <div className="relative inline-block rounded-full ease-in-out hover:opacity-75" onClick={onClick} >
-      <div className="group  transition">
+      <div className="group transition">
         <BellIcon
           aria-hidden="true"
-          className="h-6 w-6 text-white transition"
+          className="h-6 w-6 text-white lg:text-green-600 transition"
         />
       </div>
 

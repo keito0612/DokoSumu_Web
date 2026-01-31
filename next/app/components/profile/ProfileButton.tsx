@@ -10,9 +10,9 @@ const ProfileEditButton: React.FC<ProfileEditButtonProps> = ({ className = "" }:
   return (
     <div className={className}>
       <Link href='/profileEditModal'>
-        <button className="w-20 border border-green-500 bg-transparent text-green-500  py-1 rounded-xl hover:bg-green-500 hover:text-white transition" >
-          <span className="text-lg font-semibold">編集</span>
-        </button >
+        <button className="px-5 py-2 bg-green-500 text-white text-sm font-semibold rounded-xl hover:bg-green-600 active:scale-95 transition-all duration-200 shadow-sm">
+          編集
+        </button>
       </Link>
     </div>
   )

@@ -4,14 +4,14 @@ interface ProfileStatsProps {
   likeCount: number;
 }
 const ProfileStats: React.FC<ProfileStatsProps> = ({ postCount, likeCount }) => (
-  <div className="flex flex-row justify-start xl:gap-6 gap-24" >
-    <div className="flex  flex-col rounded-xl">
-      <p className="text-[#141414] tracking-light text-3xl font-bold text-center leading-tight">{postCount}</p>
-      <p className="text-neutral-500 text-base font-medium leading-normal">投稿した数</p>
+  <div className="flex flex-row justify-center lg:justify-start gap-8 py-4">
+    <div className="flex flex-col items-center bg-gray-50 rounded-xl px-6 py-3">
+      <p className="text-gray-900 text-2xl font-bold">{postCount}</p>
+      <p className="text-gray-500 text-sm font-medium">投稿</p>
     </div>
-    <div className="flex flex-col ">
-      <p className="text-[#141414] tracking-light text-3xl font-bold text-center leading-tight">{likeCount}</p>
-      <p className="text-neutral-500 text-base font-medium leading-normal">いいね数</p>
+    <div className="flex flex-col items-center bg-gray-50 rounded-xl px-6 py-3">
+      <p className="text-gray-900 text-2xl font-bold">{likeCount}</p>
+      <p className="text-gray-500 text-sm font-medium">いいね</p>
     </div>
   </div>
 );

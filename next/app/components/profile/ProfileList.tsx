@@ -11,8 +11,11 @@ interface TabButtonProps {
 
 const TabButton: React.FC<TabButtonProps> = ({ isActive, onClick, children }: TabButtonProps) => (
   <button
-    className={`py-2 px-4 text-sm font-bold rounded-lg transition-colors duration-200 ${isActive ? 'bg-[#39E079] text-white' : 'bg-[#F4F4F4] text-[#141414]'
-      }`}
+    className={`py-2.5 px-5 text-sm font-semibold rounded-xl transition-all duration-200 ${
+      isActive
+        ? 'bg-green-500 text-white shadow-sm'
+        : 'bg-white text-gray-600 hover:bg-gray-50'
+    }`}
     onClick={onClick}
   >
     {children}
@@ -28,16 +31,16 @@ interface ProfileListProps {
 const ProfileList: React.FC<ProfileListProps> = (props) => {
   const [activeTab, setActiveTab] = useState('posts');
   return (
-    <div className="mt-6">
-      <div className="flex gap-4 justify-start">
+    <div className="bg-white rounded-2xl shadow-sm p-4 lg:p-6">
+      <div className="flex gap-3 mb-4">
         <TabButton isActive={activeTab === 'posts'} onClick={() => setActiveTab('posts')}>
-          投稿リスト
+          投稿
         </TabButton>
         <TabButton isActive={activeTab === 'likes'} onClick={() => setActiveTab('likes')}>
-          いいねリスト
+          いいね
         </TabButton>
       </div>
-      <div className="mt-4 border border-gray-300 rounded-md p-1 overflow-y-auto max-h-[500px]">
+      <div className="overflow-y-auto max-h-[500px] rounded-xl">
         <ReviewList reviewList={activeTab === 'posts' ? props.postReviews : props.likedReviews} onMenuAction={props.onMenuAction} />
       </div>
     </div>

@@ -22,7 +22,7 @@ export default function ForgotPassword() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+  const { register, handleSubmit, setError, formState: { errors } } = useForm<Inputs>();
 
   const onSubmit = async (data: Inputs) => {
     setIsLoading(true);
@@ -36,10 +36,18 @@ export default function ForgotPassword() {
       const result = await res.json();
 
       if (!res.ok) {
-        setModalType('Error');
-        setModalTitle('メールの送信に失敗しました。');
-        setModalMessage(result?.message || 'サーバーに問題が発生しました。もう一度お試しください。');
-        setIsModalOpen(true);
+        // バリデーションエラー（メールアドレスが登録されていない場合など）
+        if (result?.errors?.email) {
+          setError('email', {
+            type: 'server',
+            message: result.errors.email[0],
+          });
+        } else {
+          setModalType('Error');
+          setModalTitle('メールの送信に失敗しました。');
+          setModalMessage(result?.message || 'サーバーに問題が発生しました。もう一度お試しください。');
+          setIsModalOpen(true);
+        }
       } else {
         setModalType('Success');
         setModalTitle('メールを送信しました');

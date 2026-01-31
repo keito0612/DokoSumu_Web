@@ -130,122 +130,129 @@ function NavBar({ title, rightButton, onBackClick = () => { }, onBack = false }:
 
   return (
     <>
-      <Disclosure as="nav" className="bg-green-500/95 backdrop-blur-md fixed top-0 left-0 w-full z-50 shadow-subtle">
-        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-          <div className="relative flex h-16 items-center justify-center sm:justify-between">
+      <Disclosure as="nav" className="fixed top-0 left-0 w-full z-50 lg:px-4 lg:pt-4">
+        <div className="mx-auto max-w-7xl">
+          {/* モバイル・タブレット：全幅の緑色ネイティブ風 / PC：フローティング白背景 */}
+          <div className="bg-green-500 lg:bg-white/80 lg:backdrop-blur-xl lg:rounded-2xl lg:shadow-lg lg:border lg:border-white/20 px-4 lg:px-6">
+            <div className="relative flex h-14 lg:h-16 items-center justify-center lg:justify-between">
 
-            {/* 左側のロゴ・タイトル */}
-            <div className="flex items-center justify-between w-full relative">
-              {/* 左側：ロゴまたは戻るボタン */}
-              <div className="flex items-center min-w-[40px]">
-                {/* PCのみロゴ表示 */}
-                <img
-                  alt="Your Company"
-                  src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                  className="hidden sm:block h-8 w-auto"
-                />
-
-                {/* モバイルのみ戻るボタン表示 */}
-                {onBack && (
-                  <button
-                    className="sm:hidden p-2 rounded-full hover:bg-green-600 transition-colors duration-200 active:scale-95"
-                    onClick={backClick}
-                    aria-label="戻る"
-                  >
-                    <FiArrowLeft className="text-2xl text-white" />
-                  </button>
-                )}
-              </div>
-
-              {/* 中央：タイトル */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 sm:hidden">
-                <span className="text-white text-lg font-bold sm:text-xl whitespace-nowrap">
-                  {title}
-                </span>
-              </div>
-              {/* 右側：ボタン（ない場合は空のスペース） */}
-              <div className="flex items-center min-w-[40px]">
-                <div className="sm:hidden flex items-center">
-                  <NotificationBell />
-                </div>
-                {rightButton}
-              </div>
-              {/* PC用ナビゲーション */}
-              <div className="hidden sm:ml-6 sm:block">
-                <div className="flex space-x-4">
-                  {navigation
-                    .filter((item) => {
-                      if (mounted && token) {
-                        return item.name !== "ログイン" && item.name !== "新規登録";
-                      }
-                      return true;
-                    })
-                    .map((item) => {
-                      const isCurrent = pathname === item.href;
-                      return (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          aria-current={isCurrent ? "page" : undefined}
-                          className={classNames(
-                            isCurrent
-                              ? "bg-green-600 text-white"
-                              : "text-gray-100 hover:bg-green-600 hover:text-white",
-                            "rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200"
-                          )}
-                        >
-                          {item.name}
-                        </Link>
-                      );
-                    })}
-                </div>
-              </div>
-            </div>
-            {/* 右側のユーザー情報 */}
-            <div className="hidden md:flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              <div className="flex flex-row items-center justify-center">
-                <NotificationBell />
-                <Menu as="div" className="relative ml-3">
-                  <div>
-                    <MenuButton className="relative flex rounded-full text-sm focus:outline-none focus:ring-2 bg-white focus:bg-slate-400 z-10">
-                      <ProfileImage
-                        imageUrl={user?.image_path ?? null}
-                        sizes={36}
-                      />
-                    </MenuButton>
+              {/* 左側のロゴ・タイトル */}
+              <div className="flex items-center justify-between w-full relative">
+                {/* 左側：ロゴまたは戻るボタン */}
+                <div className="flex items-center min-w-[40px]">
+                  {/* PCのみロゴ表示 */}
+                  <div className="hidden lg:flex items-center gap-2">
+                    <div className="w-9 h-9 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-md">
+                      <span className="text-white font-bold text-lg">D</span>
+                    </div>
+                    <span className="text-gray-800 font-bold text-lg">DokoSumu</span>
                   </div>
-                  <MenuItems
-                    className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-xl bg-white py-2 shadow-modal ring-1 ring-black/5 focus:outline-none animate-scale-in"
-                  >
-                    <MenuItem>
-                      <Link
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        href={"/profile"}
-                      >
-                        プロフィール
-                      </Link>
-                    </MenuItem>
-                    {
-                      token ?
-                        <MenuItem as="button" onClick={logoutClick} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          ログアウト
-                        </MenuItem> : null
-                    }
-                  </MenuItems>
-                </Menu>
-                {user?.name && (
-                  <p className="font-bold ml-1 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
-                    {user.name}
-                  </p>
-                )}
+
+                  {/* モバイル・タブレットのみ戻るボタン表示 */}
+                  {onBack && (
+                    <button
+                      className="lg:hidden p-2 rounded-xl hover:bg-green-600 transition-all duration-200 active:scale-95"
+                      onClick={backClick}
+                      aria-label="戻る"
+                    >
+                      <FiArrowLeft className="text-xl text-white" />
+                    </button>
+                  )}
+                </div>
+
+                {/* 中央：タイトル（モバイル・タブレット） */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 lg:hidden">
+                  <span className="text-white text-lg font-bold whitespace-nowrap">
+                    {title}
+                  </span>
+                </div>
+
+                {/* 右側：ボタン（ない場合は空のスペース） */}
+                <div className="flex items-center min-w-[40px]">
+                  <div className="lg:hidden flex items-center">
+                    <NotificationBell />
+                  </div>
+                  {rightButton}
+                </div>
+
+                {/* PC用ナビゲーション */}
+                <div className="hidden lg:ml-8 lg:block">
+                  <div className="flex space-x-2">
+                    {navigation
+                      .filter((item) => {
+                        if (mounted && token) {
+                          return item.name !== "ログイン" && item.name !== "新規登録";
+                        }
+                        return true;
+                      })
+                      .map((item) => {
+                        const isCurrent = pathname === item.href;
+                        return (
+                          <Link
+                            key={item.name}
+                            href={item.href}
+                            aria-current={isCurrent ? "page" : undefined}
+                            className={classNames(
+                              isCurrent
+                                ? "bg-green-500 text-white shadow-md"
+                                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+                              "rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200"
+                            )}
+                          >
+                            {item.name}
+                          </Link>
+                        );
+                      })}
+                  </div>
+                </div>
+              </div>
+
+              {/* 右側のユーザー情報（PCのみ） */}
+              <div className="hidden lg:flex absolute inset-y-0 right-0 items-center pr-2 lg:static lg:inset-auto lg:ml-6 lg:pr-0">
+                <div className="flex flex-row items-center justify-center gap-2">
+                  <NotificationBell />
+                  <Menu as="div" className="relative ml-2">
+                    <div>
+                      <MenuButton className="relative flex rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 overflow-hidden transition-transform hover:scale-105">
+                        <ProfileImage
+                          imageUrl={user?.image_path ?? null}
+                          sizes={40}
+                        />
+                      </MenuButton>
+                    </div>
+                    <MenuItems
+                      className="absolute right-0 z-10 mt-3 w-52 origin-top-right rounded-2xl bg-white/95 backdrop-blur-xl py-2 shadow-xl ring-1 ring-black/5 focus:outline-none animate-scale-in"
+                    >
+                      <MenuItem>
+                        <Link
+                          className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-xl mx-2 transition-colors"
+                          href={"/profile"}
+                        >
+                          プロフィール
+                        </Link>
+                      </MenuItem>
+                      {
+                        token ?
+                          <MenuItem as="button" onClick={logoutClick} className="block w-[calc(100%-16px)] text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-xl mx-2 transition-colors">
+                            ログアウト
+                          </MenuItem> : null
+                      }
+                    </MenuItems>
+                  </Menu>
+                  {user?.name && (
+                    <p className="font-semibold text-gray-700 ml-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">
+                      {user.name}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* モバイル用メニュー */}
-        <DisclosurePanel className="sm:hidden">
-          <div className="space-y-1 px-2 pb-3 pt-2">
+        {/* モバイル・タブレット用メニュー */}
+        <DisclosurePanel className="lg:hidden">
+          <div className="bg-green-600 px-3 py-2 space-y-1">
             {navigation
               .filter((item) => {
                 if (mounted && token) {
@@ -263,9 +270,9 @@ function NavBar({ title, rightButton, onBackClick = () => { }, onBack = false }:
                     aria-current={isCurrent ? "page" : undefined}
                     className={classNames(
                       isCurrent
-                        ? "bg-green-900 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                      "block rounded-md px-3 py-2 text-base font-medium"
+                        ? "bg-green-700 text-white"
+                        : "text-green-100 hover:bg-green-700 hover:text-white",
+                      "block rounded-xl px-4 py-3 text-base font-medium transition-all duration-200"
                     )}
                   >
                     {item.name}
