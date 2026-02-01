@@ -1,9 +1,9 @@
 "use client";
 
 import { Photo } from "@/types";
-import Image from "next/image";
 import { useState } from "react";
 import ImageModal from "./modal/ImagesModal";
+import CustomImage from "../CustomImage";
 
 interface ReviewPhotos {
   photos: Photo[];
@@ -27,12 +27,12 @@ export default function ReviewPhotos({ photos }: ReviewPhotos) {
             onClick={() => handlePhotoClick(i)}
           >
             {photo.photo_url && (
-              <Image
-                unoptimized
+              <CustomImage
                 src={photo.photo_url}
                 alt="投稿写真"
                 fill
-                className="object-contain pointer-events-none"
+                objectFit="contain"
+                className="pointer-events-none"
               />
             )}
           </div>

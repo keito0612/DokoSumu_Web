@@ -19,6 +19,7 @@ import Modal from "./Modal";
 import { useRouter } from "next/navigation";
 import NotificationBell from "./NotificationBell";
 import { FiArrowLeft } from "react-icons/fi";
+import Image from "next/image";
 
 interface NavBarProps {
   title: string;
@@ -142,10 +143,14 @@ function NavBar({ title, rightButton, onBackClick = () => { }, onBack = false }:
                 <div className="flex items-center min-w-[40px]">
                   {/* PCのみロゴ表示 */}
                   <div className="hidden lg:flex items-center gap-2">
-                    <div className="w-9 h-9 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-md">
-                      <span className="text-white font-bold text-lg">D</span>
-                    </div>
-                    <span className="text-gray-800 font-bold text-lg">DokoSumu</span>
+                    <Image
+                      src="/images/prerevi_icon.png"
+                      alt="プレリビ"
+                      width={36}
+                      height={36}
+                      className="rounded-xl shadow-md"
+                    />
+                    <span className="text-gray-800 font-bold text-lg">プレリビ</span>
                   </div>
 
                   {/* モバイル・タブレットのみ戻るボタン表示 */}

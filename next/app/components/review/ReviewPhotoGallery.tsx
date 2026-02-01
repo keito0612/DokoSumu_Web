@@ -2,6 +2,7 @@
 
 import { Photo } from '@/types';
 import Image from 'next/image';
+import CustomImage from '../CustomImage';
 
 interface ReviewPhotoGalleryProps {
   photos: Photo[];
@@ -41,18 +42,16 @@ const ReviewPhotoGallery: React.FC<ReviewPhotoGalleryProps> = ({
     <div className="py-2 flex flex-row gap-1">
       <div className="w-1/2 relative aspect-square">
         {/* メイン画像 */}
-        <Image
-          unoptimized
-          key={0}
+        <CustomImage
           src={mainPhoto.photo_url!}
           alt="メイン画像"
           fill
-          style={{ objectFit: 'cover' }}
-          className="rounded-xl object-cover cursor-pointer"
+          objectFit="cover"
+          className="rounded-xl cursor-pointer"
           onClick={() => onImageClick(0)}
         />
         {photos.length > 5 && (
-          <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 text-white text-sm px-2 py-1 rounded">
+          <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 text-white text-sm px-2 py-1 rounded z-20">
             {photos.length} 枚以上の写真
           </div>
         )}
@@ -61,13 +60,11 @@ const ReviewPhotoGallery: React.FC<ReviewPhotoGalleryProps> = ({
       <div className="w-3/5 grid items-center justify-center gap-1 grid-cols-2">
         {subPhotos.map((photo, idx) => (
           <div key={idx} className="relative aspect-square rounded-full">
-            <Image
-              unoptimized
-              key={idx + 1}
+            <CustomImage
               src={photo.photo_url!}
               alt={`サブ画像 ${idx + 1}`}
               fill
-              style={{ objectFit: 'cover' }}
+              objectFit="cover"
               className="rounded-xl cursor-pointer"
               onClick={() => onImageClick(idx + 1)}
             />

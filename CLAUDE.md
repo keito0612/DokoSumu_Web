@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-DokoSumu is a Japanese prefecture/city review web application where users can post and browse reviews about different locations. The app consists of a Laravel API backend and a Next.js frontend, running in Docker containers.
+プレリビ is a Japanese prefecture/city review web application where users can post and browse reviews about different locations. The app consists of a Laravel API backend and a Next.js frontend, running in Docker containers.
 
 ## Development Commands
 
