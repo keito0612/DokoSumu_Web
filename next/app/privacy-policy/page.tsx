@@ -10,7 +10,7 @@ function PrivacyPolicyPage() {
       <NavBar title="プライバシーポリシー" onBack={true} />
 
       <div className='relative flex w-full min-h-screen flex-col bg-gray-50 overflow-x-hidden'>
-        <div className="px-4 sm:px-20 flex flex-1 justify-center py-5 pt-16 pb-24 sm:pb-5 md:pb-5 lg:pb-5 2xl:pb-5 xl:pb-5">
+        <div className="px-4 sm:px-20 flex flex-1 justify-center py-5 pt-24 pb-24 sm:pb-5 md:pb-5 lg:pb-5 2xl:pb-5 xl:pb-5">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
             <PageHeader title={"プライバシーポリシー"} />
             <div className='bg-white rounded-lg shadow-md p-6 sm:p-8 mt-2'>
@@ -153,8 +153,8 @@ function PrivacyPolicyPage() {
                     本プライバシーポリシーに関するご質問やご意見がございましたら、以下の連絡先までお問い合わせください。
                   </p>
                   <div className="mt-4 p-4 bg-gray-100 rounded">
-                    <p className="font-semibold">PrefReview運営チーム</p>
-                    <p>メールアドレス: privacy@PrefReview.example.com</p>
+                    <p className="font-semibold">プレリビ運営チーム</p>
+                    <p>メールアドレス: keito3079@gmail.com</p>
                   </div>
                 </section>
               </div>
