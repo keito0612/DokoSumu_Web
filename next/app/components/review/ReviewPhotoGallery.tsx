@@ -1,7 +1,6 @@
 'use client';
 
 import { Photo } from '@/types';
-import Image from 'next/image';
 import CustomImage from '../CustomImage';
 
 interface ReviewPhotoGalleryProps {
@@ -21,7 +20,7 @@ const ReviewPhotoGallery: React.FC<ReviewPhotoGalleryProps> = ({
     return (
       <div className="p-4">
         <div className="flex justify-start">
-          <Image
+          <CustomImage
             src={defaultImage}
             alt="画像がありません"
             width={650}

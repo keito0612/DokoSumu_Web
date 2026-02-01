@@ -28,12 +28,27 @@ const nextConfig: NextConfig = {
   },
   images: {
     disableStaticImages: true,
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30日間キャッシュ
     remotePatterns: [
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: '',
-        pathname: '/storage/**',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: '127.0.0.1',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+        pathname: '/**',
       },
     ],
   },
