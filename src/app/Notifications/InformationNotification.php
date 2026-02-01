@@ -29,7 +29,11 @@ class InformationNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail','database'];
+        // いいね通知の場合はメールを送らない（プッシュ通知とデータベース保存のみ）
+        if (($this->payload['type'] ?? null) === \App\Consts\NotificationType::LIKE) {
+            return ['database'];
+        }
+        return ['mail', 'database'];
     }
 
     /**

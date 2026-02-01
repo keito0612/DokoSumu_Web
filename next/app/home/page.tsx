@@ -152,12 +152,12 @@ function Home() {
     },
     {
       name: "関東地方", prefectures: [
-        { id: 8, name: "東京都" },
-        { id: 9, name: "茨城県" },
-        { id: 10, name: "栃木県" },
-        { id: 11, name: "群馬県" },
-        { id: 12, name: "埼玉県" },
-        { id: 13, name: "千葉県" },
+        { id: 8, name: "茨城県" },
+        { id: 9, name: "栃木県" },
+        { id: 10, name: "群馬県" },
+        { id: 11, name: "埼玉県" },
+        { id: 12, name: "千葉県" },
+        { id: 13, name: "東京都" },
         { id: 14, name: "神奈川県" }
       ]
     },
@@ -176,10 +176,10 @@ function Home() {
     },
     {
       name: "近畿地方", prefectures: [
-        { id: 24, name: "京都府" },
-        { id: 25, name: "大阪府" },
-        { id: 26, name: "三重県" },
-        { id: 27, name: "滋賀県" },
+        { id: 24, name: "三重県" },
+        { id: 25, name: "滋賀県" },
+        { id: 26, name: "京都府" },
+        { id: 27, name: "大阪府" },
         { id: 28, name: "兵庫県" },
         { id: 29, name: "奈良県" },
         { id: 30, name: "和歌山県" }
@@ -415,10 +415,9 @@ function Home() {
     <div className={`Home h-screen ${isModalOpen ? "overflow-hidden" : "overflow-visible"}`}>
       {/* {imageViewerOpen && <ImageViewer imageSrc={imageSrc} onClose={closeImageViewer} user={ } />} */}
       {/*市の評価*/}
-      <SheetModal title={selectedName} isOpen={isModalOpen} onClose={closeModal} showBackButton={showBackButton} backButtonOnClick={backButtonOnClick}>
+      <SheetModal title={selectedName} isOpen={isModalOpen} onClose={closeModal} showBackButton={showBackButton} backButtonOnClick={backButtonOnClick} headerContent={<Tabs tabs={tabs} />}>
         {isLoading === false ? (
           <>
-            <Tabs tabs={tabs} />
             {selectedTab === "0" ? (
               <div className='p-4'>
                 <ReviewPhotoGallery
@@ -456,9 +455,11 @@ function Home() {
               </div>
             ) :
               (
-                <ReviewList reviewList={reviewList} onUserClick={(userId: number) => {
-                  router.push(`/profile/detail/${userId}`);
-                }} />
+                <div className="pb-24 lg:pb-4">
+                  <ReviewList reviewList={reviewList} onUserClick={(userId: number) => {
+                    router.push(`/profile/detail/${userId}`);
+                  }} />
+                </div>
               )}
           </>
         ) : (

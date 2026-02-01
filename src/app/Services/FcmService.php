@@ -13,11 +13,22 @@ class FcmService
 
     public function __construct()
     {
-        $credentialsPath = config('services.firebase.credentials');
+        $credentialsFile = config('services.firebase.credentials');
 
-        if ($credentialsPath && file_exists($credentialsPath)) {
+        if (!$credentialsFile) {
+            return;
+        }
+
+        // 絶対パスでない場合はbase_path()を使用
+        $credentialsPath = str_starts_with($credentialsFile, '/')
+            ? $credentialsFile
+            : base_path($credentialsFile);
+
+        if (file_exists($credentialsPath)) {
             $factory = (new Factory)->withServiceAccount($credentialsPath);
             $this->messaging = $factory->createMessaging();
+        } else {
+            Log::warning('Firebase credentials file not found: ' . $credentialsPath);
         }
     }
 
@@ -38,7 +49,8 @@ class FcmService
                 $payload['content'] ?? ''
             );
 
-            $message = CloudMessage::withTarget('token', $fcmToken)
+            $message = CloudMessage::new()
+                ->toToken($fcmToken)
                 ->withNotification($notification)
                 ->withData([
                     'type' => $payload['type'] ?? '',

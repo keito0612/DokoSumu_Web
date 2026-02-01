@@ -29,7 +29,7 @@ export default function ImageModal({
   }, [selectImageIndex]);
 
   return (
-    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
+    <Dialog open={isOpen} onClose={onClose} className="relative z-[100]">
       {/* 背景 */}
       <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
 

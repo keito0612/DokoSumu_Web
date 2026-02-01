@@ -131,7 +131,7 @@ function NotificationDetail() {
       />
       <NavBar title="通知詳細" onBack={true} />
       <div className='relative flex w-full min-h-screen flex-col bg-gray-50 overflow-x-hidden'>
-        <div className="px-4 sm:px-20 flex flex-1 justify-center py-5 pt-16 pb-24 sm:pb-0 md:pb-0 lg:pb-0 2xl:pb-0 xl:pb-0">
+        <div className="px-4 sm:px-20 flex flex-1 justify-center py-5 pt-18 pb-24 sm:pb-0 md:pb-0 lg:pb-0 2xl:pb-0 xl:pb-0">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
             <PageHeader title={"通知詳細"} />
 
