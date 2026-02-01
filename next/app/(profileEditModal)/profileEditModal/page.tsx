@@ -118,7 +118,6 @@ const ProfileEditModal: React.FC = () => {
         setModalTitle('プロフィールを編集しました。');
         setModalMessage('');
       } else {
-        console.log(data);
         const message = UtilApi.selectedErrorMessage(["name", "comment", "profileImage"], data["errors"])
         setIsModalOpen(true);
         setModalType('Error');
@@ -131,7 +130,7 @@ const ProfileEditModal: React.FC = () => {
       setModalTitle('エラーが発生しました。');
       setModalMessage('原因不明のエラーが発生した事により、投稿できませんでした。');
       setLoading(false);
-      console.log(error);
+      console.error(error);
     }
   };
 

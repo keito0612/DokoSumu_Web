@@ -73,8 +73,6 @@ export function usePushNotification() {
     if (!messaging) return;
 
     const unsubscribe = onMessage(messaging, (payload) => {
-      console.log('Foreground message received:', payload);
-
       if (Notification.permission === 'granted') {
         new Notification(payload.notification?.title || 'お知らせ', {
           body: payload.notification?.body || '',

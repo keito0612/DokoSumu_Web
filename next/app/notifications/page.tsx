@@ -50,7 +50,6 @@ function Notifications() {
         setLastPage(data['last_page']);
         setTotal(data['total']);
         setPerPage(data['per_page']);
-        console.log(data['notifications']);
       } else if (res.status === 401) {
         router.push("/unauthorized");
       } else {

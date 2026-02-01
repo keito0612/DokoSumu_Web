@@ -137,8 +137,6 @@ export default function SettingsPage() {
       });
       if (res.ok) {
         setEmailNotifications(!emailNotifications);
-      } else {
-        console.log(res.json());
       }
     } catch (error) {
       console.error("Failed to fetch user:", error);
@@ -238,8 +236,8 @@ export default function SettingsPage() {
                 title="プッシュ通知"
                 subtitle={
                   permission === 'granted' ? '有効' :
-                  permission === 'denied' ? 'ブロック中（ブラウザ設定で許可してください）' :
-                  'タップして有効にする'
+                    permission === 'denied' ? 'ブロック中（ブラウザ設定で許可してください）' :
+                      'タップして有効にする'
                 }
                 action={
                   permission === 'granted' ? (

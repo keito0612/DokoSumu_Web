@@ -377,7 +377,6 @@ function Home() {
       setAverageRating(averageRating);
       setAllReviewPhotos(allReviewPhotos);
       setReviewList(reviewList);
-      console.log(allReviewPhotos);
     } catch (error) {
       console.error('エラー発生', error);
     }

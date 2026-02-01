@@ -135,7 +135,6 @@ export default function RatingPost() {
         setModalMessage('');
       } else {
         const message = UtilApi.selectedErrorMessage(["safety", "childRearing", "cityPolicies", "publicTransportation", "livability", "goodComment", "badComment", "average_rating"], data["errors"])
-        console.log(message);
         setIsModalOpen(true);
         setModalType('Error');
         setModalTitle('エラーが発生しました。');
