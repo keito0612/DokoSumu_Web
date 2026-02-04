@@ -1,7 +1,7 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { AuthService } from '@/service/authServise';
 import Loading2 from '../components/Loading2';
 import SnackbarComponent from '../components/SnackBar';
@@ -10,6 +10,7 @@ import { UtilApi } from '@/Util/Util_api';
 import { ResultType } from '@/types';
 import NavBar from '../components/NavBar';
 import NavigationBottomBar from '../components/NavigationBottomBar';
+import GoogleSignInButton from '../components/GoogleSignInButton';
 
 interface Form {
   name: string;
@@ -27,6 +28,15 @@ function SignUp() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('google_auth') === 'success') {
+      setModalType('Success');
+      setModalTitle('新規登録が完了しました');
+      setIsModalOpen(true);
+    }
+  }, [searchParams]);
 
   const onSubmit = async (dataSet: Form) => {
     setLoading(true);
@@ -63,7 +73,7 @@ function SignUp() {
 
   return (
     <>
-      <NavBar title='新規登録' />
+      <NavBar title='新規登録' onBack={true} />
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center px-4 py-20">
         {loading && <Loading2 loadingtext="アカウントを作成中..." />}
         <div className="w-full max-w-md bg-white rounded-2xl shadow-card p-8 animate-fade-in">
@@ -137,6 +147,19 @@ function SignUp() {
                 新規登録
               </button>
             </div>
+
+            {/* 区切り線 */}
+            <div className="relative py-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-white text-gray-500">または</span>
+              </div>
+            </div>
+
+            {/* Googleで登録 */}
+            <GoogleSignInButton />
           </form>
         </div>
 

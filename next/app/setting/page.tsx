@@ -278,7 +278,6 @@ export default function SettingsPage() {
                 subtitle="ご質問やご意見をお聞かせください" action={undefined} onClick={undefined} />
             </Link>
           </Section>
-          {/* Logout Button */}
           <div className="mb-8">
             {
               token !== null ?

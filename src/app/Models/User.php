@@ -23,7 +23,10 @@ class User extends Authenticatable
         'password',
         'image_path',
         'comment',
-        'fcm_token'
+        'fcm_token',
+        'supabase_id',
+        'google_id',
+        'oauth_provider',
     ];
 
     /**

@@ -1,7 +1,7 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AuthService } from '@/service/authServise';
 import SnackbarComponent from '../components/SnackBar';
@@ -10,6 +10,7 @@ import Modal from '../components/Modal';
 import { ResultType } from '@/types';
 import NavBar from '../components/NavBar';
 import NavigationBottomBar from '../components/NavigationBottomBar';
+import GoogleSignInButton from '../components/GoogleSignInButton';
 
 interface Inputs {
   email: string;
@@ -25,6 +26,15 @@ function Login() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('google_auth') === 'success') {
+      setModalType('Success');
+      setModalTitle('ログインが完了しました');
+      setIsModalOpen(true);
+    }
+  }, [searchParams]);
 
   const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
 
@@ -88,9 +98,8 @@ function Login() {
                     message: "このメールアドレスは無効です。",
                   },
                 })}
-                className={`w-full px-4 py-3 text-gray-900 border rounded-xl transition-all duration-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
-                  errors.email ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white'
-                }`}
+                className={`w-full px-4 py-3 text-gray-900 border rounded-xl transition-all duration-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${errors.email ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white'
+                  }`}
               />
               {errors.email && (
                 <p className="text-sm text-red-500 mt-1.5 font-medium">※{errors.email.message}</p>
@@ -111,9 +120,8 @@ function Login() {
                     message: "パスワードは8文字以上でなくてはなりません",
                   },
                 })}
-                className={`w-full px-4 py-3 text-gray-900 border rounded-xl transition-all duration-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
-                  errors.password ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white'
-                }`}
+                className={`w-full px-4 py-3 text-gray-900 border rounded-xl transition-all duration-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${errors.password ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white'
+                  }`}
               />
               {errors.password && (
                 <p className="text-sm text-red-500 mt-1.5 font-medium">※{errors.password.message}</p>
@@ -129,6 +137,19 @@ function Login() {
                 ログイン
               </button>
             </div>
+
+            {/* 区切り線 */}
+            <div className="relative py-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-white text-gray-500">または</span>
+              </div>
+            </div>
+
+            {/* Googleログイン */}
+            <GoogleSignInButton />
 
             {/* リンク */}
             <div className="space-y-3 pt-4">

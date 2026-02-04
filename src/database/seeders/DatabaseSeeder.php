@@ -20,9 +20,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PrefecturesSeeder::class,
             CitySeeder::class,
-            UserSeeder::class,
-            ReviewSeeder::class,
-            RatingSeeder::class
+            // UserSeeder::class,
+            // ReviewSeeder::class,
+            // RatingSeeder::class
         ]);
         Schema::enableForeignKeyConstraints();
     }

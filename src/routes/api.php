@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\api\GoogleAuthController;
+use App\Http\Controllers\api\SupabaseAuthController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\FcmController;
 use App\Http\Controllers\ProfileController;
@@ -22,6 +24,19 @@ Route::get( '/some_url', function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+
+// Supabase OAuth
+Route::prefix('/auth/supabase')->group(function () {
+    Route::get('/google', [SupabaseAuthController::class, 'redirectToGoogle']);
+    Route::post('/callback', [SupabaseAuthController::class, 'handleCallback']);
+});
+
+// Google OAuth (Laravel Socialite)
+Route::prefix('/auth/google')->group(function () {
+    Route::get('/', [GoogleAuthController::class, 'redirectToGoogle']);
+    Route::get('/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
+    Route::get('/url', [GoogleAuthController::class, 'getGoogleAuthUrl']);
+});
 Route::get('/{prefecture_id}/citys/', [CityController::class, 'getCitys']);
 Route::get('/prefecture_reviews/{prefecture_id}',[ReviewController::class, 'getPrefectureReviews']);
 Route::get('/city_reviews/{prefecture_id}/{city_id}',[ReviewController::class, 'getCityReviews']);

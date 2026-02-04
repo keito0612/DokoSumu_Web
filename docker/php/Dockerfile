@@ -23,7 +23,8 @@ RUN apt-get update && \
     zip \
     unzip \
     vim \
-    && docker-php-ext-install pdo_mysql bcmath
+    libpq-dev \
+    && docker-php-ext-install pdo_mysql pdo_pgsql pgsql bcmath
 
 RUN chown -R www-data:www-data /var/www/html
 RUN mkdir -p /var/www/html/storage && \
