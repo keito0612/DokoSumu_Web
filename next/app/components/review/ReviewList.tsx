@@ -15,7 +15,7 @@ export default function ReviewList({ reviewList, onMenuAction, onUserClick }: Re
         reviewList.map((review: Review, index: number) => (
           <div
             key={review.id}
-            className={`p-4 ${index < reviewList.length - 1 ? 'border-b' : ''}`} // 最後の要素でなければborder-bを適用
+            className={`p-1 ${index < reviewList.length - 1 ? 'border-b' : ''}`} // 最後の要素でなければborder-bを適用
           >
             <ReviewListTile review={review} onMenuAction={onMenuAction} onUserClick={onUserClick} /> {/* ReviewListTileにkeyは不要、親要素のdivに設定 */}
           </div>
