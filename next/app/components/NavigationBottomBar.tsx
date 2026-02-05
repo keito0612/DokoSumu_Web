@@ -8,8 +8,8 @@ const NavigationBottomBar = () => {
   const pathname = usePathname();
 
   const navItems = [
-    { label: 'Home', href: '/home', icon: HomeIcon },
-    { label: 'Profile', href: '/profile', icon: UserIcon },
+    { label: 'ホーム', href: '/home', icon: HomeIcon },
+    { label: 'プロフィール', href: '/profile', icon: UserIcon },
     { label: '設定', href: '/setting', icon: Cog8ToothIcon }
   ];
 
@@ -23,11 +23,10 @@ const NavigationBottomBar = () => {
             <li key={item.href}>
               <Link href={item.href} passHref>
                 <div
-                  className={`flex flex-col items-center text-xs font-medium py-1 px-3 rounded-xl transition-all duration-200 ${
-                    isActive
+                  className={`flex flex-col items-center text-xs font-medium py-1 px-3 rounded-xl transition-all duration-200 ${isActive
                       ? 'text-green-600 bg-green-50 scale-105'
                       : 'text-gray-500 hover:text-gray-700 active:scale-95'
-                  }`}
+                    }`}
                 >
                   <item.icon className={`h-6 w-6 mb-0.5 transition-transform duration-200 ${isActive ? 'scale-110' : ''}`} />
                   <span>{item.label}</span>
