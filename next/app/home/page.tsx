@@ -16,6 +16,8 @@ import ReviewList from '../components/review/ReviewList';
 import { AuthService } from '@/service/authServise';
 import ImagesModal from '../components/review/modal/ImagesModal';
 import ReviewPhotoGallery from '../components/review/ReviewPhotoGallery';
+import { useTutorial } from '../hooks/useTutorial';
+import Tutorial from '../components/Tutorial';
 interface PrefectureBlockProps {
   region: string;
   prefectures: { id: number; name: string }[];
@@ -62,6 +64,7 @@ function Home() {
   const [allReviewPhotos, setAllReviewPhotos] = useState<Photo[]>([]);
   const [showBackButton, setShowBackButton] = useState<boolean>(false);
   const searchParams = useSearchParams();
+  const { showTutorial, completeTutorial } = useTutorial();
   const tabs: Tab[] = [
     {
       id: '0', label: '評価', content: 'Content for Tab 1', onTap: (tabId: string) => {
@@ -290,33 +293,25 @@ function Home() {
       const allReviewPhotos: Photo[] = data['photos'];
       const ratingsOnly: Rating[] = reviewList.map(review => review.rating);
       setAllReviewPhotos(allReviewPhotos);
-      const averageRating: number = calculateRatingAverage(ratingsOnly, 'average_rating');
+
+      // 各カテゴリの平均を計算
+      const safetyAvg = calculateRatingAverage(ratingsOnly, 'safety');
+      const cityPoliciesAvg = calculateRatingAverage(ratingsOnly, 'city_policies');
+      const livabilityAvg = calculateRatingAverage(ratingsOnly, 'livability');
+      const publicTransportationAvg = calculateRatingAverage(ratingsOnly, 'public_transportation');
+      const childRearingAvg = calculateRatingAverage(ratingsOnly, 'child_rearing');
+
+      // 総合平均は各カテゴリ平均から計算
+      const averageRating: number = ratingsOnly.length > 0
+        ? Math.ceil(((safetyAvg + cityPoliciesAvg + livabilityAvg + publicTransportationAvg + childRearingAvg) / 5) * 10) / 10
+        : 0;
+
       const chartData: ChartData[] = [
-        {
-          name: "治安",
-          score: calculateRatingAverage(ratingsOnly, 'safety'),
-          fullMark: 5
-        },
-        {
-          name: "制度",
-          score: calculateRatingAverage(ratingsOnly, 'city_policies'),
-          fullMark: 5
-        },
-        {
-          name: "住みやすさ",
-          score: calculateRatingAverage(ratingsOnly, 'livability'),
-          fullMark: 5
-        },
-        {
-          name: "人",
-          score: calculateRatingAverage(ratingsOnly, 'public_transportation'),
-          fullMark: 5
-        },
-        {
-          name: "子育て",
-          score: calculateRatingAverage(ratingsOnly, 'child_rearing'),
-          fullMark: 5
-        }
+        { name: "治安", score: safetyAvg, fullMark: 5 },
+        { name: "制度", score: cityPoliciesAvg, fullMark: 5 },
+        { name: "住みやすさ", score: livabilityAvg, fullMark: 5 },
+        { name: "人", score: publicTransportationAvg, fullMark: 5 },
+        { name: "子育て", score: childRearingAvg, fullMark: 5 }
       ]
       setChartData(chartData);
       setAverageRating(averageRating);
@@ -345,33 +340,25 @@ function Home() {
       const reviewList: Review[] = data['reviews'];
       const allReviewPhotos: Photo[] = data['photos'];
       const ratingsOnly: Rating[] = reviewList.map(review => review.rating);
-      const averageRating: number = calculateRatingAverage(ratingsOnly, 'average_rating');
+
+      // 各カテゴリの平均を計算
+      const safetyAvg = calculateRatingAverage(ratingsOnly, 'safety');
+      const cityPoliciesAvg = calculateRatingAverage(ratingsOnly, 'city_policies');
+      const livabilityAvg = calculateRatingAverage(ratingsOnly, 'livability');
+      const publicTransportationAvg = calculateRatingAverage(ratingsOnly, 'public_transportation');
+      const childRearingAvg = calculateRatingAverage(ratingsOnly, 'child_rearing');
+
+      // 総合平均は各カテゴリ平均から計算
+      const averageRating: number = ratingsOnly.length > 0
+        ? Math.ceil(((safetyAvg + cityPoliciesAvg + livabilityAvg + publicTransportationAvg + childRearingAvg) / 5) * 10) / 10
+        : 0;
+
       const chartData: ChartData[] = [
-        {
-          name: "治安",
-          score: calculateRatingAverage(ratingsOnly, 'safety'),
-          fullMark: 5
-        },
-        {
-          name: "制度",
-          score: calculateRatingAverage(ratingsOnly, 'city_policies'),
-          fullMark: 5
-        },
-        {
-          name: "住みやすさ",
-          score: calculateRatingAverage(ratingsOnly, 'livability'),
-          fullMark: 5
-        },
-        {
-          name: "人",
-          score: calculateRatingAverage(ratingsOnly, 'public_transportation'),
-          fullMark: 5
-        },
-        {
-          name: "子育て",
-          score: calculateRatingAverage(ratingsOnly, 'child_rearing'),
-          fullMark: 5
-        }
+        { name: "治安", score: safetyAvg, fullMark: 5 },
+        { name: "制度", score: cityPoliciesAvg, fullMark: 5 },
+        { name: "住みやすさ", score: livabilityAvg, fullMark: 5 },
+        { name: "人", score: publicTransportationAvg, fullMark: 5 },
+        { name: "子育て", score: childRearingAvg, fullMark: 5 }
       ]
       setChartData(chartData);
       setAverageRating(averageRating);
@@ -412,6 +399,8 @@ function Home() {
 
   return (
     <div className={`Home h-screen ${isModalOpen ? "overflow-hidden" : "overflow-visible"}`}>
+      {/* チュートリアル */}
+      {showTutorial && <Tutorial onComplete={completeTutorial} />}
       {/* {imageViewerOpen && <ImageViewer imageSrc={imageSrc} onClose={closeImageViewer} user={ } />} */}
       {/*市の評価*/}
       <SheetModal title={selectedName} isOpen={isModalOpen} onClose={closeModal} showBackButton={showBackButton} backButtonOnClick={backButtonOnClick} headerContent={<Tabs tabs={tabs} />}>
