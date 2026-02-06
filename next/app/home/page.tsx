@@ -455,7 +455,7 @@ function Home() {
         )}
       </SheetModal>
       <NavBar title='ホーム' />
-      <div className="pt-20 pb-24 px-4 min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+      <div className="pt-24 pb-24 px-4 min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
         <div className='max-w-4xl mx-auto'>
           {regions.map((region, index) => (
             <PrefectureBlock
