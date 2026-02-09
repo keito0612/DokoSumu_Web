@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   webpack: (config) => {
     let modularizeImports = null;
     config.module.rules.some((rule: { oneOf: any[]; }) =>

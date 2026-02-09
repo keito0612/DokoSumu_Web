@@ -201,10 +201,17 @@ class ReviewController extends Controller
     {
         DB::beginTransaction();
         try{
-            $review = Review::find($id);
+            $review = Review::with('photos')->find($id);
             if (!$review) {
                 return response()->json(["message" => "Review not found"], 404);
             }
+
+            // レビューに紐づく写真をストレージから削除
+            foreach ($review->photos as $photo) {
+                $this->deletePhotoFromStorage($photo->photo_url);
+                $photo->delete();
+            }
+
             $review->delete();
             DB::commit();
             return response()->json([
@@ -242,9 +249,37 @@ class ReviewController extends Controller
     {
         $photosToDelete = Photo::whereIn('photo_url', $deletePhotos)->get();
         foreach ($photosToDelete as $photo) {
-            $this->fileService->delete($photo->photo_url);
+            $this->deletePhotoFromStorage($photo->photo_url);
             $photo->delete();
         }
+    }
+
+    /**
+     * 写真URLからストレージのパスを取得して削除する
+     */
+    private function deletePhotoFromStorage(string $photoUrl)
+    {
+        // URLからパスを抽出 (例: http://localhost/storage/reviewImage/xxx.jpg → reviewImage/xxx.jpg)
+        $path = $this->extractPathFromUrl($photoUrl);
+        if ($path && $this->fileService->exists($path)) {
+            $this->fileService->delete($path);
+        }
+    }
+
+    /**
+     * URLからストレージパスを抽出する
+     */
+    private function extractPathFromUrl(string $url): ?string
+    {
+        // /storage/ 以降のパスを取得 (ローカル)
+        if (preg_match('/\/storage\/(.+)$/', $url, $matches)) {
+            return $matches[1];
+        }
+        // R2などの外部ストレージの場合、バケット名以降のパスを取得
+        if (preg_match('/reviewImage\/.+$/', $url, $matches)) {
+            return $matches[0];
+        }
+        return null;
     }
 
     function like($reviewId)

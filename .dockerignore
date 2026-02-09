@@ -1,5 +1,55 @@
-vendor/
-node_modules/
-.dockerignore
-.gitignore
+# ===========================================
+# Docker Ignore File
+# ===========================================
+
+# Git
 .git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Documentation
+*.md
+
+# Development files
+docker-compose.yml
+docker-compose.override.yml
+Makefile
+
+# Laravel
+src/storage/logs/*
+src/storage/framework/cache/*
+src/storage/framework/sessions/*
+src/storage/framework/views/*
+src/.env
+src/.env.local
+src/.env.*.local
+src/vendor
+
+# Next.js
+next/node_modules
+next/.next
+next/.env
+next/.env.local
+next/.env.*.local
+next/out
+
+# Testing
+src/phpunit.xml
+src/tests
+next/__tests__
+next/jest.config.js
+
+# CI/CD
+.github
+cloudbuild*.yaml
+
+# Misc
+*.log
+.DS_Store
+Thumbs.db

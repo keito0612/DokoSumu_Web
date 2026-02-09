@@ -11,7 +11,11 @@ class FileService
 
     public function __construct(string $disk = 'public')
     {
-        $this->disk = $disk;
+        if(app()->isProduction()){
+            $this->disk = 'r2';
+        }else{
+            $this->disk = $disk;
+        }
     }
 
     /**
