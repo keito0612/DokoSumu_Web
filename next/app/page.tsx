@@ -2,7 +2,7 @@
 import { LocalStorageServise } from '@/service/localStorageServise';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { BsFileEarmarkText, BsStar, BsCamera } from "react-icons/bs";
 // 背景画像のURLを任意の画像に置き換えてください
 const backgroundImage = '/images/big-photo0000-0705.jpg';
@@ -125,18 +125,31 @@ const CallToActionSection = ({ imageSrc, imageAlt, heading, body }: CallToAction
 );
 
 // --- Main Page Component ---
-export default function Home() {
+export default function Main() {
   const personInvestigatingImageSrc = '/images/10223.png';
   const pinGreenImageSrc = '/images/pin_icon_green.png'
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFirstTime, setIsFirstTime] = useState(false);
+
   useEffect(() => {
-    const isFirstTime = LocalStorageServise.getStorage('is_first_time');
-    if (isFirstTime !== null) {
-      router.push('/home');
+    const visited = LocalStorageServise.getStorage('is_first_time');
+    if (visited !== null) {
+      // 初めてではない場合、homeページにリダイレクト
+      router.replace('/home');
     } else {
-      LocalStorageServise.setStorage('is_first_time', 1);
+      // 初めての場合、フラグをセットしてMainページを表示
+      LocalStorageServise.setStorage('is_first_time', '1');
+      setIsFirstTime(true);
+      setIsLoading(false);
     }
-  }, []);
+  }, [router]);
+
+  // ローディング中またはリダイレクト中は何も表示しない
+  if (isLoading && !isFirstTime) {
+    return null;
+  }
+
   return (
     <div className="bg-gray-50 font-sans antialiased">
       <HeroSection onClick={function (): void {
