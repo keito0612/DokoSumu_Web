@@ -5,10 +5,12 @@
 # 開発環境
 # docker-compose.yml + docker-compose.dev.yml をマージ
 build:
-	docker compose -f docker-compose.yml -f docker-compose.dev.yml build && make nodem
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml build
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 
 nbuild:
-	docker compose -f docker-compose.yml -f docker-compose.dev.yml build --no-cache && make nodem
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml build --no-cache
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d 
 
 up:
 	docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d

@@ -23,6 +23,8 @@ const ReviewLikeButton: React.FC<ReviewLikeButtonProps> = ({ review }) => {
       const res = await fetch(url, {
         method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'Authorization': `Bearer ${AuthService.getSesstion()}`,
         },
       });

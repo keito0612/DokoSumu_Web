@@ -8,14 +8,20 @@
 services:
   api:
     container_name: prerebi-api
+    build:
+      context: .
 
   next:
     container_name: prerebi-next
+    build:
+      context: .
     depends_on:
       - api
 
   web:
     container_name: prerebi-web
+    build:
+      context: .
     depends_on:
       - api
       - next

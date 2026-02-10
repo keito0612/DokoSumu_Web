@@ -170,6 +170,7 @@ export default function RatingEditPost() {
       const res = await fetch(url, {
         method: "POST",
         headers: {
+          'Accept': 'application/json',
           'Authorization': `Bearer ${AuthService.getSesstion()}`,
         },
         body: formData,

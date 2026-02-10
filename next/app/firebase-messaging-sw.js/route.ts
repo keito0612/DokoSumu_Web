@@ -1,19 +1,24 @@
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  const firebaseConfig = {
+    apiKey: (process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "").replace(/,$/, "").trim(),
+    authDomain: (process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "").trim(),
+    projectId: (process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "").trim(),
+    storageBucket: (process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "").trim(),
+    messagingSenderId: (process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "").trim(),
+    appId: (process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "").trim(),
+  };
+
+  const swContent = `
 importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
 
-firebase.initializeApp({
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-});
+firebase.initializeApp(${JSON.stringify(firebaseConfig)});
 
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-
     const notificationTitle = payload.notification?.title || 'お知らせ';
     const notificationOptions = {
         body: payload.notification?.body || '',
@@ -42,3 +47,12 @@ self.addEventListener('notificationclick', (event) => {
         })
     );
 });
+`;
+
+  return new NextResponse(swContent, {
+    headers: {
+      'Content-Type': 'application/javascript',
+      'Service-Worker-Allowed': '/',
+    },
+  });
+}
