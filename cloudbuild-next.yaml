@@ -13,7 +13,7 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/prerebi-next:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/prerebi-next:$SHORT_SHA'
       - '-t'
       - 'gcr.io/$PROJECT_ID/prerebi-next:latest'
       - '--build-arg'
@@ -40,7 +40,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'gcr.io/$PROJECT_ID/prerebi-next:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/prerebi-next:$SHORT_SHA'
 
   - name: 'gcr.io/cloud-builders/docker'
     args:
@@ -55,7 +55,7 @@ steps:
       - 'deploy'
       - 'prerebi-next'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/prerebi-next:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/prerebi-next:$SHORT_SHA'
       - '--region'
       - 'asia-northeast1'
       - '--platform'
@@ -73,17 +73,17 @@ steps:
       - '8080'
 
 substitutions:
-  _NEXT_PUBLIC_API_URL: ''
-  _NEXT_PUBLIC_FIREBASE_API_KEY: ''
-  _NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ''
-  _NEXT_PUBLIC_FIREBASE_PROJECT_ID: ''
-  _NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ''
-  _NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ''
-  _NEXT_PUBLIC_FIREBASE_APP_ID: ''
-  _NEXT_PUBLIC_FIREBASE_VAPID_KEY: ''
+  _NEXT_PUBLIC_API_URL: 'https://api.pre-re-vi.com'
+  _NEXT_PUBLIC_FIREBASE_API_KEY: 'AIzaSyDcNBt8F9LIqruVW3P7NG25vOyUPDN_Q-M'
+  _NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: 'prefreview.firebaseapp.com'
+  _NEXT_PUBLIC_FIREBASE_PROJECT_ID: 'prefreview'
+  _NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: 'prefreview.firebasestorage.app'
+  _NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: '234130580998'
+  _NEXT_PUBLIC_FIREBASE_APP_ID: '1:234130580998:web:9c9e6c2983045ed6e44587'
+  _NEXT_PUBLIC_FIREBASE_VAPID_KEY: 'BJYicdznF_BGl49gC2eWxAKGNwUxnfioQbk6B4INakZtu7JiVewGYjywNGpcrgMWw0NcpSY431nS-xW7GaAM6NU'
 
 images:
-  - 'gcr.io/$PROJECT_ID/prerebi-next:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/prerebi-next:$SHORT_SHA'
   - 'gcr.io/$PROJECT_ID/prerebi-next:latest'
 
 options:

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
 import SnackbarComponent from '../components/SnackBar';
@@ -7,13 +7,14 @@ import Loading2 from '../components/Loading2';
 import Modal from '../components/Modal';
 import { ResultType } from '@/types';
 import { UtilApi } from '@/Util/Util_api';
+import Loading from '../components/Loading';
 
 interface Inputs {
   password: string;
   password_confirmation: string;
 }
 
-function ResetPassword() {
+function ResetPasswordContent() {
   const [loading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -130,4 +131,16 @@ function ResetPassword() {
   );
 }
 
-export default ResetPassword;
+
+export default function ResetPassword() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <Loading loadingtext="読み込み中..." />
+      </div>
+    }>
+      <ResetPasswordContent />
+    </Suspense>
+  );
+}
+

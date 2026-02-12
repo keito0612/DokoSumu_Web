@@ -21,7 +21,6 @@ ARG NEXT_PUBLIC_FIREBASE_VAPID_KEY
 
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_ENV=production
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_FIREBASE_API_KEY=$NEXT_PUBLIC_FIREBASE_API_KEY
 ENV NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=$NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
@@ -35,7 +34,7 @@ ENV NEXT_PUBLIC_FIREBASE_VAPID_KEY=$NEXT_PUBLIC_FIREBASE_VAPID_KEY
 COPY ./next/package.json ./next/package-lock.json* ./
 
 # Install all dependencies (including devDependencies for build)
-RUN npm ci
+RUN npm install
 
 # Copy source code
 COPY ./next .

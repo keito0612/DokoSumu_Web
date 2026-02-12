@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { AuthService } from '@/service/authServise';
@@ -11,6 +11,7 @@ import { ResultType } from '@/types';
 import NavBar from '../components/NavBar';
 import NavigationBottomBar from '../components/NavigationBottomBar';
 import GoogleSignInButton from '../components/GoogleSignInButton';
+import Loading from '../components/Loading';
 
 interface Form {
   name: string;
@@ -18,7 +19,7 @@ interface Form {
   password: string;
 }
 
-function SignUp() {
+function SignUpContent() {
   const { register, handleSubmit, formState: { errors } } = useForm<Form>();
   const [errorMessage, setErrorMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -181,4 +182,16 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+
+
+export default function SignUp() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <Loading loadingtext="読み込み中..." />
+      </div>
+    }>
+      < SignUpContent />
+    </Suspense>
+  );
+}

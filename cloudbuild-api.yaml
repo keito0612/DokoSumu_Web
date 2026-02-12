@@ -22,7 +22,7 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/prerebi-api:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/prerebi-api:$SHORT_SHA'
       - '-t'
       - 'gcr.io/$PROJECT_ID/prerebi-api:latest'
       - '-f'
@@ -33,7 +33,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'gcr.io/$PROJECT_ID/prerebi-api:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/prerebi-api:$SHORT_SHA'
 
   - name: 'gcr.io/cloud-builders/docker'
     args:
@@ -48,7 +48,7 @@ steps:
       - 'deploy'
       - 'prerebi-api'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/prerebi-api:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/prerebi-api:$SHORT_SHA'
       - '--region'
       - 'asia-northeast1'
       - '--platform'
@@ -68,7 +68,7 @@ steps:
       - 'APP_ENV=production,APP_DEBUG=false,LOG_CHANNEL=stderr,DB_CONNECTION=pgsql,FILESYSTEM_DISK=r2,MAIL_MAILER=resend,TRUSTED_PROXIES=*'
 
 images:
-  - 'gcr.io/$PROJECT_ID/prerebi-api:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/prerebi-api:$SHORT_SHA'
   - 'gcr.io/$PROJECT_ID/prerebi-api:latest'
 
 options:

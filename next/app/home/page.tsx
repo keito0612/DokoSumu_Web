@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import dynamic from 'next/dynamic'
 import NavBar from '../components/NavBar';
 import NavigationBottomBar from '../components/NavigationBottomBar';
@@ -48,7 +48,7 @@ const PrefectureBlock: React.FC<PrefectureBlockProps> = ({ region, prefectures, 
 
 
 
-function Home() {
+function HomeContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedName, setSelectedName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -474,4 +474,10 @@ function Home() {
   );
 };
 
-export default Home;
+export default function Home() {
+  return (
+    <Suspense fallback={<Loading loadingtext="ページを準備中..." />}>
+      <HomeContent />
+    </Suspense>
+  );
+}
