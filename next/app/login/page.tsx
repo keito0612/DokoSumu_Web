@@ -12,6 +12,7 @@ import NavBar from '../components/NavBar';
 import NavigationBottomBar from '../components/NavigationBottomBar';
 import GoogleSignInButton from '../components/GoogleSignInButton';
 import Loading from '../components/Loading';
+import { UtilApi } from '@/Util/Util_api';
 
 interface Inputs {
   email: string;
@@ -42,7 +43,7 @@ function LoginContent() {
   const onSubmit = async (dataSet: Inputs) => {
     setIsLoading(true);
     await AuthService.login({
-      url: 'http://localhost/api/login',
+      url: `${UtilApi.API_URL}/api/login`,
       param: dataSet,
       success(token) {
         setIsModalOpen(true);
