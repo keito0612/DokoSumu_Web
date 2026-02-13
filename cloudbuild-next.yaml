@@ -19,6 +19,8 @@ steps:
       - '--build-arg'
       - 'NEXT_PUBLIC_API_URL=${_NEXT_PUBLIC_API_URL}'
       - '--build-arg'
+      - 'NEXT_PUBLIC_API_BASE_URL=${_NEXT_PUBLIC_API_BASE_URL}'
+      - '--build-arg'
       - 'NEXT_PUBLIC_FIREBASE_API_KEY=${_NEXT_PUBLIC_FIREBASE_API_KEY}'
       - '--build-arg'
       - 'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${_NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}'
@@ -70,10 +72,11 @@ steps:
       - '--max-instances'
       - '10'
       - '--port'
-      - '8080'
+      - '3000'
 
 substitutions:
   _NEXT_PUBLIC_API_URL: 'https://api.pre-re-vi.com'
+  _NEXT_PUBLIC_API_BASE_URL: 'https://api.pre-re-vi.com/api'
   _NEXT_PUBLIC_FIREBASE_API_KEY: 'AIzaSyDcNBt8F9LIqruVW3P7NG25vOyUPDN_Q-M'
   _NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: 'prefreview.firebaseapp.com'
   _NEXT_PUBLIC_FIREBASE_PROJECT_ID: 'prefreview'

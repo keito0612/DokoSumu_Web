@@ -66,6 +66,8 @@ steps:
       - '8080'
       - '--set-env-vars'
       - 'APP_ENV=production,APP_DEBUG=false,LOG_CHANNEL=stderr,DB_CONNECTION=pgsql,FILESYSTEM_DISK=r2,MAIL_MAILER=resend,TRUSTED_PROXIES=*'
+      - '--set-secrets'
+      - '/secrets/.env=prerebi_env:latest'
 
 images:
   - 'gcr.io/$PROJECT_ID/prerebi-api:$SHORT_SHA'

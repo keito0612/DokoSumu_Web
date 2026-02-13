@@ -28,7 +28,7 @@ class WelcomeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '【PrefReview】登録完了のお知らせ。',
+            subject: '【プレリビ】登録完了のお知らせ。',
         );
     }
 

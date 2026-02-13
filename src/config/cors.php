@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],  // 任意のメソッドを許可
 
-    'allowed_origins' => ['http://localhost', 'http://localhost:3000', config('app.url')],  // 開発環境用
+    'allowed_origins' => ['http://localhost', 'http://localhost:3000', config('app.url'), config('app.frontend_url')],  // 開発環境用
 
     'allowed_origins_patterns' => [],
 

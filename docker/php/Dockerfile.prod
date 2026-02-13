@@ -29,7 +29,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # Copy composer files first for better caching
-COPY ./src/composer.json ./src/composer.lock ./
+COPY ./src/composer.json ./src/composer.lock* ./
 
 # Install dependencies (no dev dependencies for production)
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
@@ -51,6 +51,7 @@ WORKDIR /var/www/html
 # Copy application from build stage
 COPY --from=build /var/www/html /var/www/html
 
+RUN rm -rf /etc/nginx/conf.d/*
 # Copy nginx configuration
 COPY ./docker/nginx/nginx-cloudrun.conf /etc/nginx/nginx.conf
 
